@@ -1,0 +1,36 @@
+# === Imagens geradas e duplicadas em Fases Anteriores ===
+fases/Fase1/classificacao/
+fases/Fase1/temp_yolo_data_balanceado/
+fases/Fase1.5/classificacao_crops/
+fases/Fase1.5/temp_yolo_data_balanceado/
+fases/Fase2/classificacao_crops/
+fases/Fase2.5/classificacao_crops/
+
+# === Fase 3 (Crops Específicos) ===
+fases/Fase3/classificacao_crops_cnn/
+fases/Fase3/classificacao_crops_vit/
+fases/Fase3/classificacao_crops_teste/
+
+# === Fase 4 (Pipeline de Validação) ===
+fases/Fase4/dataset/
+
+# === Caches ===
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# === Arquivos de IDE e SO ===
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# === Ignorar Pesos Antigos e Redundantes das Fases ===
+fases/*/modelos_*/
+fases/*/pesos_radimagenet/
+fases/*/modelos_salvos/
+fases/*/YOLO_Resultados/
+fases/*/temp_yolo_data_balanceado/
+fases/*/*.pt
+fases/*/*.pth
