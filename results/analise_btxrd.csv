@@ -1,0 +1,12 @@
+key,value
+total_images,3746
+tumor_count,1867
+normal_count,1879
+benign_count,1525
+malignant_count,342
+class_name_counts,None
+gender_counts,{"M": 2098, "F": 1648}
+age_stats,{"count": 3746, "min": 1.0, "max": 88.0, "mean": 35.28590496529632}
+split_counts,None
+fold_counts,None
+jsons_with_annotation,{"with_json": 1867, "without_json": 1879}

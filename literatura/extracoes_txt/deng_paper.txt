@@ -1,0 +1,581 @@
+Research Paper
+Auxiliary diagnosis of primary bone tumors based on Machine 
+learning model
+Sandong Deng
+a
+, Yugang Huang
+b
+, Cong Li
+c
+, Jun Qian
+a , *
+, Xiangdong Wang
+d , *
+a
+Department of Orthopedics, Affiliated Hengyang Hospital, Hunan Normal University (Hengyang Central Hospital), Hengyang, Hunan 421001, China
+b
+Department of Radiology, Qianhai Life Insurance Guangzhou General Hospital, Guangzhou, Guangdong 511300, China
+c
+School of Computer Science, Central South University, Changsha, Hunan 410083, China
+d
+Hengyang Maternal and Child Health Hospital, Hengyang, Hunan 421001, China
+HIGHLIGHTS
+• DCNN model achieved 99.8% accuracy, 100% PPV, 99.6% NPV.
+• 91.9% PPV distinguishes benign, malignant tumors; AUC is 0.62.
+• Comprehensive WSI database enhances model ’ s diagnostic capabilities.
+• Performance matches senior pathologists, aiding accurate tumor diagnosis.
+• Early diagnosis prevents metastasis, improves outcomes via AI integration.
+ARTICLE INFO
+Keywords:
+Bone tumors
+Artificial intelligence
+Machine learning
+Lesion detection
+Auxiliary diagnosis
+ABSTRACT
+Objective: Research on auxiliary diagnosis of primary bone tumors can enhance diagnostic accuracy, facilitate 
+early detection, and enable personalized treatment, thereby reducing misdiagnosis and missed cases, ultimately 
+leading to improved patient prognosis and survival rates. In this study, we established a whole slide imaging 
+(WSI) database comprising histopathological samples from all categories of bone tumors and integrated multiple 
+neural network architectures for machine learning models. We then evaluated the accuracy of these models in 
+diagnosing primary bone tumors.
+Methods: In this paper, the machine learning model based on the deep convolutional neural network (DC-NN) 
+method was combined with imaging omics analysis to analyze and discuss its clinical value in diagnosing pri -
+mary bone tumors. In addition, this paper proposed a screening method for differentially expressed genes. Based 
+on the paired T-test method, the process first estimated the tumor purity in the experimental data of each sample 
+case, then assessed the actual gene expression value of the experimental data of each sample case, and finally 
+calculated the optimized paired T-test statistics, and screened differentially expressed genes according to the 
+threshold value.
+Results: The selected model demonstrated excellent diagnostic accuracy in distinguishing between normal and 
+tumor images, with overall accuracy of (99.8 ± 0.4) % for five rounds of testing using the DCNN model and 
+positive and negative predictive values of (100.0 ± 0.0) % and (99.6 ± 0.8) %, respectively. The mean area 
+under each dataset ’ s curve (AUC) was (0.998 ± 0.004). Further, ten rounds of testing using the DCNN model 
+showed an overall accuracy of (71.2 ± 1.6) % and a substantial positive predictive value of (91.9 ± 8.5) % in 
+distinguishing benign from malignant bone tumors, with an average AUC of (0.62 ± 0.06) across datasets.
+Conclusion: The deep learning model accurately classifies bone tumor histopathology based on the degree of 
+infiltration, achieving diagnostic performance comparable to that of senior pathologists. These findings affirm 
+the feasibility and effectiveness of histopathological diagnosis in bone tumors, providing a theoretical foundation 
+for the application and advancement of machine learning-assisted histopathological diagnosis in this field.
+* Corresponding authors.
+E-mail addresses: qianjunyz1@163.com (J. Qian), wxd197366@163.com (X. Wang). 
+Contents lists available at ScienceDirect
+Journal of Bone Oncology
+journal homepag e: www.else vier.com/loc ate/jbo
+https://doi.org/10.1016/j.jbo.2024.100648
+Received 10 June 2024; Received in revised form 2 November 2024; Accepted 3 November 2024  
+J BONE ONCOL 49 (2024) 100648 
+Available online 9 November 2024 
+2212-1374/© 2024 The Authors. Published by Elsevier GmbH. This is an open access article under the CC BY-NC-ND license 
+( http://creativecommons.org/licenses/by-nc-nd/4.0/ ). 
+1. Introduction
+In recent years, cancer has posed increasingly severe challenges to 
+human health. With the accumulation of medical data and breakthrough 
+developments in artificial intelligence technology, efficiently assisting in 
+tumor diagnosis has become challenging for bioinformatics and com -
+puter disciplines. Primary bone tumors constitute only 0.2 % of human 
+tumors, with an annual incidence of approximately 20 cases per million 
+population [ 1 ]. These tumors often inflict damage to bone structure, 
+leading to long-term dysfunction and diminished quality of life [ 2,3 ]. 
+Currently, multimodal therapy, incorporating adjuvant chemotherapy 
+and limb salvage surgery, is regarded as the standard treatment for most 
+respectable primary bone tumors like osteosarcoma and Ewing ’ s sar -
+coma. Adjuvant chemotherapy and targeted therapy also offer thera -
+peutic benefits for some instances of unresectable tumors [ 4,5 ]. Early 
+detection and diagnosis of malignant bone tumors are crucial to prevent 
+distant metastasis and enhance patients ’ limb preservation rate, survival 
+rate, and quality of life. X-ray imaging remains the most commonly 
+utilized imaging tool for diagnosing primary bone tumors [ 6,7 ].
+However, due to the low incidence of primary bone tumors, the 
+complexity of histological subtypes, and the diversity of imaging fea -
+tures, the accuracy of plain film diagnosis is limited, and newer but more 
+expensive techniques such as CT and MRI are usually needed to confirm 
+suspected lesions seen on plain film [8] . The limited knowledge of pri -
+mary doctors in X-ray image interpretation of bone tumors is a common 
+factor causing misdiagnosis and delayed diagnosis of bone tumors [9] . 
+Improving the diagnostic accuracy of screening X-ray images is crucial 
+for early detection or exclusion of primary bone tumors. Diagnosing 
+bone tumors is the first step in the medical management of patients, and 
+it is of great value to guide the treatment plan. Early and correct diag -
+nosis can provide timely intervention for lesions, which not only eases 
+the progression of the disease and reduces the probability of tumor 
+spread and metastasis but also improves the overall survival rate of 
+patients and reduces the physical and mental pain and economic burden 
+of patients [9] . Missed diagnosis or misdiagnosis may cause patients to 
+miss the best treatment opportunity, which seriously affects the quality 
+of life and prognosis [10] .
+The diagnostic criteria for bone tumors include: 
+1) Epidemiological characteristics, such as age, sex, and location of the 
+disease;
+2) Symptoms: including pain, swelling, pathological fractures, etc;
+3) Signs such as tenderness, vein irritation, and elevated skin 
+temperature;
+4) Imaging examinations: identifying features such as lesion site, 
+osteolytic transformation, invasive growth, periosteal reaction, etc., 
+with specific findings such as a hardened area in CT scans, soft tissue 
+infiltration, and high signal intensity in MRI scans, and increased 
+radioactive uptake in radionuclide bone imaging;
+5) Gross morphology of the tumor: considering its shape, color, texture, 
+size, etc;
+6) Assistive technologies, including immunohistochemistry, electron 
+microscope scanning, special staining, flow cytometry, karyotype 
+analysis, and protein/gene detection.
+However, traditional diagnostic methods such as medical history and 
+imaging have limitations. For example, while epidemiological indicators 
+can effectively identify individual tumors, most bone tumors tend to 
+have a trend of onset at a young age, a preference for males, and diverse 
+incidence sites. Similarly, symptoms and signs of tumors are often 
+similar and nonspecific, with most benign tumors displaying hidden 
+growth and most malignant tumors causing pain and swelling. Although 
+imaging evaluation may identify specific features such as the “ Codman 
+triangle ” indicating osteosarcoma or cartilage cap protrusion indicating 
+osteochondroma, many tumors, particularly those with a low incidence 
+of malignancy, lack typical imaging features, making reliance on 
+imaging alone for diagnosis unreliable [ 19,20 ].
+Histopathological diagnosis remains the gold standard for deter -
+mining the biological nature of tumors. In clinical practice, histopath -
+ological examination involves lesion biopsy and qualitative tumor 
+diagnosis conducted through multidisciplinary collaboration among 
+orthopedic, imaging, and pathology physicians [ 21 ]. Therefore, accu -
+rate and reliable histopathological diagnosis is crucial for determining 
+the appropriate treatment plan for bone tumors.
+Artificial intelligence, such as machine learning, in the medical field 
+is increasing rapidly [22] . Some recent image omics feature analyses can 
+more effectively and accurately diagnose diseases, predict prognosis, 
+and evaluate the potential efficacy of targeted therapy through DCNN 
+[12] . For example, Olczak et al. [13] used five publicly available deep- 
+learning networks as a diagnostic tool. They accurately diagnosed 83 % 
+of fractures, comparable to the accuracy of experienced orthopedic 
+surgeons. Fave et al. [14] designed a predictive model using imaging 
+omics analysis. They demonstrated that CT image texture intensity 
+measured at the end of radiotherapy could effectively distinguish be -
+tween high and low-risk patients with stage III non-small cell lung 
+cancer. In this study, we developed a machine learning model to eval -
+uate its performance in diagnosing primary bone tumors around the 
+knee joint. As reported below, we analyzed its ability to distinguish 
+benign from malignant bone tumors.
+2. Data and methods
+2.1. General information
+The clinical data of patients with primary bone tumors at distal 
+femur, proximal tibia, or proximal fibula admitted to our hospital from 
+March 2017 to December 2023 were retrospectively analyzed. Two 
+experienced pathologists evaluated the biopsy or excised specimen and 
+provided a histological tumor diagnosis. This study examined 50 pa -
+tients with malignant tumors and 25 patients with benign tumors, and 
+the orthography of various lesions was used before treatment. In addi -
+tion, 75 fully confirmed orthographies of normal knee joints were 
+extracted from the imaging system of our hospital as normal controls, 
+and there was no difference in gender between the three groups of 
+subjects (P > 0.05), as shown in Table 1 .
+This study extracted the image in DICOM format and then converted 
+it to JPEG format for further analysis.
+2.2. Influence pretreatment and experimental design
+Firstly, the data set was preprocessed, and 130 X-ray images were 
+divided into the training and test sets. Because of the different brightness 
+of the images, the X-ray images are converted into gray images before 
+extracting the features. DCNN has achieved great success in image 
+classification in many fields [15 – 17] . Compared with support vector 
+machines, DCNN can automatically extract image features [18] . This 
+study used a 34-layer depth residual network (ResNet34) to automati -
+cally extract and classify multiple features from X-ray images [19] . The 
+advantage of ResNet is the use of residual blocks to solve the problem of 
+network degradation caused by increasing network depth. The features 
+extracted from the shallow layer are transmitted to the deep layer 
+through the residual block, as shown in Fig. 1 .
+2.3. Statistical method
+SPSS22.0 was used for statistical analysis of the obtained data. 
+Measurement data were expressed with ( x ± s) and compared with the t - 
+test. Statistical data were expressed as rates. The comparison was per -
+formed using two tests. Analysis of variance was used for multi-group 
+comparison. ROC curve was used to explore the clinical value of 
+DCNN in diagnosing primary bone tumors around the knee joint.
+S. Deng et al.                                                                                                                                                                                                                                    Journal of Bone Oncology 49 (2024) 100648 
+2 
+3. Results
+3.1. Representative X-ray images of the knee joint and radiographs of 
+benign and malignant tumors
+130 positive images of the knee, including 130 “ normal images ” 
+without bone tumors and 130 “ tumor images ” with bone tumors, were 
+randomly divided into five groups. Each group comprised 52 standard 
+images ( Fig. 2 a) and 52 tumor images. Each group of 52 tumor images 
+included 36 malignant ( Fig. 2 b-d) and 16 benign ( Fig. 2 e-g) tumor 
+images.
+3.2. DCNN model diagnosed bone tumors
+Five rounds of tests were conducted using the DCNN model to 
+evaluate the model ’ s ability to differentiate between “ normal images ” 
+and “ tumor images ” to test its efficacy in bone tumor diagnosis. While 
+each group is used as the test set, the other four groups are used as the 
+training set. Finally, five different diagnostic accuracy values were ob -
+tained. The DCNN classifier is highly accurate, with four out of five tests 
+showing 100 % accuracy in bone tumor diagnosis. Only one standard 
+image from one round of tests was misdiagnosed. The overall accuracy 
+was (99.8 ± 0.3) %, while the positive predictive value and negative 
+predictive value were (100.0 ± 0.0) % and (99.7 ± 0.5) %, respectively, 
+as shown in Table 2 . In addition to accuracy, this study also uses AUC as 
+a performance measure for machine learning. The AUC of each dataset 
+was 0.99 (95 % confidence interval, 0.981 – 1.000), 1.00 (95 % confi -
+dence interval, 1.000 – 1.000), 1.00 (95 % confidence interval, 
+1.000 – 1.000), 1.0 (95 % confidence interval, 1.000 – 1.000), respec -
+tively. 1.000 – 1.000) and 1.0 (95 % confidence interval, 1.000 – 1.000) 
+with a mean AUC of (0.998 ± 0.004), as shown in Fig. 3 .
+Table 1 
+General information of three groups of subjects.
+General data Malignant tumor (n = 50) Benign tumor (n = 25) Normal (n = 75) x
+2 
+/F P
+Age(years) 25.5 ± 14.7 29.4 ± 16.3 35.1 ± 15.6 16.231 0.000
+Gender Male 24(48.9 %) 13(50.6 %) 35(46.9 %) 1.435 0.076
+Female 26(51.1 %) 12(49.5 %) 40(53.1 %)
+Position Distal femur 28(50.6 %) 29(36.3 %) ​ 5.832 0.000
+Proximal tibia 24(42.2 %) 43(53.8 %) ​
+Proximal fibula 4(7.2 %) 8(10.0 %) ​
+Pathological type Osteosarcoma 133(73.9 %) Giant cell tumor 36(45.0 %) ​ 6.213 0.000
+Chondrosarcoma 20(11.1 %) Non ossifying fibroma 15(18.8 %) ​
+Ewing sarcoma 5(2.8 %) Chondroma 10(12.5 %) ​
+Other 22(12.2 %) Other 19(23.8 %) ​
+Fig. 1. Feature extraction and prediction flow chart of the DCNN method.
+Fig. 2. The DCNN method is used for ROC curves to diagnose peri -knee bone tumors.
+S. Deng et al.                                                                                                                                                                                                                                    Journal of Bone Oncology 49 (2024) 100648 
+3 
+3.3. DCNN model distinguished benign and malignant tumors
+This study evaluated the ability of DCNN to distinguish between 
+benign and malignant tumors. Each group included 36 images of ma -
+lignant and 16 of benign tumors. In each test round, 3 of the five groups 
+are assigned as the training data set, while the other two groups are 
+assigned as the test data set. 10 rounds (C25 = 10) of testing were 
+conducted using the DCNN model, and the results are shown in Table 3 . 
+The overall accuracy was (71.2 ± 1.6) %, achieving a substantial posi -
+tive predictive value (91.9 ± 8.5 %) in distinguishing benign from ma -
+lignant bone tumors, and the mean AUC was (0.62 ± 0.06), as shown in 
+Table 3 .
+3.4. Validation of simulation algorithm based on matching characteristics 
+of tumor purity information
+To evaluate the performance of the paired feature selection method 
+proposed in this chapter in screening differentially expressed genes, four 
+commonly used paired feature selection methods were selected in the 
+experiment for comparison with the method used in this paper, namely, 
+the paired T-test method (P-test) [5] and the paired T-test method based 
+on multiple changes proposed by Cao et al. [9] , write it as C-test; The 
+modified version of the paired T-test method proposed by Tan et al. [17]
+is denoted as T-test. The combined method of Tanetal and Caoetal [12]
+is denoted as the TC test. The technique used in this article is labeled 
+Test.
+The main design idea of the experiment is as follows: First, the actual 
+differentially expressed genes (i.e., tDEG genes) are determined, the 
+number of tDEG genes is known when constructing the simulation data 
+set, and the tDEG genes are sorted in descending order according to the 
+Δ value of genes; Then, the predicted differentially expressed genes (i.e., 
+pDEG genes) were calculated, and pDEG genes were screened out in the 
+simulated data set using the paired feature selection method, and sorted 
+in ascending order according to the p-value of the hypothesis test. 
+Finally, according to the two sorted tDEG gene lists and pDEG gene lists, 
+the first m genes were selected each time to calculate the screening 
+accuracy and recall rate, where m values ranged from 1 to N to draw a P- 
+R curve. When the value of m is more significant than M, there is no 
+differential expression of genes in the simulated data set, and the P-R 
+curve remains unchanged. Therefore, only 10 % of the total number of 
+genes are considered in the P-R curve drawing (in the simulation 
+experiment, M is set to 10 % of N). This is also why the highest recall rate 
+on the P-R curve in the experimental results is only 0.1. Figure A-D is a 
+comparison of P-R curves of Scenarios1, 2, 3, and 4 SCENARIos1, 
+respectively, in which the X-axis indicates the recall rate, the Y-axis 
+indicates the accuracy, and different colors of curves reflect different 
+experimental results of the matching feature selection methods. Since 
+only 10 % of the total number of genes are considered in the calculation 
+of P-R curves, these are partial, with a maximum recall rate of 0.1.
+Four commonly used paired feature selection methods were 
+compared on four sets of simulation data, and the experimental results 
+are shown in Fig. 3 . Experimental results show that the method in this 
+chapter has the maximum P-R area under the curve and is stable in four 
+simulation data sets, and has strong robustness. According to the results, 
+24, 49, and 74 tDEG genes are predicted among the first 25, 50, and 75 
+pDEG genes in the Scenarios1 dataset, respectively, and the accuracy 
+rates of SCENARIOS1 dataset are 96 %, 98 %, and 98.7 %, respectively, 
+Table 2 
+Results of DCNN in the diagnosis of bone tumor.
+Five rounds of 
+testing
+Positive predictive 
+value (%)
+Negative predictive 
+value (%)
+Overall 
+accuracy (%)
+1 100.0 98.5 99.2
+2 100.0 100.0 100.0
+3 100.0 100.0 100.0
+4 100.0 100.0 100.0
+5 100.0 100.0 100.0
+Summary 100.0 ± 0.0 99.7 ± 0.5 99.8 ± 0.3
+Fig. 3. Experimental results of the simulated data set.
+S. Deng et al.                                                                                                                                                                                                                                    Journal of Bone Oncology 49 (2024) 100648 
+4 
+which is the highest proportion of correct differentially expressed genes 
+predicted. The first 125, 250, and 375 pDEG genes predicted in the 
+Scenarios2 dataset are 111, 246, and 372, respectively. Chapter 4 Sce -
+nariOS2 ScenariOS2 matching feature selection method based on tumor 
+purity information indicates a correct prediction rate of tDEG genes of 
+88.8 %, 98.4 %, and 99.2 %, respectively. Of all the methods, the pro -
+portion of differentially expressed genes predicted correctly was the 
+highest. The same experimental phenomenon can be found in Sce -
+narios3 and Scenarios4 datasets. Therefore, these experimental results 
+indicate that the method proposed in this chapter has a more vital ability 
+to predict tDEG, and the genes screened by it have a higher accuracy 
+than other methods.
+4. Discuss
+Bone tumor is a disease with high incidence in adolescents. Malig -
+nant bone tumors often have a high mortality; early detection and early 
+treatment are the key points to treat bone tumors. However, due to the 
+limitations of medical treatment, many patients cannot be diagnosed in 
+time, thus missing the best opportunity to treat bone tumors. In this 
+paper, machine learning is used to study the diagnosis of bone tumors, 
+and two algorithms are mainly proposed. The first is a model training 
+algorithm based on sample information measurement, and the second is 
+a bone tumor diagnosis algorithm based on multi-feature fusion.
+This study showcased the high accuracy of a newly developed 
+machine-learning model in diagnosing bone tumors by analyzing image- 
+omics features. Subsequently, it assessed the model ’ s efficacy in differ -
+entiating between benign and malignant bone tumors. Most primary 
+care facilities can readily and affordably provide X-ray images, which 
+hold significant value in screening for bone lesions. There has been 
+debate regarding the number of images necessary for imaging omics 
+research. Previous studies have demonstrated that moderate diagnostic 
+accuracy or predictive value can be achieved through machine learning 
+using tens or even hundreds of CT or MR images. However, more robust 
+results are anticipated with an expanded sample size, reaching thou -
+sands or even tens of thousands of images. A smaller sample size can be 
+acceptable, particularly for rare diseases like primary bone tumors, if the 
+detection accuracy is high. Despite the inclusion of only 130 images in 
+this study, the DCNN model achieved remarkable accuracy ( > 99 %) in 
+distinguishing bone tumor images from standard X-ray images.
+The model did not demonstrate the ability to accurately distinguish 
+between benign and malignant bone tumors in the 130 images studied, 
+which may be due to significant imaging differences within the benign 
+or malignant bone tumor groups. However, the DCNN method can 
+produce a high positive predictive value, which indicates that the 
+probability of missing malignant lesions during screening is low, and 
+further tests such as CT, MR, And biopsy can be guided accordingly. In 
+this way, the method can guide clinical decision management.
+AUC is a crucial indicator for evaluating the efficacy of machine 
+learning models, but due to different goals, this indicator varies signif -
+icantly among various clinical studies [24 – 26] . Regarding diagnostic 
+use, the best AUC results should be superior to or equal to those of ex -
+perts in the field of study. Otherwise, they may not be suitable for 
+clinical use. An AUC slightly below the expert level may be acceptable 
+when screening a large number of images, which may reduce the labor 
+intensity of the imageologist. In predictive use, a minimum AUC of about 
+60 – 70 % is required to justify the medium predictive value of a machine 
+learning model [27] . In this study, although the DCNN model achieved 
+perfect accuracy in diagnosing bone tumors based on X-ray images, this 
+model had a low negative predictive value in distinguishing benign from 
+malignant bone tumors. The machine learning model may need help to 
+complete the task because only a few dozen objects are included in each 
+training set. Accuracy may be higher if more images are added and 
+included in the training set.
+The predictive value that defines whether a test has clinical appli -
+cation value varies in different clinical situations. Regarding comparing 
+standard and bone tumor images, doctors need high positive and 
+negative predictive values; only in this way can the radiologist not miss 
+any patients with tumors and not cause too many unnecessary further 
+tests [28 – 30] . The ideal detection characteristics may be more nuanced 
+when comparing benign and malignant tumors, depending on how im -
+aging results guide clinical practice. For instance, a bone oncologist 
+conducting a biopsy for suspected malignancies aims to avoid missing 
+any malignancies. In such cases, the oncologist prioritizes a model with a 
+high positive predictive value, prioritizing sensitivity over specificity. 
+Therefore, when assessing the suitability of a model for clinical use, 
+overall accuracy is not the sole factor physicians consider.
+This paper still needs to explore some problems in studying bone 
+tumors. The following two points are mainly important: the first is that 
+the accuracy of benign and malignant bone tumor detection needs to be 
+improved; the second is that the information measurement algorithm 
+can be further optimized and adapted. At present, the identification of 
+bone tumors has achieved a very high accuracy rate, and the identifi -
+cation accuracy rate of benign and malignant is also of practical sig -
+nificance for diagnosing actual conditions. In addition to the problem of 
+insufficient sample size, there is also the problem of a finer division of 
+bone tumor types that needs to be addressed. As there are dozens of 
+benign and malignant bone tumors, more in-depth studies may be 
+required on different types of bone tumors to solve the problem of low 
+accuracy in classifying benign and malignant bone tumors. Such 
+research requires a large sample size and the assistance of professional 
+doctors.
+For model training algorithms, there may be more efficient infor -
+mation measurement methods in sample selection, which requires more 
+in-depth research on the distribution of data sets, or a measurement 
+method that can automatically adapt to different data sets of informa -
+tion can be found [31] . The method proposed in this paper needs to 
+adjust the weights of average information entropy and standard devia -
+tion. In the future, the network may need to automatically adjust the 
+weights to achieve a more efficient and accurate model training 
+algorithm.
+5. Conclusion
+This paper evaluated the machine learning model using K-fold cross- 
+Table 3 
+Results of DCNN in differentiating benign and malignant tumors around the 
+knee joint.
+Ten rounds 
+of testing
+Accuracy ROC
+Positive 
+predictive 
+value(%)
+Negative 
+predictive 
+value(%)
+Overall 
+accuracy 
+(%)
+AUC(95 %CI)
+1 100.0 0.0 68.8 0.62 
+(0.483 – 0.715)
+2 92.8 21.8 71.3 0.62 
+(0.526 – 0.719)
+3 97.7 10.5 69.7 0.59 
+(0.496 – 0.687)
+4 70.6 58.5 69.5 0.65 
+(0.598 – 0.726)
+5 93.9 21.9 70.7 0.55 
+(0.523 – 0.706)
+6 86.7 32.5 72.9 0.63 
+(0.534 – 0.739)
+7 89.6 14.7 75.4 0.58 
+(0.427 – 0.645)
+8 97.2 15.3 72.1 0.54 
+(0.604 – 0.728)
+9 90.6 32.3 71.8 0.70 
+(0.535 – 0.820)
+10 95.7 34.5 72.2 0.67 
+(0.533 – 0.735)
+Summary 91.5 ± 8.3 21.5 ± 15.4 71.5 ± 1.8 0.61 ± 0.03
+S. Deng et al.                                                                                                                                                                                                                                    Journal of Bone Oncology 49 (2024) 100648 
+5 
+validation, where the images were evenly divided into five sets. Each 
+dataset served as a test set in turn, while the remaining four sets were 
+combined as a training set for each computational cycle. The bone tumor 
+images were evenly distributed into five sets for both the benign and 
+malignant models. Two of the five sets were chosen as the test set, while 
+the remaining three were merged as the training set. Although intricate, 
+this method allows for the application of imaging omics analysis in 
+studying rare diseases, such as primary bone tumors, even with limited 
+sample sizes. It effectively mitigates discrepancies between dataset 
+groups and enhances test reproducibility. This approach to grouping 
+may aid in constructing machine learning models for rare diseases, 
+where collecting sufficient samples for study may take a considerable 
+amount of time.
+In summary, using machine learning, the image omics analysis of X- 
+ray images is an effective and valuable method for bone tumor diag -
+nosis. The DCNN method has not demonstrated the ability to distinguish 
+between benign and malignant tumors accurately, but its high positive 
+predictive value contributes to its clinical application. In future work, 
+we will conduct prospective randomized controlled trials to evaluate the 
+clinical application of machine learning models in the early diagnosis of 
+primary healthcare bone tumors.
+Ethical approval
+All subjects in this study gave written consent to participate in our 
+study.
+CRediT authorship contribution statement
+Sandong Deng: Writing – review & editing, Writing – original draft, 
+Project administration, Formal analysis, Data curation, Conceptualiza -
+tion. Yugang Huang: Data curation, Resources, Supervision, Validation, 
+Visualization. Cong Li: Validation, Software, Formal analysis. Jun 
+Qian: Funding acquisition, Investigation, Project administration, Re -
+sources. Xiangdong Wang: Formal analysis, Funding acquisition, 
+Project administration, Writing – review & editing.
+Funding
+This research article did not receive any external funding.
+Declaration of competing interest
+The authors declare that they have no known competing financial 
+interests or personal relationships that could have appeared to influence 
+the work reported in this paper.
+Data availability
+Data will be made available on request. 
+The supporting data for this study are available from the corre -
+sponding correspondence and the authors upon request. 
+References
+[1] G. Lee, H.Y. Lee, E.S. Ko, et al., Radiomics and imaging genomics in precision 
+medicine, Precis. Future Med. 1 (1) (2017) 10 – 31 .
+[2] M. Mullard, M. Cad ´e, S. Morice, et al., Sonic hedgehog signature in pediatric 
+primary bone tumors: effects of the GLI antagonist GANT61 on ewing ’ s sarcoma 
+tumor growth, Cancers 12 (11) (2020) 3438 .
+[3] M. Davies, R. Lalam, K. Woertler, et al., Ten commandments for the diagnosis of 
+bone tumors[C]//Seminars in Musculoskeletal Radiology, Thieme Medical 
+Publishers 24 (03) (2020) 203 – 213 .
+[4] J. Talbot, M. Dupuy, S. Morice, et al., Antagonistic functions of connexin 43 during 
+the development of primary or secondary bone tumors, Biomolecules 10 (9) (2020) 
+1240 .
+[5] P. Lambin, E. Rios-Velazquez, R. Leijenaar, et al., Radiomics: extracting more 
+information from medical images using advanced feature analysis, Eur. J. Cancer 
+48 (4) (2012) 441 – 446 .
+[6] F.S. Stefanini, F.W.C. Gois, T.C.S.B. Arruda, et al., Primary bone lymphoma: 
+pictorial essay, Radiologia Brasileira 53 (6) (2020) 419 – 423 .
+[7] C.N. Andreassen, L.M.H. Schack, L.V. Laursen, et al., Radiogenomics – current 
+status, challenges and future directions, Cancer Lett. 382 (1) (2016) 127 – 136 .
+[8] D. Nascimento, G. Suchard, M. Hatem, et al., The role of magnetic resonance 
+imaging in the evaluation of bone tumours and tumour-like lesions, Insights into 
+Imaging 5 (2014) 419 – 440 .
+[9] Y. Liu, J. Kim, F. Qu, et al., CT features associated with epidermal growth factor 
+receptor mutation status in patients with lung adenocarcinoma, Radiology 280 (1) 
+(2016) 271 – 280 .
+[10] D.L. Shung, J.J.Y. Sung, Challenges of developing artificial intelligence-assisted 
+tools for clinical medicine, J. Gastroenterol. Hepatol. 36 (2) (2021) 295 – 298 .
+[12] A. Ligocki, A. Jelinek, L. Zalud, et al., Fully automated dcnn-based thermal images 
+annotation using neural network pretrained on rgb data, Sensors 21 (4) (2021) 
+1552 .
+[13] J. Olczak, N. Fahlberg, A. Maki, et al., Artificial intelligence for analyzing 
+orthopedic trauma radiographs: deep learning algorithms — are they on par with 
+humans for diagnosing fractures? Acta Orthopaedica 88 (6) (2017) 581 – 586 .
+[14] X. Fave, L. Zhang, J. Yang, et al., Delta-radiomics features for the prediction of 
+patient outcomes in non – small cell lung cancer, Sci. Rep. 7 (1) (2017) 588 .
+[15] Y. Fan, L. Xi, D.S.T. Hughes, et al., MuSE: accounting for tumor heterogeneity using 
+a sample-specific error model improves sensitivity and specificity in mutation 
+calling from sequencing data, Genome Biol. 17 (2016) 1 – 11 .
+[16] A. McKenna, M. Hanna, E. Banks, et al., The Genome Analysis Toolkit: a 
+MapReduce framework for analyzing next-generation DNA sequencing data, 
+Genome Res. 20 (9) (2010) 1297 – 1303 .
+[17] D.E. Larson, C.C. Harris, K. Chen, et al., SomaticSniper: identification of somatic 
+point mutations in whole genome sequencing data, Bioinformatics 28 (3) (2012) 
+311 – 317 .
+[18] D.C. Koboldt, Q. Zhang, D.E. Larson, et al., VarScan 2: somatic mutation and copy 
+number alteration discovery in cancer by exome sequencing, Genome Res. 22 (3) 
+(2012) 568 – 576 .
+[19] R.L. McDonald, S.M. Chilton, M.W. Jones-Lee, et al., Dread and latency impacts on 
+a VSL for cancer risk reductions, J. Risk Uncertain. 52 (2) (2016) 137 – 161 .
+[20] J. Yu, Z. Shi, Y. Lian, et al., Noninvasive IDH1 mutation estimation based on a 
+quantitative radiomics approach for grade II glioma, Eur. Radiol. 27 (2017) 
+3509 – 3522 .
+[21] T. Wang, K. Birsoy, N.W. Hughes, et al., Identification and characterization of 
+essential genes in the human genome, Science 350 (6264) (2015) 1096 – 1101 .
+[22] A. Marusyk, K. Polyak, Tumor heterogeneity: causes and consequences, Biochim. et 
+Biophys. Acta (BBA)-Rev. Cancer 1805 (1) (2010) 105 – 117 .
+[24] M.A. Mazurowski, J. Zhang, L.J. Grimm, et al., Radiogenomic analysis of breast 
+cancer: luminal B molecular subtype is associated with enhancement dynamics at 
+MR imaging, Radiology 273 (2) (2014) 365 – 372 .
+[25] P. Kesharwani, A.K. Iyer, Recent advances in dendrimer-based nanovectors for 
+tumor-targeted drug and gene delivery, Drug Discov. Today 20 (5) (2015) 
+536 – 547 .
+[26] Q. Li, D. Zhao, X. Shao, et al., Aptamer-modified tetrahedral DNA nanostructure for 
+tumor-targeted drug delivery, ACS Appl. Mater. Interfaces 9 (42) (2017) 
+36695 – 36701 .
+[27] A. Reiner, D. Yekutieli, Y. Benjamini, Identifying differentially expressed genes 
+using false discovery rate controlling procedures, Bioinformatics 19 (3) (2003) 
+368 – 375 .
+[28] R.L. Somorjai, B. Dolenko, R. Baumgartner, Class prediction and discovery using 
+gene microarray and proteomics mass spectroscopy data: curses, caveats, cautions, 
+Bioinformatics 19 (12) (2003) 1484 – 1491 .
+[29] C. Trapnell, A. Roberts, L. Goff, et al., Differential gene and transcript expression 
+analysis of RNA-seq experiments with TopHat and Cufflinks, Nat. Protoc. 7 (3) 
+(2012) 562 – 578 .
+[30] M.D. Robinson, D.J. McCarthy, G.K. Smyth, edgeR: a Bioconductor package for 
+differential expression analysis of digital gene expression data. Bioinformatics, 
+2010, 26(1): 139 – 140.
+[31] C. Zhang, W. Cheng, X. Ren, et al., Tumor purity as an underlying key factor in 
+glioma, Clin. Cancer Res. 23 (20) (2017) 6279 – 6291 .
+Further Reading
+[11] J.A. Carrillo, A. Lai, P.L. Nghiemphu, et al., Relationship between tumor 
+enhancement, edema, IDH1 mutational status, MGMT promoter methylation, and 
+survival in glioblastoma, Am. J. Neuroradiol. 33 (7) (2012) 1349 – 1355 .
+[23] T. Abeel, T. Helleputte, Y. Van de Peer, et al., Robust biomarker identification for 
+cancer diagnosis with ensemble feature selection methods, Bioinformatics 26 (3) 
+(2010) 392 – 398 .
+S. Deng et al.                                                                                                                                                                                                                                    Journal of Bone Oncology 49 (2024) 100648 
+6 

@@ -1,0 +1,1244 @@
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+BoneVisionNet:  Uma  abordagem  de aprendizado  profundo  para  a 
+classificação  de tumores  ósseos  a partir  de radiografias  utilizando  uma  rede  
+de atenção  de fusão  tripla  de transformadores  e CNNs  com  visualizações  
+XAI
+Armaano  Ajay  a , Karthik  R b,* , Akshaj  Singh  Bisht  a , Pranav  Uppuluri  a
+a  Escola  de Ciência  da Computação  e Engenharia,  Instituto  de Tecnologia  de Vellore,  Chennai,  Índia
+b  Centro  de Sistemas  Ciberfísicos,  Instituto  de Tecnologia  de Vellore,  Chennai,  Índia
+I  N  F O R M A Ç Õ E S S O 
+B R E O  A  R  T  I  G  O 
+Palavras-chave:
+Tumor  ósseo  
+Classificação  de  
+imagens  
+Classificação  de  
+raios-X  Aprendizado  
+profundo  
+Transformers Imagens  
+médicas  Radiografias
+XAI
+R  E  S  U  M O 
+O diagnóstico  de tumores  ósseos  apresenta  inúmeros  desafios  devido  à complexidade  da patologia  e às diversas  morfologias  
+desses  tumores.  Os métodos  atuais  dependem  de técnicas  manuais  que  são  demoradas  e propensas  a erros.  Por  isso,  há uma  
+necessidade  de métodos  mais  precisos  e automatizados  para  auxiliar  os profissionais  da área  médica.  O trabalho  proposto  
+visa  resolver  esse  desafio  através  do desenvolvimento  de uma  arquitetura  baseada  em aprendizado  profundo  para  a 
+classificação  de tumores  ósseos  a partir  de radiografias.  O BoneVisionNet  proposto  é desenvolvido  utilizando  uma  
+combinação  de três  redes  de DL  especializadas.  A abordagem  proposta  utiliza  o Convolution-Enhanced  Image  Transformer  
+para  a extração  de características  globais,  que  é posteriormente  refinada  por  meio  de um  Global  Context  Block  (GCB).  
+Paralelamente,  a Attention  Boosted  Mid-Level  Feature  Extraction  Network  (ABMLFE-Net)  tem  como  alvo  características  
+de nível  médio,  enquanto  a DenseNet-169  se concentra  na extração  de características  locais.  Os mapas  de características  da 
+ABMLFE-Net  e da DenseNet-169  são  fundidos  por  meio  de multiplicação  elemento  a elemento,  seguido  por  uma  camada  
+de Atenção  de Canal  Eficiente  (ECA)  para  o refinamento  das  características.  As características  globais  refinadas  pelo  GCB  
+são  concatenadas  com  os mapas  de características  aprimorados  da camada  ECA,  resultando  em um  mapa  de características  
+multiescala  refinado.  A BoneVisionNet  atingiu  uma  precisão  de 84,35%  quando  testada  no conjunto  de dados  BTXRD,  
+superando  as redes  baseadas  em CNN  e transformadores  na classificação  de tumores  ósseos  a partir  de radiografias.  Até  
+onde  sabemos,  este  estudo  representa  a primeira  aplicação  de uma  arquitetura  de trilha  tripla  para  a classificação  de tumores  
+ósseos  a partir  de imagens  de raios-X.  Visualizações  XAI  usando  Grad-CAM,  LIME  e SHAP  ajudam  a validar  ainda  mais  o 
+desempenho  do modelo,  garantindo  transparência  no processo  de tomada  de decisão.
+1. Introdução
+Os tumores  ósseos  são  crescimentos  anormais  que  podem  ser benignos  ou 
+malignos,  afetando  e ceifando  a vida  de milhares  de pessoas  em todo  o mundo  a 
+cada  ano  (Hakim  et al., 2015 ). Cânceres  ósseos,  como  o osteossarcoma,  o 
+sarcoma  de Ewing  e o condrossarcoma,  progridem  rapidamente  e representam  
+risco  de vida  se não  forem  diagnosticados  precocemente  (Xu et al., 2023 ). 
+Pacientes  que sofrem de tumores ósseos geralmente apresentam dor persistente, 
+acompanhada de inchaço,  mobilidade  reduzida,  fraqueza  e alto  risco  de fraturas 
+patológicas . Dados recentes indicam que cerca de 0,2% de todos os casos de câncer são 
+casos  de câncer  ósseo;  no entanto,  ele afeta  os pacientes  de forma  bastante  grave  
+devido  à rapidez  com  que  se espalha  (Sarcomas  ósseos,  2014 ).
+Embora  o diagnóstico  precoce  e preciso  seja  essencial  para  um  tratamento  
+eficaz,  identificar  o câncer  ósseo  é particularmente  difícil  devido  à
+diferenças  sutis  nas  estruturas  tumorais  (Singh  et al., 2024 ). No diagnóstico 
+tradicional , o primeiro passo consiste na análise de raios-X, tomografias 
+computadorizadas e ressonâncias magnéticas, seguidas  da avaliação  especializada  de 
+radiologistas  e patologistas  (K, 2025 ). Além  disso,  a análise  manual  de imagens  
+médicas  introduz  variabilidade  e subjetividade,  além  de acarretar  o risco  de 
+diagnósticos  errôneos.  Isso  se torna  ainda  mais  grave  quando  há escassez  de 
+especialistas  experientes  disponíveis  para  realizar  um  diagnóstico  bem  
+fundamentado  (Dalai  et al., 2024 ). Essas  questões  ressaltam  a necessidade  de 
+ferramentas  de diagnóstico  automatizadas  que  possam  ajudar  os profissionais  da 
+área  médica  a tomar  decisões informadas  e precisas .
+Nos  últimos  tempos,  o aprendizado  de máquina  tem  sido  amplamente  
+utilizado  em ferramentas  de diagnóstico  automatizadas  (Ahsan  et al., 2022 ). O 
+uso  de ferramentas  baseadas  em aprendizado  de máquina  permite  processar  e 
+analisar  grandes  quantidades  de dados  mais  rapidamente  em comparação  com  os 
+métodos tradicionais .
+* Autor correspondente .
+Endereços  de e-mail: armaano.ajay2021@vitstudent.ac.in  (A.  Ajay), r.karthik@vit.ac.in  (K.  R),akshajsingh.bisht2021@vitstudent.ac.in  (A.S.  Bisht),  
+pranav. uppuluri2021@vitstudent.ac.in  (P. Uppuluri).
+https://doi.org/10.1016/j.compmedimag.2025.102668
+Recebido  em 12 de maio  de 2025;  Recebido  na versão  revisada  em 27 de outubro  de 2025;  Aceito  em 13 de novembro  de 2025
+Disponível  online  em 19 de novembro  de 2025
+0895-6111/©  2025  Elsevier  Ltd.  Todos  os direitos  reservados,  incluindo  os relativos  à mineração  de texto  e dados,  ao treinamento  de IA e a tecnologias similares .
+Índices  disponíveis  no ScienceDirect
+Imagens  Médicas  Computadorizadas  e Gráficos
+Página inicial  da revista   :  www.elsevier.com/locate/compmedimag
+Assine o DeepL Pro para traduzir arquivos maiores.
+Mais informações em www.DeepL.com/pro.
+A. Ajay  et al.
+2
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  1. Imagens  de amostra  do conjunto  de dados  BTXRD  (a) Tumor  benigno,  (b) Tumor  maligno  e (c) Normal.
+No entanto,  os métodos  baseados  em aprendizado  de máquina  geralmente  
+exigem  a seleção  manual  de características,  o que  pode  reduzir  sua  eficácia  e 
+capacidade  de generalização  (Ahmed  et al., 2023 ). O Aprendizado  Profundo  
+(DL)  surge  como  uma  alternativa  promissora,  superando  as limitações  do 
+Aprendizado  de Máquina.  Ao contrário  do Aprendizado  de Máquina,  as técnicas  
+de DL  podem  capturar  automaticamente  hierarquias  de características  
+diretamente  dos  dados,  o que  resulta  em melhor  desempenho  diagnóstico  (Rayed  
+et al., 2024 ). Embora  os modelos  de Aprendizado  de Máquina  possam  ser 
+treinados  mais  rapidamente,  as estruturas  de DL  tendem  a superá-los  durante  a 
+fase  de teste,  tornando-as  mais  eficazes  para  aplicações  no mundo  real  (Taye,  
+2023 ).
+Portanto,  há uma  necessidade  crescente  de soluções  automatizadas  para  a 
+detecção  de tumores  ósseos,  capazes  de auxiliar  os profissionais  da área  médica  a 
+realizar  um  diagnóstico mais rápido e preciso. O trabalho proposto desenvolve um 
+sistema  baseado  em aprendizagem  profunda  (DL)  para  a classificação  de tumores  
+ósseos  a partir  de radiografias.  As principais  contribuições  incluem:
+• Uma  arquitetura  de três  vias  para  capturar  características  de tumores  ósseos  
+em múltiplas escalas, utilizando uma fusão de redes transformadoras e CNN. A 
+primeira via utiliza  o Convolutional  Enhanced  Image  Transformer  (CeiT)  e o 
+Global  Context  Block  (GCB)  para  extração  aprimorada  de características  
+globais  a partir  de raios-X.
+• A segunda  trilha  utiliza  uma  CNN  personalizada  para  capturar  características  
+entre  os níveis  global  e local.  A segunda  trilha  é complementada  pela  
+DenseNet-169,  que  se concentra  na extração de  características  locais . As 
+características da CNN personalizada e da DenseNet-169 são  concatenadas  e 
+passadas  pela  Efficient  Channel  Attention  (ECA)  para  refinamento  das  
+características.
+• As características  globais  aprimoradas  do GCB  são  combinadas  com  os 
+mapas  de características  refinados  da camada  ECA,  resultando  em um  mapa  
+de características  informativo  que  captura  informações  completas  sobre  o 
+tumor  em múltiplas  escalas.  Além  disso,  foram  utilizadas  técnicas  de 
+Inteligência  Artificial  Explicável  (XAI)  para  aumentar  a transparência  e 
+visualizar  o processo  de tomada  de decisão  do sistema  proposto.
+2. Revisão da literatura
+Esta subseção discute os estudos existentes que empregaram a aprendizagem 
+profunda (DL) para a detecção  e classificação  de tumores  ósseos.  A imagemologia  
+óssea  tem  se beneficiado  enormemente  dos  avanços  na DL  devido  à sua  
+capacidade  de extrair  automaticamente  características  das  imagens  e fornecer  um  
+diagnóstico  mais  preciso  em comparação  com  os métodos  tradicionais.  Vijayaraj  
+et al. desenvolveram  um  modelo  de DL  para  a classificação  do câncer  ósseo  
+utilizando  uma  CNN  personalizada  para  melhorar  a representação  das  
+características  (Vijayaraj  et al., 2023 ). A abordagem  inclui  etapas  de pré-
+processamento,  como  remoção  de ruído  e normalização  de imagens,  juntamente 
+com a extração de ROI para isolar regiões cancerosas. A classificação foi realizada  
+utilizando  CNN  para  extração  de características  espaciais  e LSTM  bidirecional  
+para  análise  temporal.  O método  demonstra  o potencial  do DL  na automatização  
+do diagnóstico  de câncer  ósseo,  reduzindo  o erro  humano  e melhorando  a 
+precisão.  Da mesma  forma,  Pan  et al. trabalharam  no desenvolvimento de um 
+sistema baseado em IA para classificar tumores ósseos no fêmur proximal utilizando  
+radiografias  anteroposteriores  padrão  (Pan  et al., 2023 ). O sistema  utilizou um 
+modelo DenseNet e Grad-CAM para destacar a região de interesse na imagem  do 
+tumor.  O sistema  mostra  como  a IA pode  complementar  o julgamento  clínico  e 
+ajudar  a lidar  com  o problema  do diagnóstico incorreto
+
+A. Ajay  et al.
+3
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  1
+Divisão  do  conjunto  de  dados  antes  e depois  do aumento.
+Classe Antes  do aumento Após  o aumento
+Trein
+ament
+o
+Validaç
+ão
+Teste Treinam
+ento
+Válido Test
+e
+Tumor benigno 1067 305 153 1067 305 153
+Tumor maligno 239 68 35 1195 340 35
+Normal 1315 375 189 1315 375 189
+Total 2621 748 377 3577 1020 377
+de tumores ósseos .
+Natha  et al. propuseram  o modelo  Stack  Ensemble  Transfer  Learning  
+(SETL_BMRI)  para  a classificação  de tumores  cerebrais  a partir  de imagens  de 
+ressonância  magnética.  O modelo  SETL_BMRI  utilizou  redes  pré-treinadas  
+AlexNet  e VGG19  e empilhou  suas  saídas  para  melhorar  o desempenho  da 
+classificação  (Natha  et al., 2024 ). Li et al. utilizaram  radiografias  de campo  total  
+para  criar  um  modelo  com  a estrutura  YOLO  que  detecta  e classifica  lesões  
+ósseas  (Li et al., 2022 ). O conjunto  de dados  utilizado  neste  estudo  continha  
+imagens  radiográficas  de casos  normais,  benignos,  intermediários  e malignos.  O 
+modelo  alcançou  alta  precisão  na detecção  e classificação  de tumores  ósseos,  
+superando  os radiologistas  na classificação  de tumores  intermediários.  Em  uma  
+tentativa  semelhante,  Hinterwimmer  et al. propuseram  um  algoritmo  que  
+combina  DL  e um  sistema  de recomendação  k-Nearest  Neighbour  baseado  em 
+hash  para  classificar
+tumores  ósseos  e associar  pacientes  não  diagnosticados  a casos  anteriores  
+(Hinterwimmer  et al., 2024 ). O método  agrupa  imagens  com  semelhanças  e as 
+classifica  utilizando  modelos  ResNet  e Transformer  por  meio  de votação por  
+maioria .
+Song  et al. desenvolveram  um  sistema  para  classificar  tumores  ósseos  
+primários  como  benignos,  de natureza  indeterminada  ou malignos  a partir  de 
+imagens  multimodais  incompletas,  por meio do modelo de fusão PBTC-TransNet 
+(Song et al., 2024). O modelo  apresentou  alto  desempenho  de classificação  em 
+conjuntos de dados internos  e externos , especialmente nos casos que utilizaram 
+dados de raios-X e tomografia computadorizada. Breden et al. utilizaram  um  
+modelo  transformer  para  a classificação  de radiografias  ósseas  do joelho,  
+abordando  o problema  da detecção  precoce  de tumores  ósseos  em crianças  
+(Breden  et al., 2023 ). O modelo,  treinado  com  TL e aumento  de dados,  alcançou  
+alta  precisão,  sensibilidade  e especificidade.  O emprego  do Grad-CAM  na 
+validação  das  previsões  mostrou  que  o modelo  poderia  auxiliar  os clínicos  gerais  
+no diagnóstico  preciso.  O conjunto  completo  de trabalhos  de pesquisa  demonstra  
+o potencial  da DL  na identificação  e classificação  de tumores  ósseos  com  maior  
+precisão,  menor  tempo  de resposta  e melhores  resultados  gerais.  Apesar  dos  
+avanços  promissores  na DL  para  a classificação  de raios-X  de tumores  ósseos,  
+existe  uma  limitação  notável  na acessibilidade  dos  conjuntos  de dados.  A maioria  
+dos  estudos  analisados  baseou-se  em conjuntos  de dados  privados,  o que  
+restringe  a capacidade  de replicar  os resultados  ou realizar comparações diretas 
+entre diferentes métodos. Isso destaca a necessidade  de pesquisas  em conjuntos  de 
+dados  abertamente  acessíveis  para  garantir  a padronização
+Fig.  2. Fluxo  de trabalho  do sistema proposto .
+Fig.  3. Arquitetura  do  BoneVisionNet.
+
+A. Ajay  et al.
+4
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  4. Estrutura  do módulo FeedForward  com  aprimoramento  local.
+Fig.  5. Diagrama  esquemático  do bloco  MCFE  da rede  ABMLFE-Net.
+Fig.  6. Diagrama  esquemático  da arquitetura DenseNet .
+
+A. Ajay  et al.
+5
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  7. Estrutura  do módulo ECA .
+Tabela  2
+Resultados do ajuste  de hiperparâmetros .
+Hiperparâmetro Intervalo  de  valores Valor final
+Tamanho do  lote [16,32,64] 32
+Taxa de  aprendizagem [10 —1  , 10 —7 ] 10—4
+Decaimento de peso [10 —1  , 10 —7 ] 10—4
+Tamanho  do  passo  (Agendador) [5,10,15,20,25,30] 25
+Função de perda [Entropia  cruzada,  Perda focal ] Entropia cruzada
+Otimizador [ADAM,  SGD] ADAM
+Tabela  3
+Métricas  de desempenho  por  classe  para  a faixa CeiT .
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 62,09 71,97 62,09 66,67
+Maligno 60,00 36,84 60,00 45,65
+Tumor
+Normal 76,72 77,13 76,72 76,92
+Total 69,23 61,98 66,27 63,08
+avaliações  e contribuições  de pesquisa  mais  amplas  neste  domínio.
+3. Metodologia
+Esta  seção  detalha  o conjunto  de dados  utilizado  no estudo  proposto  e 
+apresenta  a arquitetura  da rede  BoneVisionNet  proposta.  As seções  subsequentes  
+descrevem  a funcionalidade  dos  subcomponentes  da rede  proposta  e explicam  
+como  seu  projeto  aprimora  a classificação  de tumores  ósseos  a partir  de 
+radiografias.
+3.1. Descrição do conjunto de dados
+A pesquisa  proposta  utiliza  o Conjunto  de Dados  de Radiografias  de 
+Tumores  Ósseos  (BTXRD)  (Yao  et al., 2025 ). O conjunto  de dados  conta  com  
+3.746  imagens  de raios-X,  divididas  em três  classes:  osso  normal,  tumores  ósseos  
+benignos  e malignos.  As imagens  utilizadas  no conjunto  de dados  BTXRD  
+provêm  de três  fontes,  incluindo  hospitais  na China,  o site  Radiopaedia.org  e o 
+banco de dados de acesso aberto  MedPix . O conjunto de dados contém imagens da 
+mesma lesão capturadas de diferentes  ângulos,  como  vista  frontal,  lateral  e 
+oblíqua.  Além  disso,  partes  anatômicas  específicas,  como  membros  superiores,  
+membros  inferiores  e pelve,  são  mantidas  em foco.  O conjunto  de dados  foi 
+dividido  em três  subconjuntos,  com  70%  dos  dados  utilizados  para  treinamento,  
+20%  para  validação  e os restantes
+imagens  para  teste.  Para  equilibrar  o conjunto  de dados  e melhorar  a 
+generalização,  as amostras  de treinamento  e validação  da classe  Maligna  foram  
+aumentadas  por  meio  de inversões  aleatórias  na horizontal  e na vertical,  
+juntamente  com  rotações  aleatórias  de 90, 180  e 270  ° . A Fig.  1 mostra  amostras  
+representativas  do conjunto  de dados,  e a divisão  do conjunto  de dados  antes  e 
+depois  do aumento  é apresentada  na Tabela  1.
+3.2. Sistema proposto
+Esta  subseção  apresenta  uma  visão  geral  do fluxo  técnico  do sistema  
+proposto.  Inicialmente,  o conjunto  de dados  de radiografias  de tumores  ósseos  
+(BTXRD)  é dividido  em conjuntos  de treinamento,  validação  e teste.  
+Posteriormente,  a classe  com  menor  número  de imagens  passa  por  um  processo  
+de aumento  de dados  para  equilibrar  o conjunto  de treinamento.  Na etapa  
+seguinte,  a rede  proposta  é treinada  no conjunto  de dados  BTXRD.  O 
+desempenho  do BoneVisionNet  é então  avaliado  utilizando  uma  série  de métricas  
+no conjunto  de teste.  Por  fim,  o processo  de tomada  de decisão  do modelo  é 
+validado  utilizando  técnicas  de XAI  para  melhorar  a transparência  na 
+classificação  de radiografias  de tumores  ósseos.  Todo  o fluxo  de trabalho  está  
+resumido  na Fig.  2.
+3.2.1. Rede proposta
+A rede  BoneVisionNet  proposta  utiliza  uma  arquitetura  de três  vias  projetada  
+especificamente  para  melhorar  a precisão  da classificação  de tumores  ósseos,  
+capturando  características  em múltiplas  escalas.  O CeiT  é utilizado  como  a 
+primeira  trilha  de extração  de características,  com  foco  em características  
+globais.  As características  extraídas  pelo  CeiT  são  agrupadas  e passadas  pelo  
+GCB,  que  captura  o contexto  global  com  baixo  custo  computacional.  Esse  
+método  garante  uma  extração  aprimorada  de características  globais,  essencial  
+para  os detalhes  de longo  alcance  das  radiografias  de tumores  ósseos.  A segunda  
+trilha  consiste na ABMLFE-Net, uma CNN personalizada para a extração  eficiente de 
+características  de nível médio . A ABMLFE-Net  utiliza  o bloco  Multi-Conv  
+Feature  Extraction  (MCFE)  para  capturar  dependências  informativas  de médio  
+alcance,  de modo  que  o modelo  possa  diferenciar  facilmente  entre  tumores  
+benignos  e malignos.  O bloco  MCFE  emprega  técnicas  convolucionais  
+avançadas  com  tamanhos  de kernel  dinâmicos,  mecanismo  de atenção  e operação  
+de embaralhamento  de canais  para  melhorar  a extração  de características.  O 
+DenseNet-169  é empregado  para  a extração  de características  locais  na terceira  
+faixa,  garantindo  que  características  detalhadas  das  radiografias  sejam  
+efetivamente  capturadas.
+Posteriormente, os mapas de características do ABMLFE-Net e do DenseNet-169  
+são  concatenados  por  meio  de multiplicação  elemento  a elemento  e 
+encaminhados  para a camada ECA. A camada ECA permite que a rede se concentre nas 
+informações  específicas  de canal  mais importantes.  Essas  características  são  
+então  agrupadas  por  meio  do Global  Average  Pooling  (GAP)  para  compactar  as 
+informações  espaciais.  As características  refinadas  do GCB  e da ECA  são  então  
+concatenadas.  Esta
+
+A. Ajay  et al.
+6
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  8. Matriz  de confusão  para  a faixa CeiT .
+permite  que  a rede  analise  características  informativas  em múltiplas  escalas  a 
+partir  das  radiografias.  Os mapas  de características  fundidos  passam  por  uma  
+camada  de achatamento  e são  encaminhados  para  a camada  de classificação  
+ativada.  Além  disso,  a perda  de entropia  cruzada  foi utilizada  para  garantir  que  o 
+modelo  atingisse  a convergência  máxima.  A Fig.  3 mostra  a arquitetura  completa  
+da rede  da abordagem  proposta.
+3.2.1.1. Categoria  “Image  Transformer  com  aprimoramento  convolucional”.  
+Esta  subseção  discute  a arquitetura  da categoria  CeiT,  que  combina  os pontos  
+fortes  das  arquiteturas  de CNN  e de transformadores  (Yuan  et al., 2021 ). 
+Enquanto  as CNNs  se especializam  em capturar  características  detalhadas  e 
+manter o campo receptivo local, os transformadores se destacam na modelagem de 
+dependências  de longo alcance . O CeiT  tenta  combinar  essas  abordagens  
+adicionando  melhorias  convolucionais  à arquitetura  do Vision  Transformer  
+(ViT).  A arquitetura  do CeiT  começa  com  o módulo  Image-to-Tokens  (I2T),  que  
+utiliza  um  núcleo  convolucional  leve  para  aprimorar  o processo  padrão  de 
+tokenização  do ViT.  O núcleo  consiste  em uma  camada  convolucional  seguida  
+por  BatchNorm  e max-pooling.  Em  vez  de achatar  as imagens  de entrada  brutas  
+em patches,  o I2T  utiliza  os mapas  de características  intermediários  para  realizar  
+uma  extração  de características  aprimorada.  Essa  estratégia  melhora  a 
+tokenização  de patches  grandes  do ViT  ao capturar  detalhes  locais  da imagem,  
+como  bordas  e texturas.  Quando  a tokenização  é realizada,  o módulo Locally-
+enhanced FeedForward (LeFF) aumenta a força da conectividade  local  entre  os 
+tokens.  O LeFF  substitui  as redes feed-forward  típicas  do ViT, adicionando 
+convoluções em profundidade às redes  feed-forward  para  melhorar  as relações  
+espaciais  entre  os tokens  e capturar  detalhes  mais  refinados  na imagem.  Uma  
+visão  geral  do módulo  LeFF  é apresentada  na Fig.  4.
+Uma  melhoria  fundamental  no CeiT  é o seu  módulo de atenção por  camadas  ao 
+token  de classe
+(LCA).  O módulo  LCA  refina  continuamente  o token de classe ,
+que  é um  resumo  de toda  a imagem  com  base  em informações  hierárquicas  em 
+todas  as suas  camadas.  O LCA  garante  que  haja  uma  contribuição  de 
+características  locais  e globais  na construção  da representação  final  das  
+características,  de modo  que  o CeiT  possa  capturar  contextos  ricos  a partir  das  
+imagens.  A fim  de aprimorar  as características  extraídas  pelo  CeiT,  o GCB  é 
+integrado  à sua  estrutura  (Cao  et al., 2023 ). O GCB  tem  como  objetivo  destacar  
+dependências  globais  por  meio  da geração  de pesos  de atenção,  que  detectam  
+regiões  críticas  nos  mapas  de características.  O módulo  captura  relações  inter-
+regionais  dentro  do mapa  de características  de entrada,  de modo  que  as 
+características  extraídas  retenham  detalhes  finos  juntamente  com  um  contexto  
+global.  O GCB  refina  a característica  extraída  do CeiT  calculando  uma  máscara  
+de atenção  global,  que  é então  imposta  aos  mapas  de características  para  realçar  
+regiões  críticas  e ignorar  aquelas  menos  informativas.
+3.2.1.2. Rede de extração de características de nível intermediário com reforço de 
+atenção. Esta seção explica a arquitetura da ABMLFE-Net, empregada como o segundo  
+extrator  de características  no BoneVisionNet.  A ABMLFE-Net  concentra-se  na 
+extração  de características  de nível  intermediário,  captando  os detalhes  entre  as 
+características locais  e globais. Isso é especialmente importante em tarefas como a 
+análise  de tumores ósseos, nas  quais  os padrões  espaciais  e estruturais  dos  tumores  
+precisam  ser analisados  para  se chegar  a um  diagnóstico  adequado.  A ABMLFE-
+Net  é uma  arquitetura  CNN  personalizada  utilizada  sem  pesos  pré-treinados,  
+garantindo  que  a rede  aprenda  representações  específicas  do domínio,  adaptadas  
+para  radiografias  de tumores  ósseos.  Ao contrário  de extratores  de características  
+convencionais,  como  ResNet  e MobileNet,  que  se concentram  principalmente  em 
+características genéricas  de baixo  nível , a ABMLFE-Net incorpora recursos  
+especializados de extração de características de nível médio utilizando  o bloco  MCFE.  
+O bloco  MCFE  é o principal  módulo  de extração  de características  na ABMLFE-
+Net  e foi projetado  para  impulsionar  a extração  de características  de nível  médio,  
+sendo  repetido  iterativamente  cinco  vezes  de maneira  sequencial.  Cada  bloco  
+começa  com  uma  Convolução Dilatada
+
+A. Ajay  et al.
+7
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  9. Curvas  ROC  para  a categoria CeiT .
+Fig.  10. Curvas  de precisão-recall  para  a faixa CeiT .
+
+A. Ajay  et al.
+8
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  11. Matriz  de confusão  para  a rede  ABMLFE-Net.
+Camada  com  espaçamentos  aprendíveis  (DCLS),  na qual  o tamanho  do kernel  é 
+cinco  para  aumentar  o campo  receptivo  (Khalfaoui-Hassani  et al., 2021 ). Durante  
+a fase  de treinamento,  o DCLS  permite  que  a rede  controle  dinamicamente  as 
+distâncias  entre  os elementos  do kernel.  Isso  permite  que  a rede  possua  um  
+campo  receptivo  flexível,  capaz  de capturar  dependências  de longo  alcance  sem 
+aumentar o número de parâmetros. Isso é essencial para a classificação  de 
+radiografias de tumores ósseos, uma  vez  que  os tecidos  circundantes  com  
+alterações  sutis  podem  ser muito  úteis  no diagnóstico.
+O resultado  da camada  DCLS  é encaminhado  para  um  módulo  de 
+Convolução  Separável  em Profundidade  com  tamanho  de kernel  igual  a 3 
+(Chollet,  2017 ). A Convolução  Separável  em Profundidade  divide  as 
+convoluções  em duas:  uma  é a convolução  espacial  e a outra  é a convolução  por  
+canal.  Isso  diminui  a complexidade  computacional  do modelo  e mantém  a 
+precisão  simultaneamente.  As características  refinadas  são  então  processadas  
+pelo  Módulo  Ghost  com  um  tamanho  de kernel  de 1 (Han  et al., 2020 ). Em  vez  
+de depender  de convoluções  regulares,  o Módulo  Ghost  enriquece  os mapas  de 
+características  por  meio  de operações  lineares  simples,  o que  reduz  a duplicação  
+desnecessária  e, ao mesmo  tempo,  aumenta  a representação  das  características.  
+Após  o Módulo  Ghost,  os mapas  de características  são  embaralhados  para  
+melhorar  a comunicação  entre  unidades  usando  o Channel  Shuffle  (Zhang  et al., 
+2018 ). As características  embaralhadas  são  então  alimentadas  em duas  camadas  
+paralelas:  uma  consiste  na Convolução  Separável  em Profundidade  com  um  
+tamanho  de filtro  de 3 e a segunda  possui  um  Módulo Ghost com um tamanho de 
+filtro de 5. Os resultados dessas duas camadas são mesclados  e processados  por  um  
+módulo  de compressão  e excitação  que  realça  características  específicas  do canal  
+e, ao mesmo  tempo,  diminui  características  sem  importância  (Hu et al., 2018 ). 
+Isso  leva  a um  mapa  de características  aprimorado  com  foco  em características  
+de nível  médio  usando  tamanhos  de kernel  dinâmicos.  A estrutura  geral  do bloco  
+MCFE  é apresentada  na Fig.  5.
+3.2.1.3. Faixa DenseNet-169.  O DenseNet-169  é utilizado  como a terceira  
+característica
+extração  de pistas  na rede  BoneVisionNet  para  melhorar  a extração  de 
+características  locais,  como  bordas,  texturas  e padrões  complexos  (Huang  et al., 
+2017 ). Essas  características  tornam-se  essenciais  na análise  de tumores  ósseos,  
+pois  suas  alterações  morfológicas  costumam  ser sutis,  como  margens  irregulares,  
+calcificações  e alterações  na estrutura  do tecido.  O DenseNet-169  utiliza  uma  
+arquitetura  distinta,  na qual  cada  camada  dentro  de um  bloco  denso  está  
+conectada  a todas  as camadas  precedentes.  Esse  arranjo  permite  a reutilização  de 
+características,  elimina  cálculos  desnecessários  e garante  que  os detalhes  de 
+todos  os níveis  sejam  preservados  em toda  a rede.  Essas  características  tornam  o 
+DenseNet-169  eficaz  na retenção  e no aprimoramento  de características  que  são  
+fundamentais  para  diferenciar  entre  tumores  ósseos  benignos  e malignos.  Isso  
+permite  a extração  de características  locais  complexas.  O modelo  demonstra  
+melhor  desempenho  e precisão  no diagnóstico  ao empregar  o DenseNet-169  na 
+arquitetura,  o que  permite  uma  representação  mais  detalhada  e holística  das  
+imagens  de tumores  ósseos.  Uma  visão  geral  estrutural  da arquitetura  do 
+DenseNet-169  é apresentada  na Fig.  6.
+3.2.1.4. Atenção de canal eficiente. O módulo ECA desempenha um papel  importante 
+na rede  BoneVisionNet  proposta  (Wang  et al., 2020 ). A camada  ECA  refina  os 
+mapas  de características  fundidos  obtidos  a partir  da rede  ABMLFE-Net  e da 
+cadeia  DenseNet-169.  Ao enfatizar  seletivamente  os canais  mais  informativos,  o 
+módulo  ECA  garante  que  a rede  se concentre  nas  características  críticas  
+essenciais  para  distinguir  com  precisão  entre  tumores  ósseos  benignos  e 
+malignos.  O ECA  utiliza  a atenção  de canal  sem  depender  de camadas  totalmente  
+conectadas,  que  são  computacionalmente  onerosas  e normalmente  utilizadas  em 
+mecanismos  de atenção  tradicionais.  Em  vez  disso,  ele utiliza  uma  convolução  
+1D leve  com  um  tamanho  de kernel  determinado  dinamicamente  com  base  no 
+número  de canais.  Esse  tamanho  de kernel  adaptativo  equilibra  expressividade  e 
+eficiência,  garantindo  que  o mecanismo  de atenção  seja  adaptado  para
+
+A. Ajay  et al.
+9
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig. 12. Curvas  ROC para a ABMLFE-Net.
+Fig.  13. Curvas  de precisão-recall  para  a rede  ABMLFE-Net.
+
+10
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  4
+Métricas de desempenho por classe para o ABMLFE-Net.
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 69,94 68,15 69,94 69,03
+Maligno 51,43 41,86 51,43 46,15
+Tumor
+N orm al 75,13 80,23 75,13 77,60
+T otal 70,82 63,41 65,50 64,26
+Tabela  5
+Métricas  de desempenho  por  classe  para  a faixa DenseNet-169 .
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 68,63 71,43 68,63 70,00
+Maligno 71,43 49,02 71,43 58,14
+Tumor 
+Normal 76,19 80,45 76,19 78,26
+Total 72,68 66,97 72,08 68,80
+a dimensionalidade  do mapa de características .
+O processo  de atenção  começa  com  o GAP,  que  calcula  um  vetor  descritor  
+que  resume  as informações  espaciais  para  cada  canal  no mapa  de características.  
+Esse  descritor  é então  submetido  à convolução  1D adaptativa,  que  produz  pesos  
+específicos  para  cada  canal  por  meio  de uma  função  de ativação  sigmoide.  Esses  
+pesos  de atenção  são  aplicados  para  dimensionar  cada  canal  no mapa  de 
+características,  refinando-o  para  priorizar  as características  mais  relevantes  
+enquanto  suprime  informações  redundantes  ou irrelevantes.  As características  
+refinadas  permitem  que  o modelo  se concentre  em regiões  críticas  associadas
+com  características  tumorais,  melhorando  sua  capacidade  de classificar  tumores  
+com alta precisão. Além disso, o design leve do ECA minimiza a sobrecarga  
+computacional,  tornando-o  uma  opção  eficiente  e eficaz  para  aprimorar  a 
+representação  de características  na classificação  de radiografias  de tumores  
+ósseos.  O diagrama  esquemático  do módulo  ECA  é apresentado  na Fig.  7.
+3.2.1.5. Camada  de classificação.  Os mapas  de características  aprimorados  da 
+camada  ECA  são  agrupados  usando  GAP  para  redução  da dimensão  espacial.  
+Posteriormente,  as características  agrupadas  das  camadas  GCB  e ECA  são  
+concatenadas  por  meio  de multiplicação  elemento  a elemento.  Essas  
+características  são  então  encaminhadas  para  uma  camada  de achatamento  para  
+converter  o tensor  4D em um  tensor  2D.  Posteriormente,  as características  
+achatadas  são  passadas  por  uma  camada  de classificação  final  ativada  por  ReLU.  
+A fim  de otimizar  o processo  de treinamento  do modelo, a entropia cruzada é 
+empregada como função de perda. A perda por entropia cruzada mede  a divergência  
+entre  a probabilidade  prevista  e os rótulos  verdadeiros.  Ela  penaliza  as previsões  
+incorretas  feitas  pelo  modelo  com  alta confiança. Isso garante que o modelo 
+atribua probabilidades mais altas à classe  correta,  levando  a um  melhor  
+desempenho  de classificação.
+3.2.2. Explicabilidade
+Para  garantir  a interpretabilidade  e validar  a confiabilidade  clínica  do 
+BoneVisionNet  proposto,  foram  empregadas  três  técnicas  de XAI:  Mapeamento 
+de Ativação de Classe Ponderado por Gradiente (Grad-CAM), Explicações  Locais 
+Interpretáveis  e Independentes  do Modelo  (LIME)  e Explicações  Aditivas  de 
+Shapley  (SHAP).  Essas  técnicas  foram  aplicadas  após  o treinamento  para  
+visualizar  o processo  de tomada  de decisão,  confirmar  o foco  da rede  em 
+estruturas  anatômicas  relevantes  e verificar  se as previsões  se baseiam  em 
+regiões  clinicamente  significativas  das  radiografias  de tumores  ósseos.
+O Grad-CAM  foi utilizado  para  produzir  mapas  de ativação  específicos  por  
+classe,  aproveitando  as informações  de gradiente  que  fluem  para  a convolucional 
+final
+Fig.  14. Matriz  de confusão  para  a faixa DenseNet-169 .
+
+11
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  15. Curva  ROC  para  a faixa DenseNet-169 .
+Fig.  16. Curva  de precisão-recall  para  a faixa DenseNet-169 .
+
+12
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  6
+Métricas  de desempenho  por  classe  para  as faixas ABMLFE-Net  e CeiT .
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 64,05 69,01 64,05 66,44
+Maligno 80,00 54,90 80,00 65,12
+Tumor
+Normal 76,72 78,80 76,72 77,75
+Total 71,88 67,57 73,59 69,77
+camadas  da rede  (Selvaraju  et al., 2017 ). Para  o sistema  proposto,  o Grad-CAM  
+foi aplicado  à representação  combinada  de características  após  a etapa  de fusão  
+de três  trilhas,  garantindo  que  a visualização  refletisse  as contribuições  das  
+trilhas  CeiT,  ABMLFE-Net  e DenseNet-169.  O processo  envolveu o cálculo dos 
+gradientes da pontuação da classe-alvo em relação aos mapas  de características  e a 
+ponderação  das  ativações  de acordo  com  isso.  Os mapas  de calor  resultantes  
+foram  normalizados  e sobrepostos  às radiografias  originais  para  destacar  as 
+regiões  mais  influentes.  Para  radiografias  de tumores  ósseos,  essas  visualizações  
+demonstram  que  o modelo  se concentrou  principalmente  nas  regiões  tumorais  e 
+nas  estruturas  críticas  para  um  diagnóstico  preciso.
+Além  disso,  o LIME  foi implementado  para  fornecer  explicações  localizadas  
+e interpretáveis  no nível  da região  da imagem  (Ribeiro  et al., 2016 ). As 
+radiografias  foram  primeiro  segmentadas  em superpixels,  e o explicador  
+perturbou  essas  regiões  mascarando  subconjuntos  com  um  valor  constante.  Para  
+cada  versão  perturbada,  as previsões  foram  obtidas  por  meio  da função  de 
+classificação  do modelo  e o efeito  sobre  a probabilidade de saída  foi analisado. O 
+LIME então atribuiu pontuações de importância a cada superpixel  com  base  em seu  
+impacto  na previsão,  destacando  as regiões  mais  influentes.  Essas  explicações  
+confirmam  se o modelo  se concentra  em zonas  clinicamente  relevantes,  em vez  
+de fundo  irrelevante  ou
+artefatos.  Foram  geradas  visualizações  para  o rótulo  principal,  ilustrando  a 
+progressão  da granularidade  da interpretabilidade.
+Por fim, o SHAP foi implementado utilizando a estrutura Deep SHAP para fornecer  
+uma  análise  de atribuição  da importância  das  características  ao nível  do pixel  
+(Lundberg  e Lee,  2017 ). Este  método  utiliza  valores  de Shapley,  provenientes  da 
+teoria  dos  jogos  cooperativos,  para  distribuir  de forma  justa  as contribuições  dos  
+pixels  de entrada  para  a saída  do modelo.  Para  esta  implementação,  foi utilizado  
+um  máscara  de desfoque  para  a perturbação,  com  uma  avaliação  de conjunto  
+máximo  e um  tamanho  de lote  de 32 para  um  cálculo  eficiente.  Os valores  de 
+saída  do SHAP  foram  visualizados  como  mapas  de calor,  nos  quais  cores  quentes  
+(vermelho)  representam  contribuições  positivas  para  a previsão  de uma  classe  e 
+cores  frias  (azul)  indicam  contribuições negativas . Para a classificação de tumores 
+ósseos, o SHAP fornece uma visão  detalhada e minuciosa  do comportamento  do 
+modelo,  verificando  se as características  mais  discriminatórias  do tumor  estão  
+impulsionando  as previsões,  em vez  de ruído  de fundo  irrelevante.
+4. Resultados
+Nesta  seção,  é discutida  a configuração  do ambiente  utilizada  para  o 
+treinamento  e a avaliação  do modelo.  A seção  seguinte  aborda  o processo  de 
+ajuste  de hiperparâmetros,  seguido  por  um  resumo  dos  estudos  de ablação  e da 
+visualização  XAI.  Na seção  final,  a rede  proposta  é testada  em conjuntos  de 
+dados  externos  para  uma  avaliação  mais  abrangente.
+4.1. Configuração do ambiente
+Esta  seção  descreve  a configuração  do ambiente  utilizada  para  o treinamento  
+e a avaliação  do modelo.  O sistema  proposto  foi implementado  e avaliado  
+utilizando  a estrutura  PyTorch  na versão  2.6.0,  garantindo  compatibilidade com 
+técnicas e ferramentas modernas de DL. Todos os experimentos
+Fig.  17. Matriz  de confusão  para  as faixas ABMLFE-Net  e CeiT .
+
+13
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  18. Curva  ROC  para  as faixas ABMLFE-Net  e CeiT .
+Fig.  19. Curva  de precisão-recall  para  as faixas ABMLFE-Net  e CeiT .
+
+14
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  7
+Métricas  de desempenho  por  classe  para  as faixas ABMLFE-Net  e DenseNet-169 .
+4.3. Estudos de ablação
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaç
+ão  (em
+%)
+F1-Score 
+(em  %)
+Nesta  seção,  são  realizados  estudos  de ablação  para  avaliar  a contribuição  de 
+vários  subcomponentes  na arquitetura proposta .
+Tumor benigno 79,74 72,19 79,74 75,78 Estudos  de ablação  ajudam  a garantir  que  todos  os componentes  essenciais  
+utilizados  em
+Tumor 
+maligno
+88,57 50,82 88,57 64,58 o BoneVisionNet  proposto  melhora  o desempenho  na classificação  de 
+radiografias  de tumores  ósseos.
+4.3.1. Avaliação da categoria CeiT
+Esta seção  avalia  o desempenho  da trilha  CeiT  para
+foram  realizadas  no Google  Colab,  aproveitando  seus  recursos  baseados  em 
+nuvem  para  garantir  eficiência  computacional  e escalabilidade.  A configuração de 
+hardware  incluiu uma CPU Intel Xeon e uma GPU NVIDIA Tesla K80 com  12 GB  de 
+VRAM,  permitindo  o tratamento  eficaz  de grandes  conjuntos  de dados  e 
+arquiteturas  de DL.
+4.2. Ajuste de hiperparâmetros
+Esta  seção  descreve  a importância  do ajuste  de hiperparâmetros,  
+especialmente  no que  diz respeito  ao desempenho  e à estabilidade  do modelo  
+durante  o treinamento,  o que  é alcançado  através  do equilíbrio  entre  a aceleração  
+da convergência,  a precisão  e a generalização  do modelo.  Os parâmetros  
+ajustados  nesta  investigação  incluem  o tamanho  do lote,  a taxa  de aprendizagem,  
+a decaimento  dos  pesos,  o tamanho  do passo  do programador de taxa de 
+aprendizagem, a função de perda e o otimizador. Para encontrar a melhor  combinação  
+desses  parâmetros,  foi empregado  o algoritmo  de busca  em grade.  Esse  método  
+permite  uma  avaliação  sistemática  de muitas  combinações  de parâmetros,  
+garantindo  que  os valores  que  mais  melhoram  o desempenho  do modelo  tenham  
+sido  selecionados.  Um  resumo  detalhado  dos  resultados  do ajuste  de 
+hiperparâmetros  é apresentado,  incluindo  os valores  ótimos  selecionados  para  o 
+modelo  final  na Tabela  2.
+classificação  de tumores  por  raios  X. Na rede  BoneVisionNet  proposta,  o CeiT  
+foi utilizado como o primeiro track para extrair características globais de forma 
+eficiente. O track  CeiT  foi treinado  no conjunto  de dados  BTXRD  por  100  
+épocas,  utilizando  o otimizador  ADAM.  Quando  testado  no conjunto  de dados  
+BTXRD,  o modelo  CeiT  atingiu  uma  precisão  de 69,23  %, com  precisão,  recall  e 
+pontuação  F1 de
+61,98%,  66,27%  e 63,08%,  respectivamente.  As métricas  por  classe  para  a trilha  
+CeiT  são  apresentadas  na Tabela  3. Além  disso,  a matriz  de confusão,  a curva  
+ROC  e as curvas  de precisão-recall  são  apresentadas  nas  Figuras  8–10.
+4.3.2. Avaliação da ABMLFE-Net
+Nesta  seção,  é avaliado o desempenho  da rede  ABMLFE-Net  na classificação 
+de radiografias de tumores  ósseos . A rede ABMLFE-Net é utilizada como o segundo  
+módulo  de extração  de características  na rede  proposta,  aproveitando  sua  
+capacidade  de extrair  características  integrais  de nível  intermediário  das  imagens  
+radiográficas.  A rede  ABMLFE-Net  passou  por  um  treinamento  de 100  épocas  e 
+foi posteriormente  avaliada  no conjunto  de dados  BTXRD.  O modelo  atingiu  
+uma  precisão  de 70,82  %, enquanto  a precisão,  o recall  e os escores  F1 foram  de 
+63,41  %, 65,50  % e 64,26  %, respectivamente.  A fim  de avaliar  exaustivamente  
+o desempenho  da ABMLFE-Net,  a matriz  de confusão,  a curva  ROC  e as curvas  
+de precisão-recall  foram  plotadas  e visualizadas  na
+Fig.  20. Matriz  de confusão  para  as faixas ABMLFE-Net  e DenseNet-169 .
+Normal 70,37 90,48 70,37 79,17
+Total 75,86 71,16 79,56 73,18
+15
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  21. Curva  ROC  para  as faixas ABMLFE-Net  e DenseNet-169 .
+Fig.  22. Curva  de precisão-recall  para  as faixas ABMLFE-Net  e DenseNet-169 .
+
+16
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  8
+Métricas  de desempenho  por  classe  para  as faixas CeiT  e DenseNet-169 .
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 67,32 82,40 67,32 74,10
+Maligno 74,29 70,27 74,29 72,22
+Tumor
+Normal 88,36 77,67 88,36 82,67
+Total 78,52 76,78 76,66 76,33
+Fig.  11–13. Além  disso,  as métricas  por  classe  são  apresentadas  na Tabela  4.
+4.3.3. Avaliação da linha DenseNet
+Esta  seção  avalia  o desempenho  da linha  DenseNet-169,  que  funciona  como  
+a terceira  linha  de extração  de características  na rede  proposta,  com  foco  na 
+extração  de características  locais.  O modelo  DenseNet  foi treinado  por  100  
+épocas  no conjunto  de dados  BTXRD  utilizando  o otimizador  ADAM.  Durante  
+os testes,  a rede  atingiu  uma  precisão  de
+72,68  %, precisão  de 66,97  %, recall  de 72,08  % e F1-Score  de 68,80.  A Tabela  
+5 resume  o desempenho  por  classe  da trilha  DenseNet-169  no conjunto  de dados  
+BTXRD.  A matriz  de confusão,  a curva  ROC  e as curvas  de precisão-recall  são  
+apresentadas  nas  Figuras  14–16.
+4.3.4. Avaliação das faixas ABMLFE-Net e CeiT
+Esta  seção  apresenta  a avaliação  das  vias  combinadas  ABMLFE-Net  e CeiT,  
+responsáveis  pela  extração  de características  de nível  médio  e globais,  
+respectivamente.  As saídas  de ambas  as vias  foram  concatenadas  para  criar  um  
+mapa  de características  fusionado,  aproveitando  assim  a natureza  complementar  
+das  características  globais  e de nível  médio  para  melhorar  o desempenho  da 
+classificação.  O modelo  combinado  de duas  vias  foi treinado
+por  100  épocas  no conjunto  de dados  BTXRD  usando  o otimizador  ADAM  e, 
+posteriormente,  avaliado.  Após  o teste,  a configuração  de duas  trilhas  alcançou  
+uma  precisão  de 71,88  %, com  uma  precisão  de 67,57  %, recall  de
+73,59 % e um  F1-Score  de 69,77  %.  Esses  resultados  indicam  que  a integração  
+do CeiT  e do ABMLFE-Net  melhora  a representação  de características  em 
+comparação  com  o desempenho  de cada  um  isoladamente.  As métricas  de 
+desempenho  por  classe  para  essa  combinação  de duas  redes  estão  resumidas  na 
+Tabela  6. Além  disso,  a matriz  de confusão,  a curva  ROC  e as curvas  de 
+precisão-recall  correspondentes  a essa  avaliação  são  apresentadas  nas  Figuras  
+17–19.
+4.3.5. Avaliação das faixas ABMLFE-Net e DenseNet-169
+Esta seção avalia o desempenho combinado das faixas ABMLFE-Net e DenseNet-
+169, responsáveis pela extração de características  de nível médio e local,  
+respectivamente.  As saídas  de ambas  as faixas  foram  concatenadas  para  formar  
+um  mapa  de características  rico  que  aprimora  a capacidade  discriminatória  do 
+modelo.  A configuração  combinada  das  faixas  foi treinada no conjunto de dados 
+BTXRD por 100 épocas utilizando o otimizador ADAM e, posteriormente,  testada.  Os 
+resultados  da avaliação  demonstram  que  a combinação  de duas  trilhas  alcançou  
+uma  precisão  de 75,86%,  com  uma  precisão  de 71,16%,  recall  de 79,56%  e um  
+F1-Score  de 73,18%.  Esses  resultados  destacam  a eficácia  da combinação  de 
+representações  de características  de nível  médio  e local  para  melhorar  a precisão  
+da classificação.  As métricas  de desempenho  por  classe  são  apresentadas  na 
+Tabela  7, enquanto  a matriz  de confusão,  a curva  ROC  e as curvas  de precisão-
+recall  são  ilustradas  nas  Figs.  20–22.
+4.3.6. Avaliação das faixas CeiT e DenseNet-169
+Esta  subseção  apresenta  o desempenho  da configuração  que  combina  CeiT  e 
+DenseNet-169,  que,  em conjunto,  se concentram  na captura  de representações  de 
+características  globais  e locais  de tumores ósseos
+Fig.  23. Matriz  de confusão  para  as faixas CeiT  e DenseNet-169 .
+
+17
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  24. Curva  ROC  para  as faixas CeiT  e DenseNet-169 .
+Fig.  25. Curva  de precisão-recall  para  as faixas CeiT  e DenseNet-169 .
+
+18
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  26. Matriz  de confusão  para  o BoneVisionNet.
+radiografias.  Enquanto  o CeiT  se especializa  na extração  de características  
+contextuais  de alto  nível  em toda  a imagem,  o DenseNet-169  enfatiza  detalhes  
+espaciais  minuciosos,  garantindo  uma  representação  abrangente.  Para  este  
+experimento,  os mapas  de características  gerados  por  ambas  as vias  foram  
+combinados  para  criar  uma  representação  unificada  das  informações  globais  e 
+locais.  O modelo  foi treinado  no conjunto  de dados  BTXRD  por  100  épocas  
+usando  o otimizador  ADAM.  Durante  os testes,  essa  configuração  de duas  trilhas  
+alcançou  uma  precisão  de 78,52%,  juntamente  com  uma  precisão  de 76,78%,  
+recall  de 76,66%  e um  F1-Score  de 76,33%.  Os resultados  demonstram  que  a 
+integração  de características  globais  e locais  melhora  a capacidade  de 
+classificação  em comparação  com  as faixas  individuais.  As métricas  de 
+desempenho  por  classe  para  essa  combinação  são  apresentadas  na Tabela  8, 
+enquanto  a matriz  de confusão,  a curva  ROC  e os gráficos  de precisão-recall  são  
+ilustrados  nas  Figuras  23–25.
+4.3.7. Avaliação da rede proposta
+Esta  seção  examina  os resultados  obtidos  pelo  modelo  Bone-VisionNet 
+proposto  para a classificação de radiografias de tumores ósseos. O conjunto de dados 
+BTXRD foi utilizado  para  treinar  o modelo  proposto  com  o otimizador  ADAM,  
+tendo  os hiperparâmetros  sido  ajustados  para  obter  o máximo  desempenho.  O 
+modelo  passou  por  um  treinamento  de 100  épocas  e, posteriormente,  foi testado  
+quanto  ao desempenho  de classificação.  Quando  testado  no conjunto  de dados  
+BTXRD,  o modelo  atingiu  84,35%  de acurácia,  79,61%  de precisão,  84,76%  de 
+recall  e um  F1-score  de 81,66%.  A fim  de realizar  uma  análise  completa  do 
+desempenho  do modelo,  foram  plotadas  a matriz  de confusão,  a curva  ROC  e a 
+curva  de precisão-recall,  conforme  mostrado  nas  Figs.  26, 27 e 28. Esses  
+resultados  destacam  a eficácia  da rede  proposta  na classificação  de imagens  de 
+tumores  ósseos.  As métricas  por  classe  para  a BoneVisionNet  proposta  são  
+apresentadas  na Tabela  9. Um  resumo  dos  estudos  de ablação  é fornecido  na 
+Tabela  10. Para  validar  ainda  mais  a confiabilidade  da BoneVisionNet proposta, 
+Grad-CAM e LIME foram utilizados para visualizar
+o processo  de tomada  de decisão  do modelo.  Os resultados  são  apresentados  na 
+Tabela  11, que  mostra  a imagem  original,  uma  imagem  clinicamente  anotada  e as 
+visualizações correspondentes do Grad-CAM e do LIME. Além disso, o SHAP  foi 
+utilizado  para  uma  análise  detalhada  de atribuição  da importância  das  
+características,  ao nível  do pixel,  com  os resultados  apresentados  na Tabela  12.
+4.4. Avaliação em uma configuração de classificação binária
+Nesta  seção,  o BoneVisionNet  proposto  foi avaliado  em uma  configuração  de 
+classificação  binária  para  se adequar  a um  cenário  clinicamente  mais  relevante.  
+Para  este  experimento,  foram consideradas apenas  as classes de tumor  benigno  e 
+tumor maligno do conjunto de dados BTXRD, excluindo a classe  normal.  Essa  
+configuração  reflete  os fluxos  de trabalho  diagnósticos  do mundo  real,  nos  quais  
+o principal  objetivo  clínico  é determinar  se o tumor  é benigno  ou maligno.  
+Quando  avaliado  nessa  tarefa  de classificação  binária,  o BoneVisionNet  alcançou  
+uma  precisão  de 93,62%,  com  uma  precisão  de 88,89%,  recall  de 90,57%  e um  
+F1-Score  de 89,69%,  demonstrando  sua  forte  capacidade  em diferenciar  tumores  
+ósseos  benignos  e malignos.  As precisões  por  classe  para  essa  configuração  de 
+classificação  binária  são  apresentadas  na Tabela  13.
+4.5. Avaliação em conjuntos de dados externos
+Nesta  seção,  o modelo  proposto  é avaliado  em diversos  conjuntos  de dados  
+médicos,  a fim  de verificar  a generalização  e a robustez  do modelo  em vários  
+cenários  clínicos.
+4.5.1. Validação em conjunto de dados para detecção de tuberculose usando 
+radiografias
+Para  avaliar  a robustez  do modelo  proposto,  ele foi testado  no conjunto  de 
+dados  Sakha-TB,  disponível  publicamente,  que  compreende  imagens  anotadas
+
+19
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Fig.  27. Curva  ROC  para  o sistema proposto .
+Fig.  28. Curva  de precisão-recall  para  o modelo proposto .
+
+20
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  9
+Métricas  de desempenho  por  classe  para  o BoneVisionNet.
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 84,97 82,28 84,97 83,60
+Maligno 85,71 65,22 85,75 74,07
+Tumor
+Normal 83,60 91,33 83,60 87,30
+Total 84,35 79,61 84,76 81,66
+imagens  de radiografia  de tórax  divididas  igualmente  entre  indivíduos  saudáveis  
+e pacientes  com  tuberculose  (Pchelintsev  et al., 2022 ). O conjunto  de dados  foi 
+organizado  para  garantir  equilíbrio  em termos  de gênero,  distribuição  etária  e 
+categorias  diagnósticas,  com cada imagem representando um paciente único. O 
+diagnóstico foi confirmado por  meio  de leituras  duplas  independentes,  validadas  
+por  dados  clínicos,  laboratoriais  e microbiológicos.  Quando  testado  neste  
+conjunto  de dados,  o modelo  alcançou  uma  precisão  de 85,04%,  com  precisão,  
+recall  e F1-score  atingindo  85,25%,  85,00%  e 84,97%,  respectivamente.
+4.5.2. Validação em conjunto de dados para detecção de fraturas ósseas por meio de 
+radiografias. A fim  de verificar  a eficácia  e a generalizabilidade  do Bone-
+VisionNet,  ele foi testado  em um  conjunto  de dados  FracAtlas  disponível  
+publicamente  (Abedeen  et al., 2023 ). O conjunto  de dados  contém  4.083  imagens  
+de raios-X,  cada  uma  delas  rotulada  manualmente  em uma  de duas  classes:  
+fraturada  e não  fraturada.  A anotação  foi realizada  na plataforma  de rotulagem  de 
+código  aberto  makesense.ai,  que  foi posteriormente  validada  por  dois  
+radiologistas  experientes  e um  ortopedista.  O conjunto  de dados  contém  imagens  
+de diferentes  partes  da anatomia,  incluindo  mão,  perna,  quadril  e ombro,  que  
+foram  obtidas  de três  hospitais  e centros  de diagnóstico  diferentes.  Quando  
+testado  no conjunto  de dados  FracAtlas,  o modelo  atingiu  90,34%  de precisão,  
+com  precisão,  recall  e F1-score  atingindo  89,86%,  90,34%
+e 89,66  %, respectivamente.
+4.5.3. Validação em conjunto de dados para classificação de tumores de 
+mama utilizando radiografias
+Para  avaliar  melhor  a eficácia  do modelo  proposto,  ele foi testado  no 
+conjunto  de dados  Mammogram  Mastery,  disponível  publicamente,  que  consiste  
+em imagens  de mamografia  coletadas  em quatro  unidades  de saúde  (Aqdar  et al., 
+2024 ). O conjunto  de dados  inclui  imagens  capturadas  com  equipamentos  
+dedicados  de mamografia,  cada  uma  representando  uma  paciente  única  com  
+idade  entre  34 e 88 anos.  O conjunto  de dados  é categorizado  em classes  
+benignas  e malignas.  Radiologistas  e médicos  especialistas  anotaram  e validaram  
+o conjunto  de dados  para  garantir  a precisão  do diagnóstico.  O modelo  alcançou  
+alto  desempenho  neste  conjunto  de dados,  com  uma  precisão  de 97,33%,  
+precisão  de 98,44%,  recall  de 92,31%  e um  F1-score  de 95,04%.
+5. Discussão
+Nesta  seção,  é apresentada  uma  visão  geral  dos  diversos  estudos  realizados  
+para  avaliar  o desempenho  do modelo.  A primeira  seção  inclui  uma  discussão  
+sobre  a visualização  XAI  para  interpretar  as decisões  tomadas  pelo  modelo  e 
+aumentar  a transparência  na classificação.  A seção  seguinte  contém  uma  
+comparação  detalhada  do Bone-VisionNet proposto  com as arquiteturas de 
+aprendizagem profunda (DL) de última geração. Por fim, o modelo é
+validado  em vários  conjuntos  de dados  médicos  para  verificar  sua  generalização  e 
+robustez  em diversos  cenários  médicos.
+5.1. Visualizações XAI
+A aplicação de técnicas de XAI forneceu informações valiosas sobre o processo  de 
+tomada  de decisão  do BoneVisionNet  e confirmou  sua  confiabilidade  clínica.  As 
+visualizações  do Grad-CAM  revelaram  que  o modelo  prestava atenção de forma 
+consistente a regiões específicas do tumor nas imagens de raios-X, o que se alinha  
+fortemente  com  as anotações  de um  especialista experiente  em tumores  ósseos . 
+Esse alinhamento sugere que o modelo está aproveitando padrões  clinicamente 
+relevantes,  em vez  de se basear  em correlações  espúrias.  Uma  análise  
+complementar  utilizando  o LIME  reforçou  essas  descobertas  ao destacar  regiões  
+localizadas  e detalhes  no nível  de pixels,  demonstrando  que  a sensibilidade do 
+modelo  se estende a características específicas do tumor. Além disso, o SHAP 
+adicionou  uma  camada  de interpretabilidade  mais  profunda  ao atribuir  
+quantitativamente  as contribuições  de pixels  individuais  às previsões  do modelo.  
+O contraste  entre contribuições positivas e negativas nos mapas de calor do SHAP 
+proporciona uma  compreensão  matizada  da importância  das  características,  
+reforçando  que  as previsões  são  impulsionadas  por  características  
+discriminatórias  relacionadas  ao tumor.  Juntas,  essas  avaliações  de XAI  
+confirmam  que  as previsões  do BoneVisionNet  não  são  apenas  precisas,  mas  
+também  explicáveis,  um  fator  essencial  para  a adoção  clínica.  A integração  de 
+Grad-CAM,  LIME  e SHAP  garante  transparência  tanto  em nível  global  quanto  
+em detalhes,  o que  aumenta  a confiabilidade  e apoia  seu  uso  em fluxos de 
+trabalho de diagnóstico  no mundo  real .
+5.2. Análise dos exemplos classificados incorretamente
+Embora  o modelo  proposto  demonstre  alta precisão  na classificação  de tumores  
+por meio de radiografias,  certos casos foram classificados  incorretamente,  
+destacando  a necessidade  de análises  adicionais.  As visualizações  do Grad-CAM,  
+conforme  apresentadas  na Tabela  14, fornecem  insights  sobre esses casos, revelando  
+que a atenção  do modelo  foi, por vezes, direcionada  para regiões  irrelevantes  ou 
+ambíguas  das radiografias.  Fatores  potenciais  que contribuem  para as classificações  
+incorretas  incluem  limites  indistintos  dos tumores  e tumores  muito pequenos.  Ao 
+utilizar  técnicas  de XAI, como o Grad-CAM,  torna-se  possível  validar  o processo  de 
+classificação,  identificar  possíveis  causas  de erros e melhorar  a confiabilidade.  Essas 
+visualizações  permitem  que os médicos  avaliem  o foco do modelo  e garantam  que as 
+previsões  sejam baseadas  em características  clinicamente  relevantes.  Isso reduz o 
+risco de diagnósticos  incorretos  e aumenta  a confiança  nos sistemas  automatizados  
+para classificação  de tumores.
+5.3. Comparação com arquiteturas de última geração
+Esta  subseção  compara  o desempenho  da BoneVisionNet  com  o de CNNs  e 
+Transformers  de última  geração.  Como  o conjunto  de dados  foi lançado  
+recentemente,  não  há estudos  existentes  para  comparação  no conjunto  de dados  
+BTXRD.  Portanto,  para  a comparação  de desempenho,  foram  analisadas  15 
+redes,  consistindo  em 8 CNNs  e 7 Transformers.  Todos  os modelos  foram  
+treinados  utilizando  o conjunto  de dados  BTXRD,  para  garantir  uma  avaliação  
+comparativa  justa.  Entre  as redes  treinadas,  a DenseNet  emergiu  como  a CNN  
+mais  precisa,  com  72,68%  de precisão.  Isso  é indicativo  da eficiência  da 
+DenseNet  na extração  de características  locais.  No mesmo  contexto,  a CeiT  foi a 
+rede  transformadora  mais  precisa,  com  69,23%  de precisão,  o que  demonstra  sua  
+eficiência  na extração  de características  globais.  A proposta
+Tabela  10
+Resumo  dos  estudos  de ablação  no conjunto  de dados BTXRD .
+Modelo Parâmetros Tempo  de  inferência  (em  ms) Precisão  (em  %) Precisão  (em  %) Recall  (em  %) Pontuação  F1 (em  
+%)
+Pista CeiT 6164,483 0,63 69,23 61,98 66,27 63,08
+ABMLFE-Net 4.013.019 0,70 70,82 63,41 65,50 64,26
+Trilha DenseNet-169 12.489.475 0,92 72,68 66,97 72,08 68,80
+ABMLFE-Net + CeiT 10.178.083 0,79 71,88 67,57 73,59 69,77
+ABMLFE-Net + DenseNet 16.499.163 1,16 75,86 71,16 79,56 73,18
+CeiT  + DenseNet 18.651.206 1,34 78,52 76,78 76,66 76,33
+Modelo proposto 22.723.825 1,61 84,35 79,61 84,76 81,66
+21
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  11
+Visualizações  XAI  de tumores  a partir  do conjunto de dados BTXRD .
+Tumor benigno Tumor maligno Tumor benigno
+Image
+m de 
+entrad
+a
+Imagem 
+anotada
+Grad-
+CAM
+LIME
+O BoneVisionNet  superou  todos os modelos  de última  geração  com uma pontuação  
+de precisão  de 84,35 %. Esses resultados  demonstram  o desempenho  aprimorado  do 
+BoneVisionNet,  comprovando  sua eficácia  na detecção  de tumores  ósseos  em 
+imagens  de raios-X.  Todos os indicadores  de desempenho  dos modelos  foram 
+resumidos  na Tabela  15.
+5.4. Avaliação da generalização em conjuntos de dados adicionais
+A robustez  e a generalizabilidade  do BoneVisionNet  proposto  foram  
+avaliadas  mais  detalhadamente  por  meio  de testes  em vários  conjuntos  de dados  
+externos  que  abrangem  um
+uma  variedade  de tarefas  além  da análise  de tumores  ósseos.  Essas  avaliações  
+tiveram  como  objetivo  garantir  a adaptabilidade  do modelo  em diversos  cenários  
+clínicos.  Os resultados,  resumidos  na Tabela  16, demonstram  claramente  que  o 
+modelo  mantém  um  desempenho  consistente  em diferentes  modalidades  de 
+imagem  e regiões  anatômicas,  indicando  seu  potencial  como  uma  ferramenta  
+diagnóstica  versátil.  Notavelmente,  o modelo  alcançou  bom  desempenho  nas  
+tarefas  de detecção  de tuberculose  e classificação  de fraturas  ósseas,  ao mesmo  
+tempo  em que  se destacou  na classificação  de tumores  de mama.  Esses  resultados  
+confirmam  que  o BoneVisionNet  não  se limita  a uma  patologia  ou configuração  
+de imagem  específica,  destacando  sua  capacidade  de generalização  eficaz  para  
+diversos  dados  médicos.
+22
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  12
+Exemplos  de visualização  XAI usando  SHAP.
+Classe Visualização SHAP
+Tumor 
+benigno
+Tumor 
+maligno
+Normal
+Tabela  13
+Métricas  de desempenho  por  classe  para  classificação binária .
+Classe Precisão  (em
+%)
+Precisão  (em
+%)
+Recuperaçã
+o (em
+%)
+F1-Score 
+(em  %)
+Tumor benigno 95,43 96,68 95,43 96,05
+Maligno 85,72 81,08 85,71 83,33
+Tumor
+Total 93,62 88,89 90,57 89,69
+6. Conclusão
+O diagnóstico  de tumores  ósseos  é um  problema  desafiador  na medicina,  pois  
+apresenta  uma  ampla  variedade  de características  visuais  e quadros  clínicos  entre  
+os pacientes.  Uma  intervenção  precisa  e oportuna  é crucial  para  o diagnóstico  de
+tumores  ósseos  e a melhoria  dos  resultados  clínicos.  As técnicas  existentes  para  o 
+diagnóstico  de tumores  ósseos  dependem  da análise  manual  de radiografias  por  
+pessoal  treinado,  o que  é demorado  e propenso  a erros  humanos.  Essas  questões  
+destacam  a necessidade  urgente  de soluções  automatizadas  que  possam  auxiliar  
+os profissionais  de saúde  na tomada  de decisões  precisas  e rápidas.  O estudo  
+proposto  visa  resolver  essas  questões  ao propor  um  novo  projeto  de três  vias  para  
+a classificação  de radiografias  de tumores  ósseos.  O Bone-VisionNet  proposto  
+utiliza  três  trilhas  especializadas  para  a extração  eficaz  de características  em 
+múltiplas  escalas.  A trilha  CeiT  captura  características  globais,  que  são  então  
+passadas  para  o GCB  para  refinamento  por  meio  de modelagem  de características  
+de longo  alcance,  a fim  de melhorar  a extração  de características  globais.  As 
+características  de nível  médio  são  capturadas  pela  rede  personalizada  ABMLFE-
+Net,  enquanto  o DenseNet-169  é utilizado  para  a extração  de características  
+locais.
+Posteriormente,  os mapas  de características  de saída  do ABMLFE-Net  e do 
+DenseNet-169 são combinados e, em seguida, refinados utilizando o mecanismo ECA
+23
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  14
+Exemplos de visualização Grad-CAM de tumores classificados incorretamente.
+Tumor maligno 
+(osteossarcoma)
+Tumor benigno 
+(osteocondroma)
+Tumor benigno 
+(osteocondroma)
+Image
+m de 
+entrad
+a
+Imagem 
+anotada
+Grad-
+CAM
+o que  melhora  a seleção  de características  sem  aumentar  a sobrecarga  
+computacional.  Esses  mapas  de características  refinados  da camada  ECA  são  
+concatenados  com  características  globais  da GCB  para  produzir  um  mapa  de 
+características  multiescala  rico,  visando  melhorar  a classificação  de radiografias  
+de tumores  ósseos.  O modelo  foi testado  no conjunto  de dados  BTXRD  e atingiu  
+uma  precisão  de 84,35%  e um  F1-Score  de 79,61%,  superando  as CNNs  e 
+transformadores  de última  geração.  Além  disso,  a visualização  XAI  usando  
+Grad-CAM,  LIME  e SHAP ajuda a interpretar as classificações feitas pelo modelo 
+com mais transparência.  A arquitetura  de trilha  tripla  proposta  permite  uma  
+extração  aprimorada  de características  globais,  semilocais  e locais  a partir  de 
+imagens  de raios-X,  levando  a uma  maior  precisão  de classificação.  O 
+BoneVisionNet  proposto  classifica  tumores  ósseos  com  precisão  e transparência,  
+tornando-o  uma  ferramenta  de diagnóstico  clínico  em potencial  para  a detecção  
+eficaz  de tumores  ósseos.
+Declaração de contribuição  de autoria  CRediT
+Akshaj  Singh  Bisht:  Redação  – rascunho  original,  Software,  Metodologia,  
+Curadoria  de dados,  Conceitualização.  Pranav  Uppuluri:  Redação  – rascunho  
+original,  Metodologia,  Curadoria  de dados,  Conceitualização.  Armaano  Ajay:  
+Redação  – rascunho  original,  Visualização,  Validação,
+Software,  Metodologia,  Análise  formal,  Curadoria  de dados,  Conceitualização. 
+Karthik R: Redação – revisão e edição, Visualização, Validação, Supervisão,  
+Recursos,  Administração  do projeto,  Metodologia,  Investigação,  
+Conceitualização.
+Consentimento informado
+Todos  os autores  revisaram  e aprovaram  o manuscrito  e consentem  com  sua  
+publicação.
+Consentimento  para  participar
+O estudo  baseou-se  exclusivamente  em dados  de imagens  de acesso  público;  
+não  foi necessário  obter  o consentimento  dos  participantes.
+Aprovação ética
+O estudo  utilizou  dados  de imagens  disponíveis  publicamente;  a aprovação  
+ética  não  se aplica.
+24
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+Tabela  15
+Comparação  de desempenho  da rede  BoneVisionNet  proposta  com  arquiteturas de 
+ponta .
+Transformador
+Tabela  16
+Resumo  do desempenho  do BoneVisionNet  em vários  conjuntos de dados.
+Conjunto de dados Precisão Precisão Recall Pontuação F1
+(em  %) (em  %) (em  %) (em  %)
+BTXRD  (Yao  et al., 84,35 79,61 84,76 81,66
+2025)
+Sakha-TB  (Pchelintsev 85,04 85,25 85,00 84,97
+et  al.,  2022)
+FracAtlas  (Abedeen 90,34 89,86 90,34 89,66
+et  al.,  2023)
+Domínio  da  Mamografia  ( 97,33 98,44 92,31 95,04
+Aqdar  et  al.,  2024)
+Financiamento
+Esta  pesquisa  não  recebeu  qualquer  financiamento.
+Divulgação sobre IA
+Ferramentas de inteligência artificial (IA), incluindo o ChatGPT da OpenAI, 
+foram utilizadas  para  auxiliar  na elaboração  deste  manuscrito.  Essas  ferramentas  
+auxiliaram  em tarefas  como  refinamento  da linguagem,  correção  gramatical  e 
+estruturação  do conteúdo.  Todo  o conteúdo  intelectual,  a interpretação  dos  dados  
+e as decisões  finais  foram  de responsabilidade  exclusiva  dos  autores,  que  
+assumem  total  responsabilidade  pela  integridade  e precisão  do trabalho  
+apresentado
+Declaração  de Conflito  de Interesses
+Os autores  declaram  que  não  possuem  interesses  financeiros  concorrentes  
+conhecidos  ou relações  pessoais  que  pudessem  parecer  influenciar  o trabalho  
+relatado  neste  artigo.
+Disponibilidade de dados
+Os dados  serão  disponibilizados  mediante  solicitação.
+Referências
+Abedeen,  I.,  Rahman,  Md.A.,  Prottyasha,  F.Z.,  Ahmed,  T.,  Chowdhury,  T.M.,  Shatabda,  S.,  
+2023.  FracAtlas:  um  conjunto  de  dados  para  classificação,  localização  e
+segmentação  de  radiografias  musculoesqueléticas.  Sci.  Data  10.  https://doi.org/  
+10.1038/s41597-023-02432-4.
+Ahmed,  S.F.,  Alam,  Md.S.B.,  Hassan,  M.,  Rozbu,  M.R.,  Ishtiak,  T.,  Rafa,  N.,  et al.,  2023.  
+Técnicas  de  modelagem  de  aprendizado  profundo:  progresso  atual,  aplicações,  vantagens  e 
+desafios.  Artif.  Intell.  Rev.  56,  13521 –13617.  https://doi.org/10.1007/s10462-023-10466-8.
+Ahsan,  M.M.,  Luna,  S.A.,  Siddique,  Z.,  2022.  Diagnóstico  de  doenças  baseado  em  aprendizado  de  
+máquina:  uma  revisão  abrangente.  Healthcare  10,  541.  https://doi.org/10.3390/  
+healthcare10030541.
+Aqdar,  K.B.,  Mustafa,  R.K.,  Abdulqadir,  Z.H.,  Abdalla,  P.A.,  Qadir,  A.M.,  Shali,  A.A.,
+et  al.,  2024.  Domínio  da  mamografia:  um  conjunto  de  dados  robusto  para  a detecção  do  
+câncer  de  mama  e a educação  médica.  Data  Brief.  55,  110633.  
+https://doi.org/10.1016/j. dib.2024.110633.
+Sarcomas  ósseos,  2014.  Diretrizes  de  Prática  Clínica  da  ESMO  para  diagnóstico,  tratamento  e 
+acompanhamento.  Ann.  Oncol.  25,  iii113 –iii123.  https://doi.org/10.1093/annonc/mdu256 .
+Breden,  S.,  Hinterwimmer,  F.,  Consalvo,  S.,  Neumann,  J.,  Knebel,  C.,  von  Eisenhart-Rothe,  
+R.,  et  al.,  2023.  Detecção  baseada  em  aprendizado  profundo  de  tumores  ósseos  ao  redor  
+do  joelho  em  radiografias  de  crianças.  JCM  12,  5960.  
+https://doi.org/10.3390/jcm12185960 .
+Cao,  Y., Xu,  J., Lin,  S., Wei,  F., Hu,  H., 2023.  Redes  de contexto  global.  IEEE  Trans.
+Pattern  Anal.  Mach.  Intell.  45,  6881 –6895.  https://doi.org/10.1109/  tpam i.2020.3047209.
+Chollet  F. Xception:  Deep  Learning  with  Depthwise  Separable  Convolutions.  Conferência  IEEE  
+sobre  Visão  Computacional  e Reconhecimento  de  Padrões  (CVPR)  2017:1800 –7. 
+https://doi.org/10.1109/cvpr.2017.195.
+Dalai,  S.S.,  Ranjan  Sahu,  B.J.,  Rautaray,  J.,  Khan,  M.I.,  Jabr,  B.A.,  Ali,  Y.A.,  2024.
+Detecção  automatizada  de  câncer  ósseo  utilizando  aprendizado  profundo  em  imagens  de  raios-
+X.  Surg.  Innov.  https://doi.org/10.1177/15533506241299886.
+Hakim,  D.N.,  Pelly,  T.,  Kulendran,  M.,  Caris,  J.A.,  2015.  Tumores  benignos  dos  ossos:  uma  
+revisão.  J.  Bone  Oncol.  4,  37 –41.  https://doi.org/10.1016/j.jbo.2015.02.001 .
+Han  K.,  Wang  Y.,  Tian  Q.,  Guo  J.,  Xu  C.,  Xu  C.  GhostNet:  Mais  recursos  a partir  de  operações  
+baratas.  Conferência  IEEE/CVF  2020  sobre  Visão  Computacional  e Reconhecimento  de  
+Padrões  (CVPR)  2020.  https://doi.org/10.1109/cvpr42600.2020.00165 .
+Hinterwimmer,  F.,  Serena,  R.S.,  Wilhelm,  N.,  Breden,  S.,  Consalvo,  S.,  Seidl,  F.,  et  al.,  2024.  
+Classificação  de  tumores  ósseos  com  base  em  sistemas  de  recomendação  e radiografias  —  
+uma  ligação  com  o passado.  Eur.  Radio.  34,  6629 –6638.  https://doi.org/10.1007/s00330-024-
+10672-0.
+Hu  J.,  Shen  L.,  Sun  G.  Redes  Squeeze-and-Excitation.  Conferência  IEEE/CVF  2018  sobre  Visão  
+Computacional  e Reconhecimento  de  Padrões  2018.  https://doi.org/10.1109/cvpr.201  
+8.00745.
+Huang  G.,  Liu  Z.,  Van  Der  Maaten  L.,  Weinberger  K.Q.  Redes  convolucionais  densamente  
+conectadas.  Conferência  IEEE  de  2017  sobre  Visão  Computacional  e Reconhecimento  de  
+Padrões  (CVPR)  2017.  https://doi.org/10.1109/cvpr.2017.243 .
+K,  S.B.,  2025.  Revolucionando  a detecção  do  câncer  ósseo:  análise  de  imagens  médicas  em  tempo  
+real  utilizando  o YOLOv8  para  maior  precisão  e rapidez  no  diagnóstico.  IJRASET  13,  854 –
+857.  https://doi.org/10.22214/ijraset.2025.66462.
+Khalfaoui-Hassani,  I.,  Pellegrini,  T.,  Masquelier,  T.,  2021.  Convolução  dilatada  com  
+espaçamentos  aprendíveis.  arXiv.  https://doi.org/10.48550/ARXIV.2112.03740 .
+Li,  J.,  Li,  S.,  Li,  X.,  Miao,  S.,  Dong,  C.,  Gao,  C.,  et al.,  2022.  Detecção  e classificação  de  tumores  
+ósseos  primários  em  radiografias  ósseas  de  campo  total  por  meio  do  modelo  de  aprendizado  
+profundo  YOLO.  Eur.  Radio.  33,  4237 –4248.  https://doi.org/10.1007/s00330-022-09289-y
+Lundberg,  S.,  Lee,  S.-I.,  2017.  Uma  abordagem  unificada  para  a interpretação  de  modelos  de  
+previsão.  https://doi. org/10.48550/ARXIV.1705.07874.
+Natha,  S.,  Laila,  U.,  Gashim,  I.A.,  Mahboob,  K.,  Saeed,  M.N.,  Noaman,  K.M.,  2024.
+Identificação  automatizada  de  tumores  cerebrais  em  imagens  de  radiologia  biomédica:  uma  
+abordagem  de  aprendizado  profundo  com  conjunto  de  múltiplos  modelos.  Appl.  Sci.  14,  2210.  
+https://doi.org/10.3390/  app14052210.
+Pan,  C.,  Lian,  L.,  Chen,  J.,  Huang,  R.,  2023.  FemurTumorNet:  Classificação  de  tumores  ósseos  no  
+fêmur  proximal  utilizando  o modelo  DenseNet  com  base  em  radiografias.  J.  Bone  Oncol.  
+42,  100504.  https://doi.org/10.1016/j.jbo.2023.100504 .
+Pchelintsev,  Ya,  Khvostikov,  A.,  Buchatskaia,  O.,  Nikiforova,  N.,  Shepeleva,  L.,  
+Prokopev,  E.,  et  al.,  2022.  Análise  de  robustez  do  diagnóstico  computadorizado  de  
+tuberculose  em  radiografias  de  tórax.  Comput.  Math.  Model  33,  472 –486.  
+https://doi.org/  10.1007/s10598-023-09587-0.
+Rayed,  Md.E.,  Islam,  S.M.S.,  Niha,  S.I.,  Jim,  J.R.,  Kabir,  M.M.,  Mridha,  M.F.,  2024.  
+Aprendizado  profundo  para  segmentação  de  imagens  médicas:  avanços  de  ponta  e desafios.  
+Inform.  Med.  Unlocked  47,  101504.  https://doi.org/10.1016/j.  imu.2024.101504.
+Ribeiro  M.T.,  Singh  S.,  Guestrin  C.  “Why  Should  I Trust  You?”  Anais  da  22ª  Conferência  
+Internacional  ACM  SIGKDD  sobre  Descoberta  de  Conhecimento  e Mineração  de  Dados  
+2016:1135 –1144.  https://doi.org/10.1145/2939672.2939778 .
+Selvaraju  R.R.,  Cogswell  M.,  Das  A.,  Vedantam  R.,  Parikh  D.,  Batra  D.  Grad-CAM:  Explicações  
+visuais  a partir  de  redes  profundas  por  meio  de  localização  baseada  em  gradiente.  Conferência  
+Internacional  IEEE  sobre  Visão  Computacional  (ICCV)  2017.  https://doi.org/10.11  
+09/iccv.2017.74.
+Singh,  R.,  Srivastava,  N.,  Kashyap,  R.,  2024.  Detecção  aprimorada  de  câncer  ósseo  usando  
+classificação  por  aprendizado  convolucional  profundo  a partir  de  imagens  histopatológicas.  
+Adv.  Med.  Technol.  Clin.  Pract.  219 –236.  https://doi.org/10.4018/979-8-3693-6308-9.  
+ch010.
+Song,  L.,  Li,  C.,  Tan,  L.,  Wang,  M.,  Chen,  X.,  Ye,  Q.,  et al.,  2024.  Um  modelo  de  aprendizado  
+profundo  para  aprimorar  a classificação  de  tumores  ósseos  primários  com  base  em  imagens  
+multimodais  incompletas  em  raios-X,  tomografia  computadorizada  e ressonância  magnética.  
+Cancer  Imaging  24.  https://doi.org/10.1186/s40644-024-00784-7.
+Taye,  M.M.,  2023.  Compreensão  do  aprendizado  de  máquina  com  aprendizado  profundo:  
+arquiteturas,  fluxo  de  trabalho,  aplicações  e direções  futuras.  Computers  12,  91.  
+https://doi.org/  10.3390/com puters12050091.
+Vijayaraj,  J.,  Abirami,  B.,  Mohanty,  S.N.,  Kavitha,  V.P.,  2023.  Uma  abordagem  eficiente  de  
+gradientes  orientados  por  histograma  convolucional  e aprendizado  convolucional  profundo  
+para  a classificação precisa
+Modelo Precisão (em  
+%)
+Precisão 
+(em  %)
+Recall 
+(em  %)
+F1-Score 
+(em  %)
+Atenção de classe em 
+transformadores de 
+imagem
+54,11 50,12 55,75 49,31
+Token a token 55,97 50,82 56,29 50,74
+Pyramid  Vision 58,62 53,69 58,39 53,00
+Transformador 
+Swin  
+Transformador
+59,68 53,61 58,15 53,72
+ShuffleNet 59,95 54,49 60,38 55,11
+Imagem com  eficiência  de 
+dados
+61,01 55,68 61,44 55,55
+Transformador
+EfficientNet 61,76 60,24 62,05 61,14
+MobileNet 63,66 58,44 65,17 58,95
+Transformer-in- 63,66 58,61 65,70 58,64
+Transformador
+AlexNet 63,93 58,04 64,13 58,71
+SqueezeNet 65,78 58,63 63,02 59,01
+ResNet 66,05 59,34 64,64 60,38
+XceptionNet 67,64 62,00 66,71 61,09
+Transformador de  
+Imagens  com  
+Reforço  
+Convolucional
+DenseNet
+69,23
+72,68
+61,98
+66,97
+66,27
+72,08
+63,08
+68,80
+Modelo proposto 84,35 79,61 84,76 81,66
+25
+A. Ajay  et al.
+Computerized  Medical  Imaging  and  Graphics  127  (2026)  102668
+do  câncer  ósseo.  Int  J.  Imaging  Syst.  Tech.  34.  https://doi.org/10.1002/  im a.23000.
+Wang  Q.,  Wu  B.,  Zhu  P.,  Li  P.,  Zuo  W.,  Hu  Q.  ECA-Net:  Atenção  de  canal  eficiente  para  redes  
+neurais  convolucionais  profundas.  Conferência  IEEE/CVF  2020  sobre  Visão  Computacional  
+e Reconhecimento  de  Padrões  (CVPR)  2020:11531 –9. https://doi.org/10.1109/c  
+vpr42600.2020.01155.
+Xu,  Y.,  Shi,  F.,  Zhang,  Y.,  Yin,  M.,  Han,  X.,  Feng,  J.,  et al.,  2023.  Resultados  de  um  estudo  de  20  
+anos  sobre  prevalência,  incidência,  mortalidade  e taxa  de  sobrevivência  em  pacientes  com  
+tumores  ósseos  malignos.  Int.  J. Cancer  154,  226 –240.  https://doi.org/10.1002/ijc.34694
+Yao,  S.,  Huang,  Y.,  Wang,  X.,  Zhang,  Y.,  Paixão,  I.C.,  Wang,  Z.,  et al.,  2025.  Um  conjunto  de  
+dados  radiográficos  para  a classificação,  localização  e segmentação  de  tumores  ósseos  
+primários.  Sci.  Data  12.  https://doi.org/10.1038/s41597-024-04311-y .
+Yuan  K.,  Guo  S.,  Liu  Z.,  Zhou  A.,  Yu  F.,  Wu  W.  Incorporação  de  arquiteturas  convolucionais  em  
+transformadores  visuais.  Conferência  Internacional  IEEE/CVF  sobre  Visão  Computacional  
+(ICCV)  2021:559 –68.  https://doi.org/10.1109/iccv48922.2021.00062 .
+Zhang  X.,  Zhou  X.,  Lin  M.,  Sun  J. ShuffleNet:  Uma  rede  neural  convolucional  extremamente  
+eficiente  para  dispositivos  móveis.  Conferência  IEEE/CVF  sobre  Visão  Computacional  e 
+Reconhecimento  de  Padrões  2018.  https://doi.org/10.1109/cvpr.2018.00716 .

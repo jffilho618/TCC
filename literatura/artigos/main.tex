@@ -1,0 +1,408 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- PACOTES BÁSICOS E DE ESTILO ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor} % Para cores mais avançadas
+
+% --- PACOTES PARA TABELAS E CAIXAS ---
+\usepackage{longtable} % Essencial para tabelas que quebram entre páginas
+\usepackage{booktabs}  % Para linhas de tabela mais profissionais (toprule, midrule, bottomrule)
+\usepackage{array}     % Para customizar colunas de tabelas
+\usepackage[most]{tcolorbox} % Para criar caixas de destaque para cada artigo
+
+% --- CONFIGURAÇÕES DE PÁGINA ---
+\geometry{
+    a4paper,
+    margin=2.5cm, % Margens simétricas
+}
+
+% --- CONFIGURAÇÕES DE HYPERLINKS ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=RoyalBlue,
+    urlcolor=teal,
+    pdftitle={Fichamento de Artigos para TCC},
+    pdfauthor={Seu Nome},
+}
+
+% --- DEFINIÇÃO DE ESTILOS ---
+% Estilo para as caixas de cada artigo
+\newtcolorbox{fichabox}[1]{
+    colback=gray!5!white,
+    colframe=RoyalBlue!75!black,
+    fonttitle=\bfseries,
+    title=#1,
+    breakable, % Permite que a caixa quebre entre páginas
+    pad at break=2mm,
+    enhanced,
+    arc=3mm,
+    boxrule=1pt,
+}
+
+% Define a largura das colunas da tabela
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{B}{>{\bfseries}L{4cm}} % Coluna para os tópicos, em negrito
+
+% --- TÍTULO DO DOCUMENTO ---
+\title{\textbf{Fichamento Estruturado de Artigos para TCC \\ \large Análise de Trabalhos Relacionados}}
+\author{João Batista de Sousa Filho}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% --- TABELA COMPARATIVA (RESULTADOS) ---
+\begin{table}[ht]
+\centering
+\small
+\caption{Resultados comparativos}
+\label{tab:comparative_results}
+\begin{tabular}{lllccccp{6cm}}
+\hline
+\textbf{Trabalho} & \textbf{Modelo} & \textbf{Dataset} & \textbf{Acurácia} & \textbf{AUC} & \textbf{F1-Score} & \textbf{Recall (Sensib.)} & \textbf{Observação} \\ \hline
+Sua Proposta (Fase 3) & EfficientNetV2-L & BTXRD (Público) & 93.95\% & 0.9749 & 0.8132 & 72.55\% & Melhor generalização e consistência (AUC 0.97). \\
+Deng et al. (2024) & ResNet34 (DCNN) & Privado & 71.2\% & 0.62 & - & - & Falha crítica na distinção Benigno vs. Maligno. \\
+Yamana et al. (2025) & DINO (Transformer) & Privado & 77.0\% & - & - & 84.3\% & Validação clínica comparada a médicos. \\
+Kanchana et al. (2025) & CNN Básica & Público (Figshare) & 49.1\% & - & - & - & CNN mal otimizada; superada por ML Clássico. \\
+Dalai et al. (2025) & GSODL-CADBCC & Privado (Pequeno) & 95.52\% & - & 0.95 & 0.95 & Dataset muito pequeno (200 imgs), risco de overfitting. \\
+\hline
+\end{tabular}
+\end{table}
+
+% --- INÍCIO DA ANÁLISE DOS ARTIGOS ---
+
+\begin{fichabox}{Artigo 1: Automated Bone Cancer Detection Using Deep Learning on X-Ray Images}
+\textit{(Dalai et al., 2025 - Surgical Innovation)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead % Cabeçalho que se repete em novas páginas
+    
+    Abordagem/ Metodologia & O artigo propõe o modelo GSODL-CADBCC. A metodologia combina: (1) Pré-processamento com Bilateral Filtering para remoção de ruído; (2) Extração de características usando a CNN SqueezeNet com otimização de hiperparâmetros via Golden Search Optimization (GSO); (3) Classificação usando LSTM com ajuste fino via Improved Cuckoo Search (ICS). O pipeline visa automatizar a detecção de câncer ósseo em imagens de raio-X. \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning: SqueezeNet (CNN), LSTM. Otimização Metaheurística: Golden Search Optimization (GSO), Improved Cuckoo Search (ICS). Processamento de Imagem: Bilateral Filtering. Métricas: Acurácia, Precisão, Recall, F-Score, AUC-Score, MCC. \\
+    \addlinespace
+    
+    Dataset & Dataset proprietário de 200 imagens de raio-X ósseo (100 cancerosos e 100 saudáveis). Testado com divisões de 80:20 e 70:30. O dataset é balanceado, o que é ideal para o treinamento. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O principal diferencial em relação a trabalhos focados apenas na aplicação de CNNs é o foco em \textbf{otimização de hiperparâmetros usando algoritmos metaheurísticos} (GSO e ICS). Enquanto uma proposta convencional poderia se concentrar na arquitetura da CNN, este artigo propõe um modelo híbrido que une CNN (SqueezeNet) e LSTM com algoritmos de otimização complexos para refinar o modelo, visando alta acurácia e baixo tempo computacional. \\
+    \addlinespace
+    
+    Grau de Semelhança & Alta. Ambos os trabalhos propõem um sistema de diagnóstico auxiliado por computador (CAD) para classificar lesões ósseas em imagens de raio-X usando deep learning. A classificação binária (canceroso/saudável no artigo vs. benigno/maligno) aborda o mesmo problema fundamental de análise de radiografias para apoiar o diagnóstico. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights relevantes para trabalhos na área:} (1) O dataset pequeno (200 imagens) reforça a necessidade de buscar mais dados ou usar data augmentation; (2) A escolha de múltiplas métricas é uma boa prática a ser seguida; (3) A técnica de Bilateral Filtering para pré-processamento pode ser testada em trabalhos futuros. \textbf{Oportunidades de aprimoramento:} (1) Explorar técnicas de otimização de hiperparâmetros (como Grid Search ou Random Search) pode ser um diferencial; (2) Comparar o tempo de processamento do modelo com outros. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 2: Bone Tumor Detection using X-Ray Images}
+\textit{(Kanchana et al., 2025 - ICICI)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & O trabalho realiza uma análise comparativa de quatro modelos de classificação para detecção de tumores ósseos: CNN, Stochastic Gradient Descent (SDG), XGBoost e ResNet-50. O fluxo de trabalho inclui pré-processamento (redimensionamento, filtro Gaussiano, normalização), classificação, segmentação da área do tumor e detecção de bordas (Canny). Uma GUI em Tkinter é desenvolvida para interação em tempo real. \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning: CNN, ResNet-50. Machine Learning Clássico: XGBoost, SDG. Processamento de Imagem: Filtro Gaussiano, Detecção de Bordas Canny. GUI: Tkinter. Métricas: Acurácia, Precisão, Recall, AUC. \\
+    \addlinespace
+    
+    Dataset & Utiliza um dataset público do Figshare com 2001 imagens (1000 com tumor e 1001 sem tumor). A divisão dos dados foi de 80\% para treino e 20\% para teste. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O diferencial é a \textbf{análise comparativa entre modelos de Deep Learning e Machine Learning clássico}. Enquanto propostas focadas em CNNs avaliam apenas esta tecnologia, este artigo investiga um espectro mais amplo e conclui que o XGBoost (um modelo não-CNN) obteve o melhor desempenho (94\% de acurácia). Além disso, a inclusão de funcionalidades de segmentação e uma GUI para visualização representa um sistema mais completo. \\
+    \addlinespace
+    
+    Grau de Semelhança & Elevado. Ambos os trabalhos visam a classificação automática de anomalias ósseas em radiografias. O problema central, o tipo de imagem e o objetivo de classificação (tumor/não-tumor vs. benigno/maligno) são diretamente análogos. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights relevantes para trabalhos na área:} (1) O forte desempenho do XGBoost sugere que seria valioso comparar modelos de CNN com um baseline de ML clássico; (2) O uso de um dataset público maior (Figshare) é uma excelente alternativa a datasets proprietários; (3) A implementação de uma interface gráfica simples pode valorizar a apresentação de um projeto. \textbf{Cuidados:} A baixa performance da CNN (49.1\%) neste artigo é atípica e pode indicar uma arquitetura mal otimizada, o que representa uma oportunidade para novos trabalhos mostrarem resultados superiores com uma CNN bem ajustada. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{{Artigo 3: A Radiograph Dataset for the Classification, Localization, and Segmentation of Primary Bone Tumors}}
+\textit{(Yao et al., 2025 - Scientific Data)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & Este artigo não propõe um novo método de classificação, mas sim descreve a criação e disponibilização de um dataset de alta qualidade, o BTXRD (Bone Tumor X-ray Radiograph dataset). O trabalho detalha o processo de coleta de dados de múltiplos centros, pré-processamento, limpeza e anotação por especialistas. O objetivo é fornecer um recurso público para impulsionar a pesquisa na área. \\
+    \addlinespace
+    
+    Tecnologias & O artigo em si não desenvolve uma tecnologia, mas a valida com: YOLOv8s (localização), YOLOv8s-seg (segmentação) e YOLOv8s-cls (classificação). A ferramenta de anotação utilizada foi a LabelMe. \\
+    \addlinespace
+    
+    Dataset & O artigo apresenta o dataset \textbf{BTXRD}, público e disponível no Figshare. Contém 3.746 imagens (1.879 normais e 1.867 com tumor, sendo 1.525 benignos e 342 malignos). As anotações são ricas, incluindo: classificação global, informações clínicas, localização (bounding boxes) e segmentação (máscaras). \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & A contribuição deste artigo é \textbf{fundamentalmente diferente e complementar} a trabalhos de classificação. Ele não compete em metodologia, mas \textbf{fornece a matéria-prima essencial} para a pesquisa na área: um dataset público, grande, multi-institucional e ricamente anotado. O diferencial é ser um trabalho de "Data Descriptor", focado em resolver o problema da escassez de dados de qualidade, o que viabiliza tais projetos. \\
+    \addlinespace
+    
+    Grau de Semelhança & Relevância altíssima, mas não por semelhança de método. A semelhança está no \textbf{domínio do problema}. Este artigo aborda a principal necessidade para a execução de um trabalho na área: um conjunto de dados robusto e confiável para treinar e validar um modelo de classificação de lesões ósseas em radiografias. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Este artigo é um achado para a área de pesquisa.} (1) O dataset \textbf{BTXRD} é superior a outros mencionados em tamanho e qualidade da anotação; (2) As anotações de localização e segmentação abrem a possibilidade de expandir o escopo de um trabalho para além da simples classificação, o que seria um grande diferencial; (3) O artigo já fornece resultados de baseline usando YOLOv8, que podem servir como um excelente ponto de comparação para o desempenho de um novo modelo. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 4: Deep learning-based classification of primary bone tumors on radiographs: A preliminary study}
+\textit{(He et al., 2020 - EBioMedicine)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead 
+    
+    Abordagem/ Metodologia & O estudo desenvolve um modelo de deep learning (baseado na arquitetura EfficientNet-B0) para classificar tumores ósseos primários em radiografias. A principal abordagem é a classificação em três vias (benigno, intermediário e maligno) e uma \textbf{comparação rigorosa do desempenho do modelo com o de radiologistas} de diferentes níveis de experiência (cinco radiologistas no total, incluindo subespecialistas e juniores). A metodologia inclui validação cruzada de 5 dobras e teste com um conjunto de dados externo para avaliar a generalização. \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning: CNN (EfficientNet-B0). Plataformas: Python, PyTorch. Métricas de Avaliação: Acurácia, AUC (Area Under Curve), Cohen's Kappa, Sensibilidade, Especificidade. \\
+    \addlinespace
+    
+    Dataset & Dataset robusto e multi-institucional, coletado de cinco grandes centros acadêmicos. Contém \textbf{2.899 imagens de 1.356 pacientes} com tumores ósseos primários confirmados por histologia. As lesões são divididas em 679 benignas, 317 intermediárias e 360 malignas. O dataset não é público, mas pode ser disponibilizado mediante solicitação. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O grande diferencial é a \textbf{validação clínica da performance do modelo contra profissionais humanos}. Enquanto muitos trabalhos apenas reportam métricas de acurácia, este artigo se aprofunda ao demonstrar que o modelo atinge um desempenho \textbf{comparável ao de subespecialistas e superior ao de radiologistas juniores}. Isso confere um grau de validação muito mais elevado e focado na aplicabilidade clínica. Além disso, a classificação em três categorias é mais detalhada que a binária. \\
+    \addlinespace
+    
+    Grau de Semelhança & Altíssimo. O trabalho utiliza deep learning para classificar tumores ósseos em radiografias convencionais. O domínio do problema, o tipo de imagem e o objetivo final são essencialmente os mesmos, tornando este artigo uma referência central e um excelente parâmetro de comparação para pesquisas análogas. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights valiosos para a pesquisa na área:} (1) O desempenho "comparável a subespecialistas" serve como um benchmark de excelência para novos trabalhos. (2) O uso de um conjunto de teste externo de outras instituições é uma prática fundamental para provar a generalização de um modelo. (3) A análise detalhada dos casos de discordância entre o modelo e os especialistas é uma ótima maneira de entender as limitações e os pontos fortes do algoritmo, uma análise que enriqueceria um trabalho de conclusão. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 5: Auxiliary diagnosis of primary bone tumors based on Machine learning model}
+\textit{(Deng et al., 2024 - Journal of Bone Oncology)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & Propõe o uso de uma Deep Convolutional Neural Network (DCNN), especificamente a ResNet34, para duas tarefas de classificação em radiografias do joelho: (1) diferenciar imagens normais de imagens com tumor e (2) diferenciar tumores benignos de malignos. O estudo utiliza um fluxo de trabalho de pré-processamento, extração de features pela ResNet e classificação. A validação é feita com K-fold cross-validation. \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning: DCNN (ResNet34). Métricas: Acurácia, Positive Predictive Value (PPV), Negative Predictive Value (NPV), AUC. \\
+    \addlinespace
+    
+    Dataset & Dataset pequeno e de uma única instituição, focado em tumores ao redor do joelho. Inclui 50 tumores malignos, 25 benignos e 75 imagens normais de controle, totalizando 150 indivíduos. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O diferencial deste artigo, em comparação a outros trabalhos, reside na \textbf{demonstração explícita da diferença de complexidade entre detecção e classificação}. O modelo obteve uma performance quase perfeita (99.8\% de acurácia) para diferenciar "normal vs. tumor", mas uma performance significativamente baixa (71.2\% de acurácia e AUC de 0.62) para diferenciar "benigno vs. maligno". Essa disparidade é a principal contribuição do trabalho. \\
+    \addlinespace
+    
+    Grau de Semelhança & Elevado. O trabalho também aplica uma CNN para classificar tumores ósseos em radiografias. Embora o escopo seja mais restrito (apenas joelho) e o dataset menor, o problema fundamental abordado é o mesmo. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights e oportunidades para a pesquisa:} (1) O baixo desempenho na classificação benigno/maligno (AUC de 0.62) representa um \textbf{baseline que novos trabalhos podem superar}, demonstrando a superioridade de novas abordagens (provavelmente devido a um dataset maior e/ou arquitetura mais robusta). (2) O tamanho reduzido do dataset (apenas 75 tumores) é uma limitação clara e reforça a importância da escolha por um dataset mais completo, como o BTXRD. (3) A alta acurácia na detecção de anomalias (normal vs. tumor) sugere que um sistema de triagem inicial é viável. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 6: A Deep Evaluation of Digital Image based Bone Cancer Prediction using Modified Machine Learning Strategy}
+\textit{(Bapu B R et al., 2023 - ICSSS Conference)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & Este artigo propõe um método chamado ELBCP (Elevated Learning based Bone Cancer Prediction) e o compara com um SVM (Support Vector Machine). Apesar do título, a abordagem \textbf{não utiliza deep learning}. A metodologia segue um pipeline clássico de Machine Learning: (1) Pré-processamento com filtro de mediana; (2) Segmentação da imagem; (3) Extração manual de features de textura (contraste, correlação, energia, homogeneidade); (4) Classificação com o modelo ELBCP, que é descrito como um algoritmo k-Nearest Neighbors (k-NN). \\
+    \addlinespace
+    
+    Tecnologias & Machine Learning Clássico: k-Nearest Neighbors (k-NN), Support Vector Machine (SVM). Processamento de Imagem: Filtro de Mediana, Extração de Features de Textura. Software: MATLAB. \\
+    \addlinespace
+    
+    Dataset & O artigo \textbf{não especifica a fonte, o tamanho ou a composição do dataset} utilizado. Menciona apenas "data acquired from actual clinical trials" e "Real-world Dataset", o que representa uma grande limitação para a reprodutibilidade e validação dos resultados. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & A principal diferença em relação a abordagens de deep learning é a metodologia. Este trabalho representa a \textbf{estratégia clássica de visão computacional}, que depende da extração manual de características (feature engineering). Em contraste, abordagens de deep learning (baseadas em CNNs) utilizam um processo onde a extração de características é aprendida automaticamente pela rede. \\
+    \addlinespace
+    
+    Grau de Semelhança & Médio. O problema a ser resolvido (classificação de câncer ósseo em imagens) é o mesmo. No entanto, a \textbf{metodologia é fundamentalmente diferente} (Machine Learning clássico vs. Deep Learning). Essa diferença o torna um excelente artigo para fins de contraste e contextualização em um referencial teórico. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Excelente para usar como contraponto em trabalhos da área:} (1) Este trabalho pode ser citado para ilustrar a abordagem "tradicional" e, em seguida, argumentar por que o deep learning é mais poderoso. (2) A falta de detalhes sobre o dataset é uma falha metodológica que pode ser apontada em uma revisão bibliográfica, reforçando a importância da transparência e do uso de datasets públicos. (3) Os resultados de acurácia reportados (~96\% para o ELBCP) devem ser vistos com ceticismo devido à falta de informação sobre os dados, mas podem servir como um baseline de ML clássico para comparar com novos resultados. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 7: Bone Tumor Detection using Faster R-CNN}
+\textit{(Sharif et al., 2024 - IEEE BECITHCON)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead 
+    
+    Abordagem/ Metodologia & A abordagem deste trabalho vai além da simples classificação, focando em \textbf{detecção de objetos}. O artigo propõe um modelo baseado em \textbf{Faster R-CNN} para não apenas classificar uma imagem como contendo tumor ou não, mas também para \textbf{localizar o tumor} através de uma caixa delimitadora (bounding box). A metodologia utiliza uma CNN personalizada como backbone, que primeiro classifica a imagem, e em seguida uma Region Proposal Network (RPN) para gerar as coordenadas da localização do tumor. \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning (Detecção de Objetos): Faster R-CNN, CNN, Region Proposal Network (RPN). Ferramentas: PyTorch, CVAT (para anotação de imagens). Métricas: Mean Average Precision (mAP), Acurácia, Intersection over Union (IoU). \\
+    \addlinespace
+    
+    Dataset & Utiliza um dataset de tamanho considerável com um total de 3.522 imagens de raio-X, sendo 2.283 imagens contendo tumores e o restante de imagens normais. As anotações incluem as caixas delimitadoras para a tarefa de localização. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O diferencial fundamental em relação a trabalhos de classificação é a mudança de paradigma de \textbf{classificação para detecção}. Enquanto um classificador responde "sim" ou "não" para a presença de um tumor na imagem, este modelo responde "sim, e ele está localizado nesta região". Esta abordagem de localização é um passo significativo em direção a uma maior utilidade clínica. \\
+    \addlinespace
+    
+    Grau de Semelhança & A relevância é altíssima, mas a tarefa é diferente. O domínio do problema (tumores ósseos em raio-X) é idêntico. No entanto, a complexidade técnica é maior, tornando este artigo um excelente exemplo de uma abordagem mais avançada que pode ser discutida na seção de trabalhos futuros de um TCC na área. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights relevantes para a pesquisa:} (1) Este artigo é perfeito para ser citado na discussão sobre as limitações de um sistema de classificação pura e as vantagens de um sistema de detecção e localização. (2) A métrica principal utilizada, \textbf{mAP (Mean Average Precision)}, é o padrão para tarefas de detecção de objetos e deve ser mencionada ao se comparar os métodos. (3) O resultado de 96.28\% de mAP estabelece um benchmark de alta performance para a tarefa de localização. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 8: Applying CNNs for the Early Detection of Bone Malignant Tumors in X-Ray Images}
+\textit{(Punia et al., 2025 - AUTOCOM Conference)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & O artigo propõe um sistema para a detecção de tumores malignos em imagens de raio-X. A metodologia é \textbf{híbrida}, combinando técnicas clássicas de processamento de imagem com deep learning. O pipeline consiste em: (1) Pré-processamento com Filtro de Mediana; (2) Segmentação com K-means clustering e Detecção de Bordas Canny; (3) Classificação final (normal vs. maligno) utilizando uma Convolutional Neural Network (CNN). \\
+    \addlinespace
+    
+    Tecnologias & Deep Learning: CNN. Processamento de Imagem Clássico: Filtro de Mediana, K-means clustering, Detecção de Bordas Canny. Métricas: Acurácia, Sensibilidade, Especificidade. \\
+    \addlinespace
+    
+    Dataset & Utiliza um dataset balanceado com 500 imagens de raio-X, sendo 250 casos positivos (tumores malignos) e 250 casos negativos (normais), coletados de diversas instituições médicas. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & O principal diferencial em relação a propostas end-to-end é o \textbf{uso explícito de técnicas clássicas de visão computacional como uma etapa de pré-processamento} antes da CNN. Em vez de alimentar a rede com a imagem bruta, os autores primeiro segmentam e extraem bordas da imagem, fornecendo uma entrada já processada para a CNN. \\
+    \addlinespace
+    
+    Grau de Semelhança & Elevado. A tarefa central de classificação binária de tumores ósseos em raio-X com CNNs é a mesma. A semelhança está no objetivo, mas a diferença está na pipeline de pré-processamento. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Insights e oportunidades para a pesquisa:} (1) Este trabalho é um ótimo exemplo para comparar abordagens "end-to-end" (onde a CNN aprende tudo sozinha) com uma abordagem híbrida, argumentando sobre as vantagens de cada método. (2) A acurácia reportada de "acima de 90\%" é um bom ponto de comparação. (3) A discussão do artigo sobre o problema do "black box" das CNNs pode ser uma referência útil para a seção de discussão ou limitações de um trabalho. \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 9: Bone Cancer Detection techniques using Machine Learning}
+\textit{(Kaur \& Garg, 2022 - ICCMSO Conference)}
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+    
+    Abordagem/ Metodologia & Este artigo é um \textbf{trabalho de revisão (survey)}. Ele não propõe um novo método experimental, mas sim apresenta uma visão geral das técnicas de Machine Learning para detecção de câncer ósseo. A metodologia consiste em revisar e discutir diferentes tipos de câncer, modalidades de imagem (Raio-X, MRI, CT) e algoritmos de classificação, tanto clássicos (SVM, Random Forest, k-NN) quanto de deep learning (CNN). \\
+    \addlinespace
+    
+    Tecnologias & O artigo revisa um vasto espectro de tecnologias, incluindo: Machine Learning Clássico (Decision Tree, SVM, Random Forest, Genetic Algorithm, k-NN) e Deep Learning (CNN). Também aborda técnicas de segmentação (K-means, Region Growing) e extração de features (GLCM). \\
+    \addlinespace
+    
+    Dataset & Por ser um artigo de revisão, não utiliza um dataset próprio. Em vez disso, compila e apresenta informações de trabalhos anteriores, incluindo uma tabela comparativa que resume as técnicas e os tipos de imagens usados por outros pesquisadores. \\
+    \addlinespace
+    
+    Contribuição/ Diferencial & A contribuição deste artigo é \textbf{fornecer contexto e uma base teórica consolidada}, sendo diferente dos artigos experimentais. Para um TCC experimental, ele não serve como um método concorrente, mas sim como uma \textbf{fonte rica para o capítulo de revisão de literatura}. O seu diferencial é a organização e a síntese do conhecimento existente na área até a data de sua publicação. \\
+    \addlinespace
+    
+    Grau de Semelhança & A semelhança está inteiramente no \textbf{domínio do problema}. Metodologicamente, é distinto por ser um trabalho de revisão. Sua relevância para um TCC na área é altíssima, mas como material de suporte e fundamentação teórica, não como um método a ser comparado diretamente em termos de performance. \\
+    \addlinespace
+    
+    Observações/ Insights & \textbf{Este artigo é uma ferramenta valiosa para a fundamentação teórica:} (1) Pode ser utilizado extensivamente em um capítulo de Referencial Teórico/Trabalhos Relacionados, pois consolida a pesquisa bibliográfica. (2) A Tabela I ("Comparative Analysis") é um excelente resumo que pode ser citado para contextualizar diferentes abordagens. (3) As seções de "Oportunidades" e "Desafios" podem fornecer ótimas ideias para justificar a relevância de um novo trabalho e para a seção de "Trabalhos Futuros". \\
+    
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 10: Advanced hybrid deep learning model for enhanced evaluation of osteosarcoma histopathology images}
+\textit{(Borji et al., 2025 - Frontiers in Medicine)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+
+    Abordagem/ Metodologia & Este artigo propõe um modelo híbrido inovador que combina CNN e Vision Transformer (ViT) para melhorar a precisão diagnóstica de osteossarcoma usando imagens histopatológicas coradas com H\&E. O modelo CNN extrai características locais (bordas e texturas), enquanto o ViT captura padrões globais através de mecanismos de auto-atenção. As características são então concatenadas (vetor de 151.552 dimensões) e classificadas usando um MLP em quatro categorias: non-tumor (NT), non-viable tumor (NVT), viable tumor (VT) e non-viable ratio (NVR). \\
+    \addlinespace
+
+    Tecnologias & Deep Learning: CNN customizada (3 blocos convolucionais com 64, 128 e 256 filtros), Vision Transformer (ViT), ResNet50, Multi-Layer Perceptron (MLP). Otimizador: Adam (β1=0.9, β2=0.999). Pré-processamento: Bilateral Filtering, redimensionamento para 128×128, normalização, data augmentation (rotação ±15°, flipping, ajustes de brilho/contraste). Métricas: Acurácia, Precisão, Recall, F1-Score, AUC. \\
+    \addlinespace
+
+    Dataset & Dataset TCIA (The Cancer Imaging Archive) público com 1.144 imagens histopatológicas de osteossarcoma (536 NT, 263 NVT, 292 VT, 53 NVR). Divisão: 60\% treino, 15\% validação, 25\% teste. Dataset desbalanceado, com class weighting aplicado durante treinamento. \\
+    \addlinespace
+
+    Contribuição/ Diferencial & O principal diferencial é a \textbf{primeira classificação bem-sucedida de quatro classes} usando este dataset, estabelecendo um novo benchmark para pesquisa de osteossarcoma. A fusão híbrida CNN+ViT permite capturar simultaneamente características locais (detalhes histológicos como morfologia nuclear) e globais (dependências espaciais e padrões estruturais). Diferentemente de trabalhos anteriores que requeriam segmentação manual, este modelo funciona end-to-end diretamente nas imagens. A categoria NVR é especialmente relevante clinicamente pois ajuda avaliar eficácia do tratamento. \\
+    \addlinespace
+
+    Grau de Semelhança & Média-Alta. Embora ambos trabalhem com câncer ósseo, este artigo foca em \textbf{imagens histopatológicas} (microscópicas) enquanto outros usam radiografias. A classificação é mais granular (4 classes vs. 2-3 classes). O objetivo é avaliar resposta ao tratamento através da proporção de tecido necrótico, não apenas detectar/classificar o tumor inicial. \\
+    \addlinespace
+
+    Observações/ Insights & \textbf{Insights valiosos:} (1) O modelo híbrido CNN+ViT alcançou acurácia de 99.08\%, precisão de 99.10\%, recall de 99.28\% e F1-score de 99.23\% na classificação de 4 classes, superando significativamente CNN (81\%), ViT (89\%) e ResNet (87\%) isolados; (2) Análise estatística robusta com testes paired t-test, ANOVA (p=5.38×10⁻⁹) e intervalos de confiança de 95\%; (3) A classe NVR, apesar de ter apenas 53 amostras, é crucial para prognóstico e planejamento de tratamento; (4) O modelo demonstrou potencial como ferramenta de suporte à decisão clínica, auxiliando patologistas na identificação de regiões de interesse; (5) \textbf{Limitações:} Dataset relativamente pequeno (1.144 imagens), imagens redimensionadas para 128×128 (limitação de GPU), desbalanceamento de classes (NVR sub-representada). \textbf{Diferenças metodológicas importantes:} Este trabalho usa imagens histopatológicas que complementam radiografias, sendo útil em estágios diferentes do diagnóstico. \\
+
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\begin{fichabox}{Artigo 11: Development and evaluation of deep learning models for detecting and classifying various bone tumours in full-field limb radiographs using automated object detection models}
+\textit{(Yamana et al., 2025 - Bone Joint Research)}
+
+\begin{longtable}{@{} B L{10.5cm} @{}}
+    \toprule
+    \textbf{Tópico} & \textbf{Análise} \\
+    \midrule
+    \endhead
+
+    Abordagem/ Metodologia & Este trabalho desenvolve modelos de detecção de objetos totalmente automatizados para detectar e classificar tumores ósseos benignos/malignos em radiografias completas de membros. Compara dois modelos: DINO (Detection with transformers with Improved deNoising anchOr boxes) baseado em Transformer vs. YOLO-v8x baseado em CNN. O pipeline inclui pré-processamento (redimensionamento 512×512, flipping horizontal), detecção automática via bounding boxes, e classificação binária (benigno/maligno). Validação cruzada de 5-fold foi utilizada. Adicionalmente, compara o desempenho do modelo DINO com 3 oncologistas ortopédicos e 3 cirurgiões ortopédicos gerais. \\
+    \addlinespace
+
+    Tecnologias & Deep Learning: DINO (Transformer-based), YOLO-v8x (CNN-based). Ambos modelos são frameworks open-source. Otimização: Adam. Pré-processamento: redimensionamento, flipping, data augmentation (cropping, rotação). Anotação: LabelMe para bounding boxes. Métricas: Taxa de detecção, IoU (Intersection over Union), Acurácia, Sensibilidade, Especificidade, Precisão, F-measure. \\
+    \addlinespace
+
+    Dataset & Dataset multi-institucional de 642 casos de tumores ósseos de membros com 40 diagnósticos confirmados patologicamente (378 benignos, 264 malignos incluindo tipos intermediários), totalizando 1.129 radiografias. Três instituições: Kyushu University Hospital (432 casos), Kyushu Rosai Hospital (146 casos), National Hospital Organization Kyushu Cancer Center (64 casos). Período: 2006-2022. \\
+    \addlinespace
+
+    Contribuição/ Diferencial & O diferencial principal é a \textbf{comparação direta entre arquiteturas Transformer (DINO) vs. CNN (YOLO)} em detecção/classificação de tumores ósseos em radiografias completas (full-field), sem cropping manual. O DINO demonstrou superioridade significativa (85.7\% vs 80.1\% detecção, p=0.014), especialmente para tumores malignos (89.0\% vs 81.1\%). Além disso, é o primeiro trabalho a validar performance de IA comparando diretamente com médicos em cenário clínico real, mostrando que DINO supera cirurgiões gerais e é comparável a oncologistas. O mecanismo de atenção do Transformer permite capturar relações não-locais cruciais para diagnóstico (tipo ósseo, formato, localização do tumor). \\
+    \addlinespace
+
+    Grau de Semelhança & Altíssimo. Este é o trabalho \textbf{mais próximo} ao objetivo do TCC. Ambos usam radiografias de membros, deep learning para classificação benigno/maligno, e múltiplos tipos de tumores ósseos. A principal diferença é que este trabalho usa detecção de objetos (DINO/YOLO) enquanto outros podem usar classificação direta de imagens. \\
+    \addlinespace
+
+    Observações/ Insights & \textbf{Insights extremamente relevantes:} (1) DINO (Transformer) superou YOLO (CNN) significativamente na detecção (85.7\% vs 80.1\%, p=0.014), comprovando que mecanismos de atenção global são superiores para esta tarefa; (2) Na comparação com médicos, DINO alcançou acurácia de 77.0\%, sensibilidade de 84.3\%, superando significativamente cirurgiões gerais (acurácia 63.7-69.9\%, sensibilidade 49.0-64.7\%); (3) DINO classificou corretamente 78.6\% (22/28) dos casos difíceis que 2+ médicos erraram; (4) Tumores benignos foram mais difíceis de detectar que malignos (bounding box menor); (5) Erros do DINO ocorreram principalmente em casos diagnosticamente desafiadores para oncologistas ou tumores em locais atípicos; (6) \textbf{Implicações práticas:} O modelo pode servir como ferramenta de suporte clínico, reduzindo carga de trabalho e evitando misdiagnóstico de malignos como benignos. \textbf{Limitações importantes:} (1) 642 casos ainda é pequeno para diversidade de tumores ósseos; (2) Imagens 512×512 (limitação GPU); (3) Apenas membros (excluiu vértebras, pelve, costelas); (4) Não treinado em fraturas ou doenças degenerativas (necessário para aplicação clínica real). \\
+
+    \bottomrule
+\end{longtable}
+\end{fichabox}
+
+\end{document}

@@ -1,0 +1,596 @@
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+  
+A Deep Evaluation of Digital Image based Bone 
+Cancer Prediction using Modified Machine 
+Learning Strategy 
+ 
+Dr Tapas Bapu B R 
+Professor 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+tapasbapusaec@gmail.com 
+ 
+Vidhyaharni. J 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+2114052@saec.ac.in 
+ 
+ 
+Sangamithra. R 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+2114043@saec.ac.in 
+ 
+Thynas Sharmi. J 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+2114050@saec.ac.in 
+ 
+ 
+Vinothini. S 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+2114055@saec.ac.in 
+ 
+ 
+Sabitha. C 
+Department of ECE 
+S.A.Engineering College 
+Chennai - 77. 
+2114038@saec.ac.in 
+Abstract—Every single person, regardless of their age or 
+stage in life, is at risk of developing the fatal disease known as 
+cancer. There is a greater likelihood that cancer will affect 
+more than one-third of the population at some point 
+throughout their lifespan. In particular, bone cancer is a 
+significant cause for concern in terms of health since it 
+frequently leads to the patient's passing away. By examining 
+the pictures obtained from X-ray, MRI, or CT scans, it is 
+possible to identify the presence of bone cancer. The manual 
+process requires a significant amount of effort and time-
+consuming expertise, and it also requires specific knowledge. 
+As a result, the development of an automated method to 
+differentiate between healthy bone and bone that has advanced 
+cancer is of the utmost importance. The texture of malignant 
+bone in the affected region is distinct from that of healthy bone 
+in that portion of the body. It is important to note that the 
+sample contains a number of images that exhibit 
+morphological characteristics that are characteristic of both 
+malignant and healthy bone. The early identification of this 
+malignancy, including bone cancer, may be accomplished with 
+the highest possible degree of precision through the use of 
+medical imaging correlation in conjunction with image 
+processing and machine learning techniques. This study 
+proposes a strategy for identifying bone cancer by utilizing 
+data acquired from actual clinical trials. The method is 
+comprised of a number of phases that have the potential to 
+increase the accuracy of disease prediction. The proposed 
+model is designed based on Modified Machine Learning 
+Strategy, called Elevated Learning based Bone Cancer 
+Prediction (ELBCP), in which it evaluates the input image and 
+predicts the bone cancer with high precision as well as the 
+model is cross-validated with the conventional learning based 
+classification model called Support Vector Machine (SVM) to 
+prove the efficiency and performance of the proposed scheme. 
+ 
+Keywords— Digital Image Processing, Bone Cancer, Disease 
+Prediction, Modified Machine Learning, Elevated Learning 
+ 
+       979-8-3503-8420-8/23/$31.00 ©2023 IEEE 
+ 
+based Bone Cancer Prediction, ELBCP, Support Vector 
+Machine, SVM 
+I. INTRODUCTION 
+ 
+There are 206 bones in a human body. The body's muscles 
+attach to bones, which in turn sustain the motions [1]. 
+Fibrous tissue loaded with spongy marrow from the bone 
+makes up bone ligaments. Tumors arising from bone cancer 
+begin in normally functioning cells. Cancer of the bone 
+often manifests as a tumor in the bone [2]. Over time, the 
+tumor expands and might potentially metastasize. It has the 
+potential to weaken bones by destroying their tissue. 
+Multiple tests are used by the doctor to diagnose cancer. In 
+order to identify bone cancer in humans, X-ray imaging 
+diagnostics is employed. The rates of X-ray absorption by 
+healthy bone and malignant bone are distinct [11].  
+ 
+The ability to see the shape and function of human organs 
+through bio-medical imaging makes them a powerful 
+diagnostic tool. Medical images are a one-of-a-kind 
+resource for tracking the efficacy of treatment. In order to 
+identify illness or contaminated tissue, our bodies use a 
+range of diagnostic imaging methods. Cancer kills more 
+people than any other disease, regardless of gender. There is 
+hope for a complete cure for cancer if the disease can be 
+detected early. There is a need for early detection tools for 
+cancer nodules because cancer of the bones is brought about 
+by the uncontrolled proliferation of bone structures. 
+Metastatic disease occurs when the growth goes beyond the 
+bone as well as may spread to other organs. Bone is a 
+common site for the development of carcinomas, which are 
+cancers that originate in epithelial cells [3]. 
+ 
+2023 9th International Conference on Smart Structures and Systems (ICSSS) | 979-8-3503-8420-8/23/$31.00 ©2023 IEEE | DOI: 10.1109/ICSSS58085.2023.10407146
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+Various machine learning methods used to medical 
+services based on Ultrasound, MRI, CT, histology an d 
+microscopic pictures, in which all are parts of the  
+biomedical imaging modalities. Biomedical imaging 
+focuses on a variety of organs, including the liver , brain, 
+prostate, lungs, and to investigate genetic correla tions. An 
+outstanding resource for industrial scientists, med ical 
+imaging researchers, clinicians, and students is the coupling 
+of medical imaging with machine learning [4]. Malig nant 
+cells multiply uncontrollably and metastasize (spre ad) to 
+other organs in the body at a fast pace. Cancer can  develop 
+from a number of different sources, some of which c an be 
+avoided while others cannot. It is possible to avoi d risk 
+factors including smoking, high UV radiation exposure, and 
+alcohol consumption. Genetic factors, however, cann ot be 
+changed [12]. Both hereditary and environmental variables, 
+such as a person's lifestyle choices (such as smoki ng) 
+contribute to these genetic factors. Furthermore, a mong the 
+immutable variables, age stands out the most. The following 
+figure Fig.1 shows the MRI scan of tumor-ridden bone. 
+ 
+ 
+Fig.1 MRI Scan of Tumor-Ridden Bone 
+ 
+An unusual symptom of bone cancer, which is 
+extremely rare, is localized swelling or pain in th e bone. 
+The uncontrolled growth of aberrant cells in the bo ne, 
+which can then metastasize to other organs, is the hallmark 
+of bone cancer [5]. We anticipate a 3900% rise in n ew 
+instances of bone cancer in 2022, along with 2100 
+fatalities. Most cases of bone cancer are seen in individuals 
+less than 20 years old. Common modalities utilized in 
+medical imaging include radiography, X-ray, CT scan s, 
+MRI, ultrasound, phototherapy, as well as positron 
+emission tomography.  
+ 
+In addition to being easily removed surgically, the  
+majority of benign tumors do not recur. The nuclei of 
+malignant tumors are bigger than those of a benign tumor. 
+Sarcomas, the medical name for bone cancer, can sta rt in 
+a variety of tissues throughout the body, including fibrous 
+tissue, bones, blood vessels, and muscles. Cancers such as 
+chondrosarcoma, osteosarcoma, pleomorphic sarcoma, 
+ewings sarcoma, and fibro sarcoma are quite prevale nt. 
+Bone cancer is characterized by the development of 
+tumors in the bone, which in turn hinders bone mobi lity 
+and growth. The growth of an enchondroma, benign bo ne 
+tumors, begins in the cartilage. 
+II.  RELATED STUDY  
+ 
+Cancer strikes individuals of any age and always ta kes 
+their lives. More than one-third of the population will be 
+diagnosed with cancer at some point in their lifeti mes [6]. 
+The main goal is to pinpoint the affected region in the bone 
+tract, that is, the aberrant growth and illness sta ge, by 
+analyzing diagnostic medical imaging techniques 
+including X-ray, CT, and PET scans. Due to the larg e 
+number of slice per pixel as well as noise, the sca nned 
+visuals might not have a good resolution. To fix th is, the 
+photos must be pre-processed using a median filter to 
+remove the noise. We will use a genetic technique t o 
+analyze specific features in the pre-processed pict ure, and 
+then we will use C NN to recover them. In order to assist 
+the doctor decides what kind of treatment to prescr ibe, a 
+CNN classifier is used to classify and record the a cquired 
+images according to the patient's disease stage [6]. Results 
+from using the proposed approach show that bone can cer 
+is more often detected at an early stage [6]. 
+ 
+Research in the medical field has benefited from the use 
+of artificial intelligence [7]. Cancer detection an d 
+prognosis apps have been developed by academics in 
+response to the accessibility of open-source health care 
+information. When faced with such difficult illness es, 
+models based on machine learning and deep learning offer 
+a dependable, quick, and effective solution [7]. From 2009 
+to 2021, papers were chosen from the Web of Science s, 
+EBSCO, as well as EMBASE databases using PRISMA 
+standards. We conducted a thorough search and inclu ded 
+all research publications that used AI-based learni ng 
+methods for cancer prediction in our study. The use of both 
+traditional machine learning as well as deep learni ng-
+based classifications for cancer prediction has res ulted in 
+185 publications that are deemed influential. Predi ction 
+rate, accuracy, specificity, sensitivity, detection rate,  dice 
+score, precision, area undercover, recall, as well as F1-
+score were some of the metrics used in the survey's  
+comparisons, which also discussed the work of other  
+researchers and pointed out the gaps in the current  
+literature. We looked at potential answers to five different 
+probes. Unfortunately, cancer death rates have not 
+decreased despite the success of several methods 
+suggested in the literature for making predictions.  
+Accordingly, the difficulties in cancer prognosis 
+necessitate greater study [7]. 
+ 
+It is possible that the oversimplification of the 
+proportional hazard model, which assumes that the r esult 
+is a linear combination of factors, makes it unsuit able for 
+predicting the outcome of cancer patients [8]. This  model 
+is frequently employed to assess prognostic variabl es in 
+cancer patients' survival rates. We implemented and  
+validated a deep learning-based survival prediction  
+approach in oral squamous cell carcinoma patients i n this 
+retrospective study [8]. The study included 255 pat ients 
+who were eligible for analysis and had surgery in o ur 
+department between 2000 and 2017. An analysis was 
+conducted to compare DeepSurv, an algorithm for survival 
+prediction based on deep learning, with RSF and CPH, two 
+other popular models. With a c-index of 0.810 in th e 
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+training set and 0.781 in the testing set, DeepSurv  
+outperformed the other two models, RSF (0.770/0.764 ) 
+and CPH (0.756/0.694). With each new feature, 
+DeepSurv's performance got better. As a result, sur vival 
+prediction powered by deep learning has the potenti al to 
+enhance prediction accuracy and direct physicians towards 
+treatment options that enhance survival while avoid ing 
+therapies that aren't essential [8]. 
+ 
+One form of cancer, known as bone marrow cancer, 
+grows in the bone marrow's stem cells, which are in charge 
+of making blood [9]. Multiple myeloma (MM) and acut e 
+myeloid leukaemia (AML) are two examples of cancers  
+that can impact the bone marrow. Traditional method s 
+required a highly trained individual to complete th e task 
+manually, which added significant time to the proce ss. 
+Consequently, a more precise method of diagnosis is  
+necessary for the provision of effective care. By enhancing 
+a one-of-a-kind method—classification and 
+segmentation—the proposed study has made it possible to 
+detect more complex diseases. Despite efforts to im prove 
+cancer cell identification accuracy and reduce fals e alarm 
+rates, the study's results still lean towards the b ad end of 
+the outcome spectrum, say the researchers. Adaptive  
+multi-objective CAT algorithms, hyper parameter settings, 
+and deep convolutional neural networks are all part  of the 
+hybrid strategy that this research proposes. You mu st use 
+cell pictures that have already been processed in o rder to 
+train the proposed model [9]. Using the proposed model as 
+a basis, an Optimized Convolutional Neural Network is 
+trained to identify the specific kind of bone tumor s. After 
+a comprehensive analysis of the SN-AM datasets, man y 
+presentation metrics were developed and evaluated, 
+including specificity, accuracy (recall), and F1-sc ore. 
+Researchers found that their overall accuracy for 
+predicting various forms of cancer was 99.45 percen t. 
+When compared to other learning models, the suggest ed 
+model was far superior at distinguishing between different 
+types of cancer cells [9]. 
+ 
+While there is no need for a supplementary tool for bone 
+cancer detection, early detection is the key to sav ing lives 
+[10]. Computerized Tomography and Magnetic 
+Resonance Imaging imagery show cellular heterogenei ty, 
+making it difficult for pathologists to quickly identify bone 
+cancer. Here, several image processing methods can aid 
+physicians in intelligently distinguishing cancerou s from 
+non-cancerous samples. When it comes to picture 
+categorization, Deep Learning is head and shoulders above 
+the competition among data mining and image process ing 
+methods. Popular Deep Learning systems like ResNet,  
+AlexNet, VGG-16, and Inception-Net still have significant 
+flaws, such as the fact that their upper-level laye rs mix 
+information from lower-level layers and build resul ts 
+irrespective of the spatial relations and order of the picture 
+features. On top of that, when it comes to bone can cer 
+categorization, it shows reduced accuracy with smal ler 
+datasets. Because there is a dearth of actual bone cancer 
+data, this study seeks to accurately categorize the  disease 
+using magnetic resonance imaging and computed 
+tomography scans using little training data [10]. A s a 
+result, we offer a method that accomplishes the study goal 
+by integrating with Capsule Network. When compared to 
+previous Deep Learning approaches, the suggested 
+framework offers superior horizontal accuracy (95.2 6 
+percentage points) in diagnosing bone cancer, according to 
+both qualitative and quantitative analyses [10]. 
+ 
+III.  METHODOLOGY 
+ 
+Data preparation, feature extraction, training, as well as 
+evaluation are the four stages that make up the study plan. 
+One step in the procedure involves filtering and 
+segmenting the input b one MRI picture. The next st ep is 
+to utilize machine learning classifiers to forecast  the 
+category of the bone condition based on the characteristics 
+retrieved from the segmented picture, which are statistical 
+texture-based aspects of illnesses. The suggested 
+extraction and classification technique's architect ure is 
+shown in the following figure Fig.2.  
+ 
+ 
+ 
+Fig.2 Proposed Architecture 
+ 
+Expertise is necessary for the diagnosis of bone cancer. 
+Due to the human element involved, diagnosing bone 
+cancer can be a time-consuming and error-prone proc ess. 
+It appears that the sole factor increasing the like lihood of 
+survival for cancer patients is early identificatio n. Using 
+an existing machine learning technique called Suppo rt 
+Vector Machine to detect tumors and categorize canc er, 
+this research discusses a system termed Elevated Learning 
+based Bone Cancer Prediction (ELBCP). 
+ 
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+The following figure Fig.3 shows the flow diagram o f 
+the suggested technique. An X-ray picture is sent i nto the 
+system. A quick and inexpensive X-ray picture diagn osis 
+is possible. 
+ 
+ 
+ 
+Fig.3 System Flow Diagram of Suggested Technique 
+ 
+(i) Preprocessing: Using a 3 × 3 median filter, the noise 
+in the X-ray picture is eliminated. Image quality i s poor. 
+Consequently, the image gets sharpened in order to make it 
+more intense. 
+ 
+(ii) Image Segmentation: After the image has undergone 
+preprocessing, segmentation is used to identify objects in the 
+image. The reliability of the segmentation approach  is 
+determined by the final accuracy rate. This method for 
+identifying the object of concern is thus both reas onable and 
+effective. Using the segmentation approach, the ima ge is 
+divided into pixel sets in order to extract informa tion about 
+the object of interest.  
+ 
+(iii) Feature Extraction: When describing the 
+characteristics of a texture, a texture descriptor is quite 
+standard. Contrast, correlation, energy, as well as  
+homogeneity are the four texture features that we h ave 
+computed from the dark level estimates of the broken image. 
+By preserving the information in the original data,  a feature 
+extraction procedure converts the input data to num erical 
+features.  
+ 
+Improvements in cancer detection and prognosis have  
+resulted from the creation of ML models. Noise is c ommon 
+in medical imaging and can impact image post-proces sing. 
+Consequently, it seems that the denoising of the input images 
+is the first as well as most important step in pre- processing 
+input images. Because losing too much noise could m ask 
+crucial features, it's critical to be precise when estimating the 
+quantity of noise to remove. However, unintended 
+consequences may emerge from attempting to eliminat e a 
+negligible amount of noise. Medical imaging isn't t he only 
+area that uses ML. Computer vision, data mining, an d image 
+processing all rely on feature extraction. Building  a reliable 
+bone cancer detection models that enhances the diag nostic 
+process requires better feature extraction efficien cy coupled 
+with increased classification accuracy. To pick 
+characteristics, this system employs mutual informa tion 
+statistics, a method not previously employed by bon e cancer 
+detection systems.  
+IV RESULTS AND DISCUSSIONS 
+ 
+A methodology that is adapted from machine learning is 
+utilized by the Elevated Learning based Bone Cancer  
+Prediction (ELBCP) method in order to tackle the 
+classification challenge. The approach generates 
+classification output labels by making use of data points 
+that are adjacent to one another. ELBCP is a simpli stic 
+method that is used in the fields of statistical estimation and 
+pattern recognition. It maintains a record of all p ossible 
+cases of a class and makes an effort to classify ne w 
+examples by making use of the functions of the dist ance, 
+which is a measure of similarity. If k is equal to one, the 
+case is automatically allocated to the class that received the 
+most votes from its neighbors. If k is not equal to  one, 
+classification is easy since the class is decided by the most 
+popular among the pixels that are closest to the ca se as a 
+function of distance. Here is a list of the steps that make up 
+the recommended algorithm: 
+ 
+• Determine the pairs of neighboring pixels and the 
+index that corresponds to them, X. 
+• The next step is to determine the distance between the 
+picture that was requested and the image that was used 
+as a training sample. 
+• Those who are geographically closest to you have 
+gathered and evaluated it based on the shortest 
+distance. 
+• Next adjacent pixel was the source of class Y, whic h 
+we gathered. 
+• In  order to accommodate the requested number of 
+prediction classes for the query picture, the neare st 
+neighbor approach has been utilized for the majorit y 
+of the process. 
+ 
+Although it has been claimed that machine learning has 
+been successful in cancer imaging, there are still a number 
+of obstacles and constraints that need to be solved before it 
+can be used in c linical settings. A significant am ount of 
+data is being generated by care providers as a resu lt of the 
+growing demand for magnetic resonance imaging and 
+computed tomography. Through the implementation of 
+several standards and the Image preservation and 
+interacting framework it has been possible to acces s and 
+retrieve data in a timely manner. Data-hungry metho ds, 
+such as deep neural networks, require a substantial quantity 
+of data in order to function properly. The most sig nificant 
+obstacle that we have when attempting to diagnose b one 
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+cancer using machine learning is figuring out how to make 
+the most effective use of the structure of medical pictures 
+and the particular properties of medical data while  we are 
+training and constructing our model. In the field o f 
+medicine, standardized benchmarking is of utmost 
+significance, particularly with regard to modalitie s and 
+anatomic locations. Further, imaging does not serve  as a 
+standalone method for determining the severity of i llness. 
+When it comes to imaging, the molecular profile of cancer 
+additionally serves a significant part in the diagn ostic 
+process. The potential and capability of machine le arning 
+are growing on a daily basis, but there is still so me 
+direction that has to be taken when it comes of hea lthcare 
+practice. Since machine learning techniques are eff ective 
+for the analysis of large amounts of complicated biological 
+data, they may be utilized for the purpose of findi ng 
+solutions to problems in the field of bioinformatic s. In the 
+field of medical image analysis, there is a need fo r 
+additional progress in terms of the accuracy and predictive 
+potential of machine learning approaches. Calculati ng the 
+size, location, and level of bone cancer is possible with the 
+use of neural networks that have undergone further 
+development. 
+ 
+The following figure, Fig-4 and Fig-5 represents th e 
+input image and the pre-processing image stages of the 
+proposed approach, both these functions are portray ed in 
+conventional SVM logic also for comparison percepti on. 
+The entire results of these proposed and convention al 
+schemes are accumulated by using MATLAB image 
+processing tool. 
+ 
+ 
+ 
+Fig.4 Input Image 
+ 
+    
+         (a)                (b) 
+ 
+Fig.5 Pre-Processing (a) ELBCP and (b) SVM 
+ 
+The following figure, Fig-6 represents the image 
+convolution stage results of the proposed ELBCP and  
+conventional SVM approach. 
+ 
+      
+         (a)                (b) 
+ 
+Fig.6 Image Convolution (a) ELBCP and (b) SVM 
+ 
+The following figure, Fig-7 (a) and Fig-8 (b) represents 
+the image segmentation stages of the proposed ELBCP  
+and conventional SVM approach. 
+ 
+      
+         (a)                (b) 
+ 
+Fig-7 Image Segmentation (a) ELBCP and (b) SVM 
+ 
+ 
+ 
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 
+                                                         2023 9th International Conference on Smart Structures and Systems (ICSSS) 
+ 
+The following figure, Fig-8 represents the predicti on 
+accuracy of the proposed ELBCP and conventional 
+SVM approach, in which the same is illustrated over the 
+following table, Table-1 in descriptive manner. 
+ 
+TABLE 1 PREDICTION ACCURACY 
+ 
+Testing Count SVM (%) ELBCP (%) 
+5 86.34 96.15 
+7 86.41 96.32 
+9 86.11 96.14 
+12 86.14 96.27 
+15 85.32 96.41 
+17 85.96 96.40 
+18 85.53 96.45 
+21 85.39 96.49 
+23 85.24 96.54 
+25 85.09 96.59 
+ 
+ 
+ 
+Fig. 8 Prediction Accuracy 
+ 
+V CONCLUSION  
+ 
+The proposed method integrates feature extraction with 
+a classification model to differentiate between normal and 
+cancerous bones. Successful detection of bone tumou rs 
+has been achieved using the feature extraction and 
+classification approach proposed here. The presence  or 
+absence of a malignancy in the input MRI can be 
+ascertained using this method once a tumour has bee n 
+identified and classified as benign or malignant. B one 
+cancer develops from unchecked cell growth in bone,  
+which harms good bone tissue and can spread to othe r 
+organs. The ability to recognize potential lesion t issue is 
+crucial for pathologists to diagnose cancer. You ma y 
+tweak the system's speed even further by changing o ther 
+texture characteristics. In conclusion, the proposed method 
+successfully differentiates between cancerous and healthy 
+bone pictures. Our algorithm is less effective when  
+presented with pictures of malignant bones compared  to 
+those of healthy bones. As a result, it may offer 
+instantaneous second opinions to clinicians. In ord er to 
+evaluate the model's performance more thoroughly, w e 
+plan to create a large dataset in the future. 
+ 
+REFERENCES 
+ 
+[1] Ashish Sharma, Dhirendra P. Yadav, et al., "Bon e Cancer 
+Detection Using Feature Extraction Based Machine Le arning 
+Model", Comput Math Methods Med, doi: 10.1155/2021/7433186, 
+2021. 
+[2]  G. S et al, "Multiple Class Breast Cancer Dete ction Method Based 
+on Deep Learning and MIRRCNN Model," 2 (ICICT), Nep al, 
+2022, pp. 981-987, doi: 10.1109/ICICT54344.2022.9850707. 
+[3]  Abdelaal, Magdy Tobely, et al., "Bone Cancer D etection Using 
+Particle Swarm Extreme Learning Machine Neural Netw orks", 
+Journal of Medical Imaging and Health Informatics, DOI: 
+https://doi.org/10.1166/jmihi.2019.2586, 2019. 
+[4]  S. G et al "Automated Breast Cancer Classifica tion based on  
+Modified Deep learning Convolutional Neural Network following 
+Dual Segmentation," (ICESC), Coimbatore, India, 2022, pp. 1562-
+1569, doi: 10.1109/ICESC54411.2022.9885299. 
+[5]  Lianghui Zhu, Huijuan Shi, et al., "An accurat e prediction of the 
+origin for bone metastatic cancer using deep learni ng on digital 
+pathological images", International Congress on Peer Review and 
+Scientific Publication, 
+DOI:https://doi.org/10.1016/j.ebiom.2022.104426, 2022. 
+[6]  Sivakumar D, Manoj Krishna Hegde, et al., "BON E CANCER  
+DETECTION USING MACHINE LEARNING", International 
+Research Journal of Engineering and Technology, 2021. 
+[7]  Yogesh Kumar, Surbhi Gupta, et al., "A Systema tic Review of 
+Artificial Intelligence Techniques in Cancer Predic tion and 
+Diagnosis", Arch Computat Methods Eng, 
+https://doi.org/10.1007/s11831-021-09648-w, 2021. 
+[8]  Dong Wook Kim, Sanghoon Lee, et al., "Deep lea rning-based 
+survival prediction of oral cancer patients", Scien tific Reports, 
+https://doi.org/10.1038/s41598-019-43372-7, 2019. 
+[9]  Manjula Devi Ramasamy, Rajesh Kumar Dhanaraj, et al., "An 
+improved deep convolutionary neural network for bon e marrow 
+cancer detection using image processing", Informatics in Medicine 
+Unlocked, https://doi.org/10.1016/j.imu.2023.101233, 2023. 
+[10]  Md Abid Hassan, Md Hasibul Hasan, et al., "An  Expedition to 
+Intelligent Diagnosis of Bone Cancer and It's Direc tion from 
+Capsule Network", Proceedings of the 2nd Internatio nal 
+Conference on Computing Advancements, 
+https://doi.org/10.1145/3542954.3542981, 2022. 
+[11]  G. Suganeshwari, R. Balakumar, et al., "DTBV:  A Deep Transfer-
+Based Bone Cancer Diagnosis System Using VGG16 Feat ure 
+Extraction", Diagnostics, doi: 10.3390/diagnostics1 3040757, 
+2023. 
+[12]  Mengjie Fang, Zipei Wang, et al., "Predicting  origin for bone  
+metastatic cancer using deep learning-based patholo gy", 
+International Congress on Peer Review and Scientific Publication, 
+DOI:https://doi.org/10.1016/j.ebiom.2023.104449, 2023. 
+Authorized licensed use limited to: UNIVERSIDADE FEDERAL DO PIAUI. Downloaded on September 14,2025 at 16:31:11 UTC from IEEE Xplore.  Restrictions apply. 

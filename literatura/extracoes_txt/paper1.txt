@@ -1,0 +1,424 @@
+1Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdata
+a Radiograph Dataset for the 
+Classification, Localization, and 
+Segmentation of Primary Bone 
+t umors
+Shunhan Yao1,2, Yuanxiang Huang3, Xiaoyu Wang2, Yiwen Zhang4, Ian Costa Paixao2, 
+Zhikang Wang2, Charla Lu Chai2, Hongtao Wang5, Dinggui Lu6, Geoffrey I Webb  7, 
+Shanshan Li4, Yuming Guo  4, Qingfeng Chen3,7 ✉ & Jiangning Song  2 ✉
+Primary malignant bone tumors are the third highest cause of cancer-related mortality among patients 
+under the age of 20. X-ray scan is the primary tool for detecting bone tumors. However, due to the 
+varying morphologies of bone tumors, it is challenging for radiologists to make a definitive diagnosis 
+based on radiographs. With the recent advancement in deep learning algorithms, there is a surge of 
+interest in computer-aided diagnosis of primary bone tumors. Nonetheless, the development in this 
+field has been hindered by the lack of publicly available X-ray datasets for bone tumors. To tackle this 
+challenge, we established the Bone Tumor X-ray Radiograph dataset (termed BTXRD) in collaboration 
+with multiple medical institutes and hospitals. The BTXRD dataset comprises 3,746 bone images (1,879 
+normal and 1,867 tumor), with clinical information and global labels available for each image, and 
+distinct mask and annotated bounding box for each tumor instance. This publicly available dataset can 
+support the development and evaluation of deep learning algorithms for the diagnosis of primary bone 
+tumors.
+Background & Summary
+Recent advances in Artificial Intelligence (AI), especially deep learning, have provided transformative possi -
+bilities in computer-aided diagnosis systems. Deep learning-based techniques, such as segmentation, detec -
+tion, classification, and enhancement, have been successfully applied to medical imaging 1–3. Existing studies 
+demonstrate the potential of these techniques in identifying and analyzing bone tumors from X-ray images, 
+highlighting a significant advancement in radiology4. While these findings are encouraging, integrating existing 
+research into clinical diagnostic workflows still remains a significant challenge5, due to small sample sizes, lim-
+ited lesion types, and restricted data sources. Moreover, most existing models overlook several clinical factors 
+like age, gender, and the location of bone lesions that play significant roles in the clinical classification of bone 
+tumors. One of the reasons for the slow progress in computer-aided diagnosis of primary bone tumors is the 
+lack of large, well-annotated, and open-source datasets of bone tumor X-ray images. This deficiency impedes 
+the development of new models and raises doubts about the performance of existing models. However, due to 
+the low incidence rate of primary bone tumors
+6 and widely dispersed patients, it is difficult for researchers to 
+access large and diverse medical datasets7. Furthermore, annotating bone tumor imaging data can be extremely 
+costly, as it requires the consensus of numerous doctors and radiologists to eliminate biases and human errors8. 
+In conclusion, the development of large, well-annotated, open-source bone tumor X-ray image datasets is 
+1Medical College, Guangxi University, Nanning, Guangxi, 530000, China. 2Biomedicine Discovery Institute and 
+Department of Biochemistry and Molecular Biology, Monash University, Melbourne, VIC, 3800, Australia. 3School 
+of Computer, Electronic and Information, Guangxi University, Nanning, Guangxi, 530000, China. 4School of Public 
+Health and Preventive Medicine, Monash University, Level 2, 553 St Kilda Road, Melbourne, VIC, 3004, Australia. 
+5Bone and Joint Surgery, The First Affiliated Hospital of Guangxi Medical University, Nanning, Guangxi, 530000, 
+china. 6Department of Traumatology, The Affiliated Hospital of Youjiang Medical University for Nationalities, Baise, 
+Guangxi, 533000, China. 7Department of Data Science and AI, Faculty of Information Technology, Monash University, 
+Melbourne, VIC, 3800, Australia. ✉e-mail: qingfeng@gxu.edu.cn; jiangning.song@monash.edu
+Da Ta De SCRIPT oR
+oPeN
+
+2Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+hindered by significant costs and time constraints. Therefore, no such datasets are currently publicly availa -
+ble on a global scale. Some public datasets including bone tumor X-ray images have been developed, such as 
+MedPix9, Radiopaedia10, and IIEST11. However, most of them lack annotation or labels, which is important for 
+the training of AI models. MedPix 9 is a free medical image database managed and maintained by the United 
+States (U.S.) National Library of Medicine. It contains thousands of images from various medical fields such as 
+radiology, pathology, and dermatology. We identified 1,157 images related to bone tumors in MedPix. However, 
+these images are a mix of different imaging types such as X-rays, real images, magnetic resonance imaging 
+(MRI), computed tomography (CT) scans, and ultrasound, which prevents us from directly obtaining the spe
+-
+cific images needed for model training. Also, some images in this dataset lack tissue annotations or are misla -
+beled, making them unsuitable for direct use in deep learning. Radiopaedia.org10 is an open platform dedicated 
+to online radiology education which hosts a large collection of X-ray images with detailed clinical information 
+and satisfactory quality, many of which are bone tumor X-rays. However, they still lack labels or annotations 
+before being used for deep learning. IIEST
+11 is an X-ray dataset containing 217 images, but only 69 of which are 
+scans of bone tumors. This useful dataset is still insufficient for training deep learning models constrained by its 
+small size.
+Currently, bone tumor studies based on X-ray images, including classification, localization, and segmenta
+-
+tion, all use private datasets12–24. Yu He et al.12 obtained 2,899 X-ray images of bone tumors from five medical 
+institutions, of which 2,158 were non-malignant and 741 were malignant. However, these images lack clinical 
+information such as gender, age, and location. Von Schacky’s CNUH dataset
+13 includes 1,195 tumor images 
+and 381 normal images. Although this is a large dataset, it only covers knee bone tumors. Claudio E et al .14 
+collected 1,045 bone tumor X-ray images (743 benign images and 302 malignant images), without any normal 
+bone images. Renyi Liu et al.
+15 collected 982 bone tumor X-ray images, demographic information (age, gender, 
+location), and other clinical information from 643 patients. However, this dataset comes from a single center 
+and does not include normal bone X-ray images. Recently, Jingjing Shao et al.
+16 created a dataset by collecting 
+X-ray images and clinical information from 333 patients with knee joint giant cell tumors or osteolytic osteo -
+sarcomas from four centers. Florian et al.17 gathered 1,792 X-ray images of bone tumors from a single center, 
+which provided the anatomical location of the lesions. In addition to the datasets mentioned above, there are 
+several other private datasets (e.g., datasets established by Dan Yu
+18, Park CW19, and SARAH20). Although each 
+of these datasets has unique characteristics, none are publicly available. Therefore, it is difficult for researchers to 
+obtain and verify this kind of data, which hinders the development of machine-learning models for bone tumor 
+diagnosis. Table 1 summarizes the existing datasets of bone tumor X-ray images and compares them with the 
+BTXRD dataset.
+In summary, the bone tumor X-ray images available in the existing public datasets are limited and cannot be 
+used directly, while private datasets are not publicly accessible. This impedes the development of computer-aided 
+diagnosis of primary bone tumors. To address this research gap, we developed an X-ray image dataset named 
+BTXRD (accessible at figshare.com [https://doi.org/10.6084/m9.figshare.27865398]). The BTXRD was designed 
+to facilitate research on the automatic classification, localization, and segmentation of primary bone tumors 
+in radiographs. This dataset includes 3,746 images, with 1,879 normal bone images, 1,525 benign bone tumor 
+images, and 342 malignant bone tumor images. Each image in the BTXRD dataset is labeled with gender, age, 
+the part of the body imaged, and the shooting angle. Specifically, each bone tumor image is additionally tagged 
+with benign or malignant labels, subtype labels, and anatomical site labels. Furthermore, each bone tumor image 
+Dataset
+Release 
+year sources Samples*
+Global 
+labels
+Clinical 
+labels
+Local 
+labels
+Local 
+mask
+Multi-
+locale
+Open-
+source
+MedPix
+9 2016 Multicenter — # Available P/A N/A N/A Ye s Ye s
+Radiopaedia.org10 2007 Multicenter — # Available P/A N/A N/A Ye s Ye s
+IIEST11 2020 Single-center 69 Available N/A N/A N/A Ye s Ye s
+Yu He12 2020 Multicenter 2899 Available N/A Available N/A Ye s No
+CNUH13 2021 Single-center 1193 Available N/A N/A Available No No
+Claudio14 2021 Multicenter 1045 Available N/A Available Available Ye s No
+Renyi Liu15 2021 Single-center 982 Available Available Available N/A Ye s No
+Dan Yu18 2022 Single-center 872 Available N/A Available Available No No
+Park CW19 2022 Single-center 214 Available N/A N/A N/A No No
+SARAH20 2022 Single-center 44 Available N/A N/A N/A No No
+Zhiyuan Xu21 2022 Single-center 119 Available N/A N/A N/A Ye s No
+Jie Li22 2023 Multicenter 1085 Available N/A Available N/A Ye s No
+Turkka23 2023 Single-center 500 Available N/A Available Available No No
+Sebastian24 2023 Single-center 366 Available N/A N/A N/A No No
+Jingjing Shao16 2024 Multicenter 666 Available N/A N/A N/A Ye s No
+Florian17 2024 Single-center 809 Available Available N/A N/A Ye s No
+BTXRD 2024 Multicenter 1867 Available Available Available Available Ye s Ye s
+Table 1. An overview of existing X-ray datasets. *Contains only bone tumor image number. #The data cannot be 
+effectively counted.
+3Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+has been manually annotated with its own mask and bounding box. To confirm the dataset’s suitability for deep 
+learning algorithms, we used YOLOv8s, YOLOv8s-seg, and YOLOv8s-cls deep learning networks to validate.
+Methods
+ethical clearance.  This retrospective study was approved by the Research Ethics Board of the Medical 
+College at Guangxi University (GULL240522). Due to the study’s retrospective nature and the non-invasive meth-
+ods used, as well as the anonymity of the data, the informed consent requirement was waived. The study complies 
+with the image usage terms of MedPix9 and Radiopaedia.org10.
+Data sources. The BTXRD dataset’s images were sourced from three medical image storage centers. Center 
+1 includes three hospitals in China: the First Affiliated Hospital of Guangxi Medical University, the Affiliated 
+Hospital of Y oujiang Medical College for Nationalities, and Baise People’s Hospital. Center 2 is the Radiopaedia.
+org online platform, and Center 3 is the MedPix public database. The BTXRD dataset collected X-ray images 
+of patients with primary bone tumors from Center 1, which were confirmed histologically or by two radiology 
+experts, from July 2013 to July 2023. Additionally, two radiology experts collected X-ray images of bone tumors 
+from Centers 2 and 3 by searching the following keywords: ‘bone tumor, ’ ‘osteochondroma, ’ ‘osteosarcoma, ’ ‘bone 
+cyst, ’ ‘fibrous dysplasia, ’ ‘chondroblastoma, ’ ‘fibroma of bone, ’ ‘osteoma, ’ ‘hemangioma, ’ ‘aneurysmal bone cyst, ’ 
+‘osteolipoma, ’ ‘giant cell tumor of bone, ’ ‘osteoblastoma, ’ ‘chondrosarcoma, ’ ‘Ewing’s sarcoma, ’ ‘undifferentiated 
+pleomorphic sarcoma, ’ ‘fibrosarcoma, ’ ‘angiosarcoma, ’ and ‘epithelioid hemangioendothelioma’ . Only images that 
+include corresponding gender and age information were included in the dataset. Each image in the dataset is 
+unique, but some may come from the same lesion, as we collected images from different shooting angles (frontal, 
+lateral, and oblique views) for each lesion. The workflow of this study is illustrated in Fig. 1, with the main steps, 
+including data collection, data cleaning, and data annotation.
+Data collection and preprocessing. X-ray images obtained from Center 1 were downloaded in the Digital 
+Imaging and Communications in Medicine (DICOM) format from the Picture Archiving and Communication 
+System (PACS, GE Healthcare). These images were then converted from DICOM to 8-bit grayscale JPEG (Joint 
+Photographic Experts Group) format. Images from Centers 2 and 3 were directly downloaded in JPEG format 
+from their official websites, respectively (accessed February 20–28, 2024). In the collected data, we removed pri-
+mary bone tumor samples from the head, neck, chest, and abdominal regions since their amount was limited and 
+Fig. 1 Workflow for establishing the BTXRD dataset: (1) Collect X-ray images of bone tumors and normal 
+bones from multiple centers. (2) Convert DICOM format images to JPEG, remove all identifiable sensitive 
+information such as names, addresses, and hospital numbers, and manually record only the corresponding 
+gender and age for each image. (3) Annotate the final image set with the help of two radiology experts for use in 
+various deep learning applications.
+4Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+had many artifacts. Consequently, the BTXRD dataset only includes bone tumor images from the upper limbs 
+(hands, ulna, radius, humerus, wrist joints, elbow joints, and shoulder joints), lower limbs (feet, tibia, fibula, 
+femur, ankle joints, and knee joints), and pelvis (hips, hip joints). The BTXRD dataset also collected X-ray images 
+of normal bones from the upper limbs, lower limbs, and pelvis across the three centers. Figure  2 displays some 
+representative and outlier images from the BTXRD dataset.
+Data statistics. In the initial phase, the BTXRD dataset included a total of 10,089 images. After data clean-
+ing, 3,746 images were retained. Of these, 2,938 images (1,593 normal, 1,110 benign bone tumors, and 235 malig-
+nant bone tumors) are from Center 1; 549 images (259 normal, 214 benign bone tumors, and 76 malignant bone 
+tumors) are from Center 2; and 259 images (27 normal, 201 benign bone tumors, and 31 malignant bone tumors) 
+are from Center 3. The general distribution characteristics of the BTXRD dataset are listed in Table 2.
+The age of patients for the images in the BTXRD dataset ranges from 1 to 88 years, with a particular con -
+centration in the age groups of 10–20 years and 50–60 years. The age distribution of the images in the BTXRD 
+dataset is depicted in Fig. 3A. Additionally, as shown in Fig. 3B, the BTXRD dataset contains 1,124 upper limb 
+images (672 normal, 452 tumor), 2,406 lower limb images (1,095 normal, 1,311 tumor), and 216 pelvic images 
+Fig. 2 Examples of valid (upper) vs. outlier (lower) X-ray images. All scans were manually filtered based on the 
+body parts present in the scan, the clarity of the scans, and the resolution. The BTXRD dataset includes only 
+bone tumor images from the upper limbs (hands, ulna, radius, humerus, wrist joints, elbow joints, and shoulder 
+joints), lower limbs (feet, tibia, fibula, femur, ankle joints, and knee joints), and pelvis (hips, hip joints). The 
+BTXRD dataset also collected X-ray images of normal bones from the upper limbs, lower limbs, and pelvis 
+across the three centers.
+BTXRD Age (y) Gender (M/F) Normal B-Tumor* M-Tumor# Tota l
+Center 1 40.36 ± 19.23 1600/1338 1593 1110 235 2938
+Center 2 22.32 ± 14.57 326/223 259 214 76 549
+Center 3 22.58 ± 13.75 172/87 27 201 31 259
+Total 37.53 ± 19.58 2098/1648 1879 1525 342 3746
+Table 2. The basic characteristics of BTXRD. *B-Tumor refers to benign bone tumor, #M-Tumor refers to 
+malignant bone tumor.
+5Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+(112 normal, 104 tumor). As illustrated in Fig. 3C, there are 2,181 frontal images (1,002 normal, 1,179 tumor), 
+1,269 lateral images (688 normal, 581 tumor), and 296 oblique images (189 normal, 107 tumor) in the BTXRD 
+dataset.
+Distribution of tumor subtypes and anatomical locations. We analyzed the anatomical locations of 
+bone tumors in the BTXRD dataset, with the most common sites being the tibia (630 lesions), femur (592 lesions), 
+fibula (259 lesions), and humerus (235 lesions). The detailed distribution of bone tumor anatomical locations is 
+shown in Fig. 4. Additionally, we cataloged the subtypes of bone tumors present in the BTXRD dataset images. 
+The most frequent subtypes were osteochondroma (754 lesions), osteosarcoma (297 lesions), multiple osteochon-
+dromatosis (263 lesions), and simple bone cyst (206 lesions). The detailed distribution of bone tumor subtypes is 
+illustrated in Fig. 5.
+Data labeling. In the data labeling process, a bone tumor specialist with 10 years of diagnostic experience 
+used the Labelme25 image annotation tool to segment tumors and outline them with bounding boxes. This initial 
+annotation was subsequently reviewed by another specialist with 20 years of experience. To evaluate the reliability 
+of the annotations, 50 bone tumor images were randomly selected from the dataset and re-segmented with bound-
+ing boxes reapplied one month after the initial work. The Dice score for the two segmentations was recorded at 
+0.90 ± 0.07, and the Intersection over Union (IoU) value for the bounding box placements was 0.91 ± 0.06, indi-
+cating high consistency between the two sets of annotations. Labelme is an open-source image annotation tool
+25; 
+in our study, we used it to draw rectangular bounding boxes to indicate the location and boundaries of target 
+Fig. 3 Distribution of age, region, and viewing angle of images in the BTXRD dataset. (A) shows the age 
+distribution of the images in the BTXRD dataset. (B) presents the distribution of upper limb, lower limb, and 
+pelvic regions of images in the BTXRD dataset. (C) presents the distribution of frontal, lateral, and oblique 
+views of images in the BTXRD dataset.
+6Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+objects, and polygons for segmenting the target objects. After annotation, all annotation information was saved 
+in the JSON (JavaScript Object Notation) format. Additionally, label information for each image such as gender, 
+age, anatomical site, and shooting location was recorded in Comma Separated Values (CSV) format files. Figure 6 
+shows the different types of annotations provided in the dataset.
+Fig. 4 Distribution of anatomical locations of bone tumors in the BTXRD dataset. This figure illustrates the 
+number of bone tumors occurring in 15 different anatomical locations, along with the data contribution from 
+each of the three centers.
+Fig. 5 Distribution of bone tumor subtypes in the BTXRD dataset. The figure shows the number of nine 
+different subtypes of bone tumors, along with the data contribution from each of the three centers. ‘other bt’ 
+represents a collection of several benign tumors with a small number, while ‘other mt’ represents a collection of 
+several malignant tumors with a small number.
+7Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+Data Records
+The BTXRD dataset is openly accessible for public use and available on figshare.com (https://doi.org/10.6084/
+m9.figshare.27865398) 26. The total size of BTXRD dataset is 801 MB, which can be downloaded without any 
+registration. The file downloaded is in zip format, which includes subfolders “images” and “Annotations,” 
+and a “dataset.csv” file. The “images” folder contains all X-ray images, with each image name starting with 
+“IMG” followed by a unique zero-padded six-digit value, and ending with “.jpeg” to indicate the data type. 
+The “Annotations” folder contains “.json” format files with annotation information for segmentation and 
+bounding box placement for each bone tumor image. The “dataset.csv” file contains a summary of the case 
+data for all 3,746 images. Table 3 lists an example row from the summary file.
+In creating the BTXRD dataset, researchers carefully selected valuable data from a large volume of mixed 
+and potentially confounding sources, particularly from Centers 2 and 3. The raw data underwent rigorous pre-
+processing, cleaning and selection to exclude incomplete, low-quality, or redundant images, ensuring that only 
+high-quality data were retained. Clinical and demographic metadata were standardized into a common format 
+to ensure consistency across different sources, facilitating downstream analysis. Additionally, each bone tumor 
+image was manually annotated by expert radiologists to generate segmentation masks and bounding boxes, 
+using a multi-step review process to minimize biases and improve annotation accuracy. These comprehensive 
+efforts have significantly enhanced the value and usability of the BTXRD dataset, providing a valuable resource 
+for developing and validating deep learning models for bone tumor diagnosis.
+Fig. 6 Labeled sample image. (A) Display the original scan, clinically tags with age 32, gender M, and center set 
+to 2; global tags femur, tumor, benign, giant cell tumor, lower limb, and lateral set to 1 (true). Set the remaining 
+markers to 0 (false). (B) The boxes mark the local region of the tumor instance for localization tasks. (C) The 
+yellow borders mask the tumor regions for segmentation tasks.
+No. column name Example No. column name Example No. column name Example
+1 image_id IMG0000265.jpeg 14 ankle-joint 0 27 osteofibroma 0
+2 center 1 15 knee-joint 0 28 synovial osteochondroma 0
+3 age 65 16 hip-joint 0 29 other bt 0
+4 gender F 17 wrist-joint 0 30 osteosarcoma 0
+5 hand 0 18 elbow-joint 0 31 other mt 0
+6 ulna 0 19 shoulder-joint 0 32 upper limb 1
+7 radius 1 20 tumor 1 33 lower limb 0
+8 humerus 0 21 benign 1 34 pelvis 0
+9 foot 0 22 malignant 0 35 frontal 1
+10 tibia 0 23 osteochondroma 0 36 lateral 0
+11 fibula 0 24 multiple osteochondromas 0 37 oblique 0
+12 femur 0 25 simple bone cyst 0
+13 hip bone 0 26 giant cell tumor 1
+Table 3. Example of a row from the summary file describing the dataset (for better readability, shown as 
+columns).
+8Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+Technical Validation
+To examine the suitability of the BTXRD dataset for training deep learning algorithms, we further conducted 
+experiments using YOLOv827, a well-established deep learning network commonly used in medical image detec-
+tion. The images from the BTXRD dataset were randomly divided into training and validation sets at an 8:2 ratio. 
+Annotation information for bone tumor image segmentation and bounding box placement was converted from 
+‘ .json’ to ‘ .txt’ format suitable for use with YOLOv8. We utilized YOLOv8s for localization, YOLOv8s-seg for seg
+-
+mentation, and YOLOv8s-cls for benign-malignant classification of primary bone tumors on the autodl cloud 
+platform (www.autodl.com, Zhongke Shituo (Nanjing) Technology Co., Ltd.). The algorithms are implemented 
+using Python 3.8.10, PyTorch 2.0.0 + cu118, and the training process is conducted on an NVIDIA GeForce RTX 
+4090 with 24GB VRAM, and a 16 vCPU Intel(R) Xeon(R) Gold 6430 processor. The models were trained using 
+standard hyperparameters and official pre-trained weights. The image input size was set to 600 pixels, and the 
+models were run for 300 training epochs. Table 4 lists the relative performance for different tasks. The experi
+-
+mental results demonstrate that the BTXRD dataset is well-suited for application in deep learning algorithms.
+Usage Notes
+The BTXRD dataset is widely applicable and can be used for various downstream tasks, including validat -
+ing existing models or developing new ones. Each image in the BTXRD dataset contains information on age, 
+gender, and bone lesion location covering the most common subtypes of primary bone tumors, making it a 
+valuable resource for developing computer-assisted subtype-specific or cross-subtype diagnostic models for 
+primary bone tumors. The significance of this dataset is three-fold: First, it included the well-known clini
+-
+cal importance of age, gender, and the location of bone lesions in the diagnosis of bone tumors. Such clinical 
+information can help clinicians with accurate and comprehensive diagnoses and is crucial for the development 
+of future computer-assisted diagnostic models. Second, most existing models can only be used to perform 
+benign-malignant classification tasks, which is insufficient for clinical applications. Classification of bone tumor 
+subtypes is more clinically relevant. Thus, future development of computer-assisted diagnostic models should 
+focus on the models that can comprehensively classify and diagnose bone tumors. Lastly, the comprehensive 
+annotations in the BTXRD dataset are extremely beneficial for developing future reference and new deep learn
+-
+ing models.
+During the construction of the BTXRD dataset, we have devoted substantial manpower and methodical 
+effort to identify and annotate bone tumors. However, the quality of the dataset can be further improved from 
+the following perspectives. First, due to the lack of pathological information, some images were diagnosed 
+empirically by two radiology experts, which could potentially result in misdiagnosis. Second, the morphology 
+of some bone tumors on images is very distorted, especially multiple osteochondromas, which may reduce 
+the accuracy of segment annotation. Nevertheless, we consider these limitations acceptable, as improving the 
+quality of the dataset is an ongoing effort, and we will keep reviewing and refining it. Moving forward, we plan 
+to expand multi-center collaboration partnerships to substantially increase the scale of the dataset and engage 
+more experts to review the data, thereby reducing potential diagnostic biases and data errors. Additionally, we 
+also aim to broaden our dataset to include other types of data modalities, including the CT, MRI, and patho
+-
+logical data, and in doing so, we hope to establish and make available a comprehensive multimodal resource to 
+support interdisciplinary, multidimensional research.
+Code availability
+The code used for technical validation is accessible at: https://github.com/SHUNHANYAO/BTXRD . The 
+annotation software used to generate the dataset, LabelMe, is open source (https://github.com/labelmeai/
+labelme).
+Received: 17 June 2024; Accepted: 17 December 2024;
+Published: xx xx xxxx
+Task Model Type Class Precision Recall mAP@0.5 Accuracy
+Localization YOLO8s Box All 0.768 0.646 0.707
+B-tumor* 0.689 0.652 0.672
+M-tumor# 0.847 0.641 0.743
+Segmentation YOLO8s-seg Box All 0.771 0.636 0.687
+B-tumor 0.716 0.611 0.648
+M-tumor 0.825 0.662 0.726
+Mask All 0.773 0.638 0.691
+B-tumor 0.722 0.616 0.654
+M-tumor 0.824 0.661 0.728
+classification YOLOv8s-cls Classify Normal 0.913 0.898 0.904
+B-tumor 0.881 0.875 0.899
+M-tumor 0.734 0.839 0.965
+Table 4. Performance results for baseline object detection, segmentation and classification tests on the BTXRD 
+dataset (validation set). *B-Tumor refers to benign tumor, #M-Tumor refers to malignant tumor.
+
+9Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+References
+ 1. Bera, K., Braman, N., Gupta, A., Velcheti, V . & Madabhushi, A. Predicting cancer outcomes with radiomics and artificial intelligence 
+in radiology. Nat Rev Clin Oncol. 19, 132–146 (2022).
+ 2. Chen, P . T. et al. Pancreatic Cancer Detection on CT Scans with Deep Learning: A Nationwide Population-based Study. Radiology. 
+306, 172–182 (2023).
+ 3. Ying, H. et al. A multicenter clinical AI system study for detection and diagnosis of focal liver lesions. Nat Commun. 15, 1131 (2024).
+ 4. Meng, Y ., Y ang, Y ., Hu, M., Zhang, Z. & Zhou, X. Artificial intelligence-based radiomics in bone tumors: Technical advances and 
+clinical application. Seminars in cancer biology. 95, 75–87 (2023).
+ 5. Lacroix, M. et al. Artificial intelligence in musculoskeletal oncology imaging: A critical review of current applications. Diagn Interv 
+Imaging. 104, 18–23 (2023).
+ 6. Gianferante, D. M., Mirabello, L. & Savage, S. A. Germline and somatic genetics of osteosarcoma - connecting aetiology, biology and 
+therapy. Nat Rev Endocrinol. 13, 480–491 (2017).
+ 7. Maier-Hein et al. Surgical data science - from concepts toward clinical translation. Med Image Anal. 76, 102306 (2022).
+ 8. Abedeen, I. et al. FracAtlas: A Dataset for Fracture Classification, Localization and Segmentation of Musculoskeletal Radiographs. 
+Scientific data. 10, 521 (2023).
+ 9. NLM, N. Medpix, u.s. national library of medicine. national institutes of health. MedPix. https://medpix.nlm.nih.gov/home.
+ 10. Radiopaedia. http://radiopaedia.org.
+ 11. Y adav, D. & Rathor, S. Bone fracture detection and classification using deep learning approach. In 2020 International Conference on 
+Power Electronics & IoT Applications in Renewable Energy and its Control (PARC), 282–285 (IEEE, 2020).
+ 12. He, Y. et al. Deep learning-based classification of primary bone tumors on radiographs: A preliminary study. EBioMedicine. 62, 
+103121 (2020).
+ 13. Do, N. T., Jung, S. T., Y ang, H. J. & Kim, S. H. Multi-Level Seg-Unet Model with Global and Patch-Based X-ray Images for Knee Bone 
+Tumor Detection. Diagnostics (Basel, Switzerland). 11, 691 (2021).
+ 14. von Schacky, C. E. et al. Multitask Deep Learning for Segmentation and Classification of Primary Bone Tumors on Radiographs. 
+Radiology. 301, 398–406 (2021).
+ 15. Liu, R. et al. A deep learning-machine learning fusion approach for the classification of benign, malignant, and intermediate bone 
+tumors. Eur Radiol. 32, 1371–1383 (2022).
+ 16. Shao, J. et al. Deep learning for differentiation of osteolytic osteosarcoma and giant cell tumor around the knee joint on radiographs: 
+a multicenter study. Insights Imaging. 15, 35 (2024).
+ 17. Hinterwimmer, F . et al. Recommender-based bone tumour classification with radiographs-a link to the past. Eur Radiol. (2024).
+ 18. Yu, D., Hu, J., Feng, Z., Song, M. & Zhu, H. Deep learning based diagnosis for cysts and tumors of jaw with massive healthy samples. 
+Scientific reports. 12, 1855 (2022).
+ 19. Park, C. W . et al. Artificial intelligence-based classification of bone tumors in the proximal femur on plain radiographs: System 
+development and validation. PLoS One. 17, e0264140 (2022).
+ 20. Consalvo, S. et al . Two-Phase Deep Learning Algorithm for Detection and Differentiation of Ewing Sarcoma and Acute 
+Osteomyelitis in Paediatric Radiographs. Anticancer research. 42, 4371–4380 (2022).
+ 21. Xu, Z. et al. Bone tumor necrosis rate detection in few-shot X-rays based on deep learning. Comput Med Imaging Graph. 102, 102141 
+(2022).
+ 22. Li, J. et al. Primary bone tumor detection and classification in full-field bone radiographs via YOLO deep learning model. Eur Radiol. 
+33, 4237–4248 (2023).
+ 23. Anttila, T. T. et al. Enchondroma Detection from Hand Radiographs with an Interactive Deep Learning Segmentation Tool-A 
+Feasibility Study. Journal of clinical medicine. 12, 7129 (2023).
+ 24. Breden, S. et al. Deep Learning-Based Detection of Bone Tumors around the Knee in X-rays of Children. J Clin Med. 12, 5960 
+(2023).
+ 25. Torralba, A., Russell, B. C. & Yuen, J. LabelMe: Online Image Annotation and Applications. Proceedings of the IEEE. 98, 1467–1484 
+(2010).
+ 26. S. Y ao et al. A Radiograph Dataset for Training Deep Learning Models for the Classification, Localization, and Segmentation of 
+Primary Bone Tumors. figshare https://doi.org/10.6084/m9.figshare.27865398 (2024).
+ 27. Jocher, G.; Chaurasia, A.; Qiu, J. Ultralytics yolov8. https://github.com/ultralytics/ultralytics (2023).
+acknowledgements
+This work was supported by the China Scholarship Council (202306660024) and the Specific Research Project of 
+Guangxi for Research Bases and Talents (GuiKe AD22035057).
+author contributions
+S.Y . generated the dataset and collected images from Center 2 and Center 3. H.T. and D.L. collected images from 
+Center 1. S.Y . cleaned the data. S.Y . and Y .H. performed the distribution analysis of the dataset, and conducted the 
+technical analysis of the dataset. S.Y . annotated the images using the labels provided by the radiologists. Q.C. and 
+J.S. supervised the project. S.Y . drafted the paper. X.W ., Y .Z., I.C.P ., Z.W ., C.L.C., G.I.W ., S.L., Y .G., Q.C. and J.S. 
+participated actively in manuscript preparation.
+Competing interests
+The authors declare no competing interests.
+additional information
+Correspondence and requests for materials should be addressed to Q.C. or J.S.
+Reprints and permissions information is available at www.nature.com/reprints.
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and 
+institutional affiliations.
+10Scientific  Data  |           (2025) 12:88  | https://doi.org/10.1038/s41597-024-04311-y
+www.nature.com/scientificdatawww.nature.com/scientificdata/
+Open Access This article is licensed under a Creative Commons Attribution-NonCommercial-  
+NoDerivatives 4.0 International License, which permits any non-commercial use, sharing, distribu-
+tion and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) 
+and the source, provide a link to the Creative Commons licence, and indicate if you modified the licensed mate-
+rial. You do not have permission under this licence to share adapted material derived from this article or parts of 
+it. The images or other third party material in this article are included in the article’s Creative Commons licence, 
+unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative  
+Commons licence and your intended use is not permitted by statutory regulation or exceeds the permitted  
+use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit 
+http://creativecommons.org/licenses/by-nc-nd/4.0/.
+ 
+© The Author(s) 2025

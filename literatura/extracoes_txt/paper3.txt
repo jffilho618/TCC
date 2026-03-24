@@ -1,0 +1,772 @@
+Research paper
+Deep learning-based classiﬁcation of primary bone tumors on
+radiographs: A preliminary study
+Yu Hea,1, Ian Panb,1, Bingting Baoa, Kasey Halseyb, Marcello Changc, Hui Liua, Shuping Penga,
+Ronnie A. Sebrof, Jing Guana, Thomas Yig, Andrew T. Delworth h, Feyisope Ewejei, Lisa J. States j,
+Paul J. Zhangd, Zishu Zhanga, Jing Wua,*, Xianjing Penge,*, Harrison X. Bai b,*
+a Department of Radiology, The Second Xiangya Hospital of Central South University, No.139 Middle Renmin Road, Changsha, Hunan 410011, PR China
+b Department of Diagnostic Imaging, Warren Alpert Medical School of Brown University, Providence 02912, USA
+c Stanford School of Medicine, Palo Alto 94305, USA
+d Department of Pathology and Laboratory Medicine, Hospital of the University of Pennsylvania, Philadelphia 19104, USA
+e Department of Radiology, Xiangya Hospital, Central South University, No.87 Xiangya Road, Changsha, Hunan 410008, PR China
+f Musculoskeletal Imaging, Department of Radiology, University of Pennsylvania, Philadelphia 19104, USA
+g Warren Alpert Medical School of Brown University, Providence 02903, USA
+h Brown University, Providence 02912, USA
+i Perelman School of Medicine at the University of Pennsylvania, Philadelphia 19104, USA
+j Department of Radiology, Children's Hospital of Philadelphia, 19104, USA
+ARTICLE INFO
+Article History:
+Received 23 April 2020
+Revised 19 October 2020
+Accepted 26 October 2020
+Available online 22 November 2020
+ABSTRACT
+Background: To develop a deep learning model to classify primary bone tumors from preoperative radio-
+graphs and compare performance with radiologists.
+Methods: A total of 1356 patients (2899 images) with histologically con ﬁrmed primary bone tumors and pre-
+operative radiographs were identi ﬁed from ﬁve institutions’ pathology databases. Manual cropping was per-
+formed by radiologists to label the lesions. Binary discriminatory capacity (benign versus not-benign and
+malignant versus not-malignant) and three-way classi ﬁcation (benign versus intermediate versus malignant)
+performance of our model were evaluated. The generalizability of our model was investigated on data from
+external test set. Final model performance was compared with interpretation from ﬁve radiologists of vary-
+ing level of experience using the Permutations tests.
+Findings: For benign vs. not benign, model achieved area under curve (AUC) of 0 /C15894 and 0/C15877 on cross-val-
+idation and external testing, respectively. For malignant vs. not malignant, model achieved AUC of 0 /C15907 and
+0/C15916 on cross-validation and external testing, respectively. For three-way classi ﬁcation, model achieved
+72/C151% accuracy vs. 74 /C156% and 72 /C151% for the two subspecialists on cross-validation ( p =0 /C1503 and p= 0/C1552,
+respectively). On external testing, model achieved 73 /C154% accuracy vs. 69 /C153%, 73 /C154%, 73 /C151%, 67 /C159%, and
+63/C154% for the two subspecialists and three junior radiologists ( p= 0/C1514, p= 0/C1589, p= 0/C1593, p= 0/C1502,
+p < 0/C1501 for radiologists 1 /C05, respectively).
+Interpretation: Deep learning can classify primary bone tumors using conventional radiographs in a multi-
+institutional dataset with similar accuracy compared to subspecialists, and better performance than junior
+radiologists.
+Funding: The project described was supported by RSNA Research & Education Foundation, through grant
+number RSCH2004 to Harrison X. Bai.
+© 2020 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY-NC-ND license
+(http://creativecommons.org/licenses/by-nc-nd/4.0/)
+Keywords:
+Deep learning
+Convolutional neural network
+Primary bone tumor
+Plain radiograph
+Introduction
+Although primary bone tumors are uncommon with incidence
+rates of 4 /C07% among children and adolescents in the United States
+[1], primary malignancies of the bone and joints are ranked as the
+third leading cause of death in patients with cancer who are younger
+than 20 years of age [2]. Bone tumors vary widely in their biological
+* Corresponding authors.
+E-mail addresses: wujing622@csu.edu.cn (J. Wu), pengxianjing@csu.edu.cn
+(X. Peng), Harrison_Bai@Brown.edu (H.X. Bai).
+1 Note: Yu He and Ian Pan share primary authorship.
+https://doi.org/10.1016/j.ebiom.2020.103121
+2352-3964/© 2020 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY-NC-ND license ( http://creativecommons.org/licenses/by-nc-nd/4.0/)
+EBioMedicine 62 (2020) 103121
+Contents lists available at ScienceDirect
+EBioMedicine
+journal homepage: www.elsevier.com/locate/ebiom
+
+behavior and require different management depending on their classi-
+ﬁcation as benign, intermediate, or malignant, by the World Health
+Organization (WHO) [3]. Benign bone tumors (e.g. osteochondroma,
+osteoid osteoma, etc.) have a limited capacity for local recurrence, and
+are almost always readily cured by complete local excision/curettage
+[3]. Tumors in the intermediate group (e.g. giant cell tumor, chondro-
+blastoma, etc.) have the potential to be locally aggressive or metasta-
+size in rare cases. Therefore, bone tumors classi ﬁed as intermediate
+often require wide excision margins inclusive of normal tissue, and/or
+the use of adjuvant therapy in order to ensure local control [3]. Malig-
+nant bone tumors (e.g. chondrosarcoma, osteosarcoma, etc.) not only
+have the potential for locally destructive growth and recurrence, but
+also carry signiﬁcant risk for distant metastases[3].
+Differential diagnoses of primary bone tumor mostly depend on
+the review of the conventional radiographs and the age of the patient.
+The plain radiograph remains the most useful examination for differ-
+entiating these cases, while CT and MRI are only helpful in selected
+cases. Besides demographic information such as the patient ’s age,
+radiographic appearance of the tumor including size, location, mar-
+gin, type of matrix, presence of periosteal reaction and cortical
+destruction are other key clues in helping the radiologist differentiate
+indolent from aggressive bone tumors [3]. Because bone tumors have
+a variety of appearances and are relatively uncommon, few radiolog-
+ists develop suf ﬁcient expertise to make a de ﬁnite diagnosis. Among
+general radiologists, accuracy in interpretation of bone lesions can be
+low, leading to misdiagnosis which can be detrimental to patient out-
+come [4]. Many patients with benign tumors are referred to bone
+biopsy, which has the issue of increased morbidity and cost, and is
+subject to sampling error [5] or evaluated with advanced imaging
+modalities which increase health care costs.
+Artiﬁcial intelligence, especially deep learning with convolutional
+neural networks has shown great promise in classifying two-dimen-
+sional images of some common diseases and relies on databases of
+thousands of annotated or unannotated images [6/C09].D e e pl e a r n i n g
+models can recognize predictive features directly from images by uti-
+lizing a back-propagation algorithm which recalibrates the model's
+internal parameters after each round of training [10]. Recent studies
+have shown the potential of deep learning in the assessment of solid
+liver lesions on ultrasonography [11], renal lesions [ 12,13] and glioma
+on MR Imaging [10,14/C017] and abnormal chest radiographs[18].
+An algorithm that can distinguish benign from malignant bone
+tumors on routine radiographs with high accuracy can facilitate tri-
+age, guide patient management, and save patients from unnecessary
+procedures. In this study, we trained a deep learning algorithm to
+classify primary bone tumors on plain ﬁlm and compare performance
+with radiologists of varying level of experience.
+Materials and methods
+Patient cohort
+Patients with primary bone tumor con ﬁrmed by histology accord-
+ing to the 2013 World Health Organization (WHO) classi ﬁcation were
+retrospectively identi ﬁed from ﬁve large academic centers from July
+2008 to July 2019. Plain radiograph and clinical variables including
+patient demographics (i.e., age and sex) were collected. The study
+was conducted in accordance with Declaration of Helsinki and
+approved by the Institutional Review Boards at all ﬁve institutions.
+The inclusion criteria for the study were (i) histopathologically con-
+ﬁrmed (biopsy or surgery) primary bone tumor according to current
+WHO criteria, (ii) available pre-procedure plain radiograph including
+all the projections it had which can show the lesion clearly, and (iii)
+quality of the images was adequate for analysis, without motion or
+artifacts. The images were screened by a radiologist (Y.H.) with
+7 years of experience reading musculoskeletal (MSK) plain ﬁlm. Our
+ﬁnal dataset consisted of 2899 images from 1356 patients (institution
+1: 410 images from 160 patients, institution 2: 745 images from 333
+patients, institution 3: 1105 images from 572 patients, institution 4:
+390 images from 186 patients, institution 5: 249 images from 105
+patients). Each patient contributed 1 lesion to the dataset. Of the
+1356 lesions, 679 (1523 images) were benign based on histopathol-
+ogy, 317 (635 images) were intermediate, and 360 (741 images) were
+malignant (see Supplementary Figure S1, which demonstrates inclu-
+sion and exclusion criteria). In respect of patient con ﬁdentiality and
+consent, the radiographs and clinical information datasets analyzed
+in this study are not available for download but are available upon
+reasonable request to the corresponding author.
+Preprocessing
+All images were downloaded in DICOM format at their original
+dimensions and resolution. Images were converted from DICOM to 8-
+bit JPEG. Then the images were loaded into Click 2 Crop software
+Research in Context section
+Evidence before this study
+Primary malignancy of the bone and joints is ranked as the
+third leading cause of death in patients with cancer who are
+younger than 20 years. The plain radiograph remains the most
+useful examination for differentiating benign from aggressive
+lesions. Because of the low incidence and variety of uncommon
+feature of primary bone tumors, few radiologists develop suf ﬁ-
+cient expertise to make a de ﬁnite diagnosis. For general radiol-
+ogists and those working in resource limited regions,
+radiographic interpretation can be less accurate, leading to mis-
+diagnosis and unnecessary biopsies. Classi ﬁcation of primary
+bone tumors correctly via radiography is a challenging problem
+even for subspecialists. The aim of this project was to raise the
+level of plain radiography analysis through deep learning to the
+level of the musculoskeletal subspecialist. Arti ﬁcial intelligence,
+especially deep learning with convolutional neural networks
+has shown great promise in classifying two-dimensional
+images of some common diseases. With the use of PubMed and
+Google Scholar, a systematic literature search was performed to
+identify original research papers in English from inception to
+October, 2019, using the terms ( “bone tumors ” OR “bone can-
+cer”) AND ( “DCNN” OR “deep learning” OR “machine learning”)
+AND ( “radiographs” OR “plain ﬁlm”). No previously published
+report was found.
+Added value of this study
+Our study is the ﬁrst to establish a deep learning algorithm for
+classifying primary bone tumors on conventional radiographs
+using a multi-institutional dataset with similar accuracy to sub-
+specialists and higher accuracy than junior radiologists. The
+performance is expected to improve further in the future with
+larger datasets.
+Implications of all the available evidence
+Correctly classifying bone tumors on plain radiograph is impor-
+tant for clinical decision making as it can guide subsequent
+management. Our algorithm has the potential to improve pri-
+mary bone tumor radiographs interpretation to the level of the
+subspecialists. If further validated, the algorithm can prevent
+patients from undergoing unnecessary invasive biopsies and
+help guide clinical management, especially in areas without
+subspecialty expertise.
+2 Y. He et al. / EBioMedicine 62 (2020) 103121
+(v5.2.2), and regions of interest containing the whole tumor were
+manually cropped from the original image to include some surround-
+ing while capturing the margin of the lesion, by a radiologist (Y.H.)
+with 7 years of experience reading musculoskeletal (MSK) plain ﬁlm.
+Images were padded and resized to 512 by 512 pixels. Single-channel
+images were converted to 3-channel images by repeating the single
+channel 3 times [ 12,19,20]. Pixel values were normalized by scaling
+values into the range [0, 1], then subtracting (0 /C15485, 0 /C15456, 0 /C15406)
+and dividing by (0 /C15229, 0/C15224, 0/C15225) channel-wise.
+Training and inference
+Model training was performed in Python 3.7 and PyTorch 1.6
+using a NVIDIA GV100 32GB graphics processing unit. Models were
+based on the Ef ﬁcientNet-B0 convolutional neural network architec-
+ture [21]. Model weights were initialized with weights pretrained on
+the ImageNet database. Training was performed using a batch size of
+96, dropout probability of 0.2 before the ﬁnal fully-connected layer,
+and data augmentation consisting of horizontal ﬂips, af ﬁne transfor-
+mations, and contrast adjustments. Models were trained for 3-way
+classiﬁcation (benign, intermediate, and malignant) and binary classi-
+ﬁcation (benign versus not-benign and malignant versus not-malig-
+nant). The RAdam optimizer was used with a categorical cross-
+entropy loss and a cosine annealing learning rate schedule with an
+initial learning rate of 3 £ 10e/C04. Models were trained for 20 epochs.
+The selected model for each training episode was selected based on
+the Cohen ’s kappa score on the validation set. For each test fold, 3
+training episodes were performed to form a 3-model ensemble. Pre-
+dictions were averaged across all models and all radiographic views
+to produce a ﬁnal prediction for each case. During each training
+epoch, 1 image from 1 patient is sampled so that the model is
+exposed to the same number of images per patient over the course of
+the entire training period. An external test set comprised of images
+from two of our ﬁve institutions (institutions 4 and 5) was used to
+evaluate the generalization performance of the model. The external
+test set consisted of 639 images from 291 patients. Each patient con-
+tributed 1 lesion to the dataset. Of the 291 lesions, 162 (368 images)
+were benign based on histopathology, 61 (126 images) were interme-
+diate, and 68 (145 images) were malignant. Please see Supplemen-
+tary Figure S2 for schematic of our pipeline.
+Evaluation
+Radiologist evaluation
+Two board-certiﬁed musculoskeletal subspecialists (H.L. and S.P.),
+who see more than 100 bone tumors per year, with 25 and 23 years
+of experience, and three junior radiologists, who with 6, 1, and 7 years
+of experience reading MSK plain ﬁlm respectively, blind to histopath-
+ologic data, evaluated conventional radiographs of the bone lesions,
+and labeled each case as benign, intermediate, or malignant with
+their own interpretations. They were given clinical information of
+age and sex of each patient. The 2 musculoskeletal subspecialists
+interpreted the uncropped images of entire cohort (data from all ﬁve
+institutions) and the cropped images of external test set (data from
+institutions 4 and 5), while the 2 junior radiologists evaluated only
+the uncropped and cropped images of external test set. One junior
+radiologist (J.G.) only evaluated the uncropped images of the external
+set, because she was exposed to the gold standard during the recrop-
+ping process. Ground truth labels were obtained using the ﬁnal
+pathology results. The model ’ results were compared with radiolog-
+ists’ interpretations and ﬁnal pathology results to assess model per-
+formance. Information on the ﬁve radiologists is shown in
+Supplemental Table S1.
+Model evaluation
+The model performance was evaluated using several metrics.
+Receiver operating characteristic (ROC) curves and area under curve
+(AUC) for benign versus not-benign and malignant versus not-malig-
+nant were used to evaluate binary discriminatory capacity. Cohen ’s
+kappa scores and categorical accuracy were used to evaluate the
+three-way classi ﬁcation performance of the model and radiologists.
+Five-fold cross-validation was used to analyze model performance,
+ensuring no patient overlap across different folds. First, the model
+was divided into 5 disjoint partitions based on patient ID, each
+approximately 20% of the overall dataset, which comprise the test
+folds. Next, the remaining 80% of the dataset was used for training
+(70%) and validation (10%). A separate model was trained for each
+fold, and the out-of-fold predictions were obtained for the test fold.
+The cross-validation scheme is illustrated in Supplemental Figure S3
+and Supplemental Table S2. This cross-validation procedure allowed
+us to obtain an out-of-fold prediction for each sample in the dataset
+to maximize the sample size on which the model performance was
+evaluated without data leakage. Model performance was also evalu-
+ated on an external test set to evaluate generalizability beyond the
+institutions present in the internal cohort. To evaluate the impact of
+manual lesion cropping on model performance, a second radiologist
+(J.G.) with 1 years of experience reading MSK plain ﬁlm indepen-
+dently recropped the images in the external test set, and model per-
+formance was evaluated on the external test set using this set of
+recropped images.
+Statistical analysis
+Statistical analysis was performed using the R statistical comput-
+ing language, as well as non-parametric methods implemented in
+Python 3.7. 95% con ﬁdence intervals for AUCs were obtained via the
+DeLong method. For Cohen ’s kappa scores and categorical accuracy,
+95% con ﬁdence intervals were generated using 10,000 bootstrap
+samples. Permutation tests with 10,000 iterations were used to calcu-
+late p-values. p < 0/C1505 was considered to indicate a statistically sig-
+niﬁcant difference in performance. Comparison with radiologists was
+performed only for 3-way classi ﬁcation. Subgroup analysis based on
+age was also performed.
+Results
+Table 1 summarizes the 5 datasets used in this study. Overall, the
+mean age was 24 /C157 § 18/C151 years with 50 /C151% benign tumors (average
+age 22 /C158 § 16/C159), 23 /C154% intermediate tumors (average age 23 /C155 §
+15/C15
+7), and 26 /C155% malignant tumors (average age 27 /C157 § 21/C151), as
+indicated by the ﬁnal pathology results. There was a slight male pre-
+dominance (58/C152%). Differences in the distributions of age (One-way
+analysis of variance, p < 0/C1501), sex (Chi-square test, p= 0/C15013) and
+pathology (Chi-square test, p < 0/C1501) were statistically signi ﬁcant
+among the 5 institutions. Please see Supplementary Figure S4 for
+examples of benign, intermediate and malignant bone tumors.
+On cross-validation, the AUCs for the two classi ﬁcations were
+0/C15894 and 0 /C15907, respectively. For benign vs. not benign, at a naive
+threshold of 0 /C155, the model achieved 82 /C157% sensitivity and 81 /C158%
+speciﬁcity. Sensitivity and speci ﬁcity for the model can be adjusted
+along the ROC curve by calibrating the model threshold. For malig-
+nant vs. not malignant, at a naive threshold of 0 /C155, the model
+achieved 77/C157% sensitivity and 89 /C156% speciﬁcity. On external testing,
+the AUCs for these 2 classi ﬁcations were 0 /C15877 and 0 /C15916, respec-
+tively. The data were divided into quartiles by age for subgroup anal-
+ysis: younger than 12 years old, 12 /C018 years old, 19 /C036 years old,
+and older than 36 years old. Performance of 2 formulated binary clas-
+siﬁcation problems: benign vs. not benign and malignant vs. not
+malignant for the deep learning model are summarized in Table 2 .
+Y. He et al. / EBioMedicine 62 (2020) 103121 3
+Fig. 1 depicts the ROC curves for the 2 formulated binary classi ﬁcation
+problems: benign vs. not benign and malignant vs. not malignant on
+cross-validation and external testing.
+Three-way classi ﬁcation results for the deep learning model and
+two subspecialists are shown in Table 3. For three-way classi ﬁcation,
+Cohen’s kappa scores for the model and subspecialists were 0 /C15548,
+0/C15605, and 0 /C15565, respectively. On cross validation, differences
+between model predictions and subspecialist 1 ’s rating was found to
+be statistically signi ﬁcant (Permutation tests, p= 0/C1503). Differences
+between model predictions and subspecialist 2 ’s ratings were not
+found to be statistically signi ﬁcant (Permutation tests, p= 0/C1552). In
+addition, the data were divided into age quartiles, and detailed strati-
+ﬁed model performance by age is summarized in Table 3 . Whereas
+class distributions for both subspecialists were similar, the model
+predicted a higher number of benign tumors (50 /C159% vs. 43 /C152% and
+43/C155%) and fewer intermediate tumors (18 /C151% vs. 23 /C156% and 24 /C155%).
+Malignant tumor predictions were more similar across model and
+subspecialists (31/C150% vs. 33/C151% and 32/C150%).
+Three-way classi ﬁcation results for the deep learning model and
+ﬁve radiologists on uncropped images of external testing data are
+shown in Table 4. Cohen’s kappa scores for the model and ﬁve radiol-
+ogists were 0 /C15560, 0 /C15483 0 /C15553, 0 /C15555, 0 /C15430, and 0 /C15367, respec-
+tively. Differences between model predictions and 1-3 radiologist ’s
+ratings were not found to be statistically signi ﬁcant (Permutation
+tests, p= 0/C1514, p= 0/C1589 and p= 0/C1593). Differences between model
+predictions and 4-5 radiologist ’s ratings were found to be statistically
+signiﬁcant (Permutation tests, p= 0/C1502 and p < 0/C1505). In addition,
+the data were divided into three equally sized age groups, and
+detailed stratiﬁed model performance by age is shown in Table 4.
+Table 1
+Demographics for each of the 5 institutions.
+Institution 1
+(PENN)
+Institution 2
+(CHOP)
+Institution 3
+(China 2)
+Institution 4
+(China 1)
+Institution 5
+(China 3)
+Hospital type Adult & Pediatric Pediatric Adult & Pediatric Adult & Pediatric Pediatric
+Number of patients 160 333 572 186 105
+Age, mean, years (SD) 40 /C153 (17/C158) 12 /C156( 4/C158) 28 /C154 (17/C158) 31 /C153 (19/C153) 7 /C155( 3/C159)
+Sex (% male) 82 (51 /C152) 188 (56 /C155) 328(57 /C153) 116 (62 /C154) 75 (71 /C154)
+Pathology (%)
+Benign 69 (43 /C151) 112 (33 /C156) 336 (58 /C157) 78 (41 /C159) 84 (80 /C150)
+Intermediate 35 (21 /C159) 78 (23 /C154) 143 (25 /C150) 45 (24 /C152) 16 (15 /C152)
+Malignant 56 (35 /C150) 143 (42 /C159) 93 (16 /C153) 63 (33 /C159) 5 (4 /C158)
+Table 2
+Model performance of 2 formulated binary classi ﬁcation problems: benign vs. not
+benign and malignant vs. not malignant. 95% con ﬁdence intervals for AUCs were
+obtained via the DeLong method.
+AUC
+Cross-validation
+(Institution 1, 2 and 3, n=1065)
+Not Benign 0 /C15894 (0/C15874, 0/C15912)
+Not Malignant 0 /C15907 (0/C15886, 0/C15926)
+Divided into quartiles by age for subgroup
+Age (<12, n=268) Not Benign 0 /C15891 (0/C15849, 0/C15928)
+Not Malignant 0 /C15915 (0/C15870, 0/C15953)
+Age (12-18, n=277) Not Benign 0 /C15933 (0/C15903, 0/C15960)
+Not Malignant 0 /C15933 (0/C15900, 0/C15962)
+Age (19-36, n= 263) Not Benign 0 /C15897 (0/C15858, 0/C15933)
+Not Malignant 0 /C15946 (0/C15910, 0/C15975)
+Age (>36, n= 257) Not Benign 0 /C15844 (0/C15849, 0/C15928)
+Not Malignant 0 /C15819 (0/C15870, 0/C15953)
+External testing
+(Institution 4 and 5, n=291)
+Not Benign 0 /C15877 (0/C15833, 0/C15918)
+Not Malignant 0 /C15916 (0/C15877, 0/C15949)
+AUC: area under curve
+Fig. 1. Receiver operating characteristic curves for the 2 formulated binary classi ﬁcation problems. benign vs. not-benign (a) and malignant vs. not-malignant (b). Area under curve
+(AUC) of internal cross-validation (CV, red) and external testing (blue) are also included.
+4 Y. He et al. / EBioMedicine 62 (2020) 103121
+Comparison of model performance on the images in the external
+test set cropped by the original radiologist (Y.H.) and the second radi-
+ologist (J. G.) demonstrated no signi ﬁcant difference (Cohen ’s kappa
+score of 0.560 versus 0.549, p= 0.67).
+Three-way classi ﬁcation results for the deep learning model and
+ﬁve radiologists on cropped images of external testing data are
+shown in Supplementary Table S3. Intra-rater reliability for evalua-
+tion using cropped versus uncropped images on the external test
+data showed that radiologist 1-3 ’s ratings were moderate while radi-
+ologist 5’s rating was fair. Cohen ’s kappa scores of intra-rater reliabil-
+ity for the four radiologists were 0 /C15544, 0 /C15560, 0 /C15509, and 0 /C15385,
+respectively.
+Figs. 2 /C04 depicts examples of model-subspecialist disagree-
+ment under 3 scenarios for prediction of malignancy. Fig. 2 depicts
+3 examples of malignant tumors that were predicted to be not
+malignant by both deep learning model and subspecialists,
+selected from total number of 15 lesions in the ﬁrst scenario.
+These cases either had uncha racteristic appearances ( n =8 )o r
+were located in unusual locations (e.g., vertebral body or coccyx)
+(n = 7). Examples include an osteosarcoma that is completely scle-
+rotic ( Fig 2 a), a chondrosarcoma that has no calci ﬁcation of carti-
+lage matrix ( Fig 2 b), and an Ewing sarcoma that has no cortical
+destruction or periosteal reaction ( Fig 2 c). Fig. 3 depicts one exam-
+ple of malignant tumor that was predicted to be malignant by the
+deep learning model and otherwise by the subspecialists, selected
+from total number of 9 lesions in the second scenario. Almost all
+these cases were ill-de ﬁned lytic lesions without aggressive peri-
+ostitis ( Fig 3 ). Fig. 4 demonstrates 2 instances of the opposite of
+Fig. 3 , selected from total number of 22 lesions in the third sce-
+nario. These cases all have an aggressive type of periosteal reaction
+(lamellated, amorphous or sunburst) ( Fig 4 a), or have a permeative
+or moth-eaten appearance ( Fig 4 b).
+Table 3
+Comparison of model performance with subspecialists on cross-validation. For Cohen ’s kappa scores and categor-
+ical accuracy, 95% con ﬁdence intervals were generated using 10,000 bootstrap samples. Permutation tests with
+10,000 iterations were used to calculate p-values.
+Accuracy Cohen's k Difference in k p-value
+Total
+(n=1065)
+Model 72 /C151% 0 /C15548 (0/C15504, 0/C15590)
+Rater 1 74 /C156% 0 /C15605 (0/C15564, 0/C15644) 0 /C15057 (0/C15007, 0/C15107) 0 /C1503
+Rater 2 72 /C151% 0 /C15565 (0/C15523, 0/C15607) 0 /C15017 (-0/C15034, 0/C15068) 0 /C1552
+Age (<12, n=268) Model 73 /C159% 0 /C15557 (0/C15473, 0/C15641)
+Rater 1 71 /C153% 0 /C15544 (0/C15464, 0/C15625) -0 /C15013 (-0/C15106, 0/C15079) 0 /C1577
+Rater 2 73 /C159% 0 /C15587 (0/C15506, 0/C15666) 0 /C15030 (-0/C15069, 0/C15128) 0 /C1556
+Age (12-18, n=277) Model 76 /C157% 0 /C15617 (0/C15537, 0/C15693)
+Rater 1 77 /C154% 0 /C15646 (0/C15570, 0/C15721) 0 /C15029 (-0/C15065, 0/C15126) 0 /C1555
+Rater 2 75 /C156% 0 /C15615 (0/C15534, 0/C15689) -0 /C15002 (-0/C15098, 0/C15094) 0 /C1596
+Age (19-36, n= 263) Model 75 /C158% 0 /C15610 (0/C15523, 0/C15692)
+Rater 1 77 /C158% 0 /C15653 (0/C15571, 0/C15731) 0 /C15043 (-0/C15062, 0/C15148) 0 /C1543
+Rater 2 70 /C156% 0 /C15541 (0/C15451, 0/C15628) -0 /C15069 (-0/C15174, 0/C15036) 0 /C1522
+Age (>36, n= 257) Model 62 /C152% 0 /C15384 (0/C15291, 0/C15473)
+Rater 1 72 /C151% 0 /C15558 (0/C15472, 0/C15641) 0 /C15174 (0/C15065, 0/C15284) 0 /C15003
+Rater 2 68 /C153% 0 /C15499 (0/C15413, 0/C15583) 0 /C15115 (0/C15004, 0/C15227) 0 /C1505
+Rater 1 and 2 are subspecialists.
+Table 4
+Comparison of model performance with subspecialists and junior radiologists evaluating uncropped images of the
+external testing data and strati ﬁed by age group. For Cohen ’s kappa scores and categorical accuracy, 95% con ﬁdence
+intervals were generated using 10,000 bootstrap samples. Permutation tests with 10,000 iterations were used to
+calculate p-values.
+Accuracy Cohen's
+k Difference in k p-value
+Total
+(n = 291)
+Model 73 /C154% 0 /C15560 (0/C15481, 0/C15639)
+Rater 1 69 /C153% 0 /C15483 (0/C15394, 0/C15567) -0 /C15077 (-0/C15180, 0/C15021) 0 /C1514
+Rater 2 73 /C154% 0 /C15553 (0/C15468, 0/C15634) -0 /C15007 (-0/C15112, 0/C15096) 0 /C1589
+Rater 3 73 /C151% 0 /C15555 (0/C15472, 0/C15633) -0 /C15005 (-0/C15115, 0/C15103) 0 /C1593
+Rater 4 67 /C159% 0 /C15430 (0/C15340, 0/C15519) -0 /C15130 (-0/C15240, -0/C15020) 0 /C1502
+Rater 5 63 /C154% 0 /C15367 (0/C15285, 0/C15449) -0 /C15193 (-0/C15293, -0/C15093) 0 /C150005
+Age (<10, n = 97) Model 74 /C152% 0 /C15383 (0/C15210, 0/C15542)
+Rater 1 79 /C154% 0 /C15478 (0/C15278, 0/C15655) 0 /C15095 (-0/C15128, 0/C15314) 0 /C1541
+Rater 2 79 /C154% 0 /C15515 (0/C15334, 0/C15678) 0 /C15132 (-0/C15080, 0/C15343) 0 /C1523
+Rater 3 79 /C154% 0 /C15535 (0/C15367, 0/C15695) 0 /C15152 (-0/C15080, 0/C15393) 0 /C1525
+Rater 4 80 /C154% 0 /C15448 (0/C15239, 0/C15637) 0 /C15065 (-0/C15177, 0/C15314) 0 /C1561
+Rater 5 69 /C151% 0 /C15229 (0/C15064, 0/C15390) -0 /C15154 (-0/C15341, 0/C15017) 0 /C1511
+Age (10-24, n = 97) Model 77 /C153% 0 /C15630 (0/C15498, 0/C15755)
+Rater 1 70 /C151% 0 /C15496 (0/C15336, 0/C15640) -0 /C15134 (-0/C15311, 0/C15038) 0 /C1513
+Rater 2 72 /C152% 0 /C15538 (0/C15392, 0/C15676) -0 /C15092 (-0/C15261, 0/C15075) 0 /C1528
+Rater 3 77 /C153% 0 /C15618 (0/C15473, 0/C15749) -0 /C15012 (-0/C15183, 0/C15156) 0 /C1588
+Rater 4 69 /C151% 0 /C15450 (0/C15291, 0/C15596) -0 /C15180 (-0/C15352, -0/C15011) 0 /C15045
+Rater 5 52 /C156% 0 /C15217 (0/C15085, 0/C15354) -0 /C15413 (-0/C15576, -0/C15246) <1/C150e-6
+Age (>24, n = 97) Model 68 /C158% 0 /C15514 (0/C15366, 0/C15648)
+Rater 1 58 /C153% 0 /C15386 (0/C15250, 0/C15521) -0 /C15128 (-0/C15304, 0/C15047) 0 /C1515
+Rater 2 68 /C158% 0 /C15526 (0/C15385, 0/C15660) 0 /C15012 (-0/C15178, 0/C15200) 0 /C1589
+Rater 3 62 /C155% 0 /C15413 (0/C15263, 0/C15556) -0 /C15101 (-0/C15294, 0/C15093) 0 /C1531
+Rater 4 54 /C152% 0 /C15282 (0/C15132, 0/C15429) -0 /C15232 (-0/C15426, -0/C15033) 0 /C15025
+Rater 5 68 /C158% 0 /C15479 (0/C15345, 0/C15608) -0 /C15035 (-0/C15198, 0/C15137) 0 /C1571
+Rater 1 and 2 are subspecialists, while rater 3-5 are junior radiologists.
+Y. He et al. / EBioMedicine 62 (2020) 103121 5
+Discussion
+In this study, we constructed and evaluated a deep learning model
+for lesion classi ﬁcation on a collection of 2899 images from 1356
+patients with histologically con ﬁrmed primary bone tumors and pre-
+operative radiographs. The model achieved similar grouping ability
+in three-way classiﬁcation when compared to subspecialists, and bet-
+ter performance than the junior radiologists.
+Correctly classifying bone tumors on plain radiograph is impor-
+tant for clinical decision making as it can guide subsequent manage-
+ment [3]. This is especially true in locales where there is a relative
+lack of subspecialty radiology expertise. Because many bone lesions
+are uncommon or rare, few radiologists develop suf ﬁcient expertise
+to diagnose them accurately. In clinical practice, one relies on learn-
+ing and recalling characteristic imaging features of various lesions,
+both of which are subject to bias. Inappropriate classi ﬁcation of
+benign bone tumor can lead to unnecessary biopsy and subsequently
+increased morbidity and cost. In fact, a study utilizing questionnaires
+revealed that biopsy wounds yielded complications in 17 /C153% of
+patients with malignant primary tumors of bone or soft tissue who
+underwent biopsy, and that biopsy was detrimental to these patients ’
+prognosis and overall outcome 8 /C155% of the time [22]. Biopsy of malig-
+nant bone tumor without appropriate planning can increase the risk
+of tumor seeding along the biopsy tract, with the incidence of seeding
+reported as up to 19 /C152% following osteosarcoma biopsy [23]. Sam-
+pling error presents as another problem for bone biopsy. A diagnosis
+was not obtained successfully in 7 /C159% of cases reported with CT
+image-guided core biopsies of musculoskeletal tumors [24], as well
+as in 4 /C157% of open biopsy cases [ 25,26]. Incorrect diagnosis from ter-
+tiary cancer centers also range from 6% to 12% for image-guided core
+needle biopsies [27]. When the referring center is accounted for, this
+rate increases to 23% [28]. In addition, CT-guided core biopsy is asso-
+ciated with re-biopsy rate up to 20% of cases [26]. There are also a
+host of other factors that can prevent providers from obtaining ade-
+quate tissue for diagnosis. For instance, many bone tumors are
+extremely vascular and often yield what appears to be blood only.
+For lesions that have massive bony sclerosis, such as osteosarcomas,
+the material obtained is often of poor quality and non-diagnostic.
+Specimens of benign or malignant cystic lesions or tumors with
+necrosis are also dif ﬁcult to obtain for biopsy. The aim of this project
+was to raise the level of plain radiography analysis through deep
+learning to the level of the musculoskeletal subspecialists.
+Fig. 2. Three examples of malignant tumors that were predicted to be not malignant by both deep learning model and subspecialists. a, Osteosarcoma in upper le ft tibia predicted to
+be benign by the deep learning model (67 /C151%) and benign by 2 subspecialists. b, Chondrosarcoma in upper right femur predicted to be intermediate by the deep learning model
+(80/C155%) and benign and intermediate by 2 subspecialists. c, Ewing sarcoma in right cuboid bone predicted to be benign by the deep learning model (77 /C152%) and intermediate by 2
+subspecialists.
+Fig. 3. Examples of malignant tumor that was predicted to be malignant by the deep
+learning model and otherwise by subspecialists. Osteosarcoma in distal right femur,
+predicted to be malignant by the deep learning model (99 /C159%) and intermediate by 2
+subspecialists.
+Fig. 4. Two examples of malignant tumor predicted to be malignant by the subspecial-
+ists and otherwise by the deep learning model. a, Ewing sarcoma in left femur diaphy-
+sis, predicted to be benign by the deep learning model (95 /C150%). b, Plasma cell
+myeloma in T12 vertebral body, predicted to be benign by the deep learning model
+(81/C155%).
+6 Y. He et al. / EBioMedicine 62 (2020) 103121
+Most radiologists rely on “pattern recognition ” to differentiate
+benign from malignant lesions on plain radiograph, which can often
+lead to erroneous conclusion. Some common radiologic criteria used
+for this distinction include cortical destruction [29], periostitis [29],
+orientation or axis of the lesion [30], and zone of transition [30].
+However, all have limitations. Cortical bone can be replaced by part
+of the noncalci ﬁed matrix ( ﬁbrous matrix or chondroid matrix) of
+benign ﬁbro-osseous lesions and cartilaginous lesions, giving the
+false impression of cortical destruction on plain ﬁlm [31]. Periostitis
+and orientation of the lesion can be nonspeci ﬁc [30]. Although the
+zone of transition is arguably the most useful indicator of whether a
+lesion is benign or malignant (i.e. a narrow zone of transition indi-
+cates a benign lesion and vice versa), it only applies to lytic lesions —a
+blastic or sclerotic lesion will always appear to have a narrow zone of
+transition and may erroneously be diagnosed as benign even if it is
+malignant [31]. Despite the challenges, we have identi ﬁed no study
+in the literature which applies deep learning to differentiate benign
+from malignant bone lesions on plain radiograph. Past studies had
+the limitations of small cohort size, focus on speci ﬁc differential diag-
+noses, and use of advanced imaging modalities [ 7,8,32,33].
+Our model demonstrated good binary discriminatory capacity on
+cases from different hospitals strati ﬁed by age. For the older than
+36 years old group, the model ’s binary discriminatory capacity was
+slightly lower than that of the younger age group. This can be
+explained by the smaller sample size on which the deep learning
+algorithm was trained since most bone tumors were diagnosed in
+pediatric patients. The good model performance on external testing
+supports generalizability of our algorithm.
+On cross-validation and external testing, our model achieved sim-
+ilar categorical accuracy to the subspecialists for the 3-category clas-
+siﬁcation. This demonstrates that classi ﬁcation of primary bone
+tumors on radiographs is a challenging problem even for experienced
+radiologists subspecialized in MSK. Our model performed better than
+the junior radiologists for all the different age groups, except the
+younger than 10 years old group. That may be caused by our external
+testing data containing excessively high proportion of benign bone
+tumor, such as osteochondroma and osteoid osteoma, which is easy
+to recognize even for less experienced radiologists.
+Deep learning is often considered black box. To understand the
+choices and mistakes that the model and subspecialists made, we
+investigated speci ﬁc cases of model-subspecialist disagreement
+under 3 scenarios for prediction of malignancy. We also concentrated
+on wrong prediction of malignant tumors because this would have
+impacted management and outcome if our algorithm were used in
+lieu of biopsy. In the ﬁrst scenario where both model and subspecial-
+ists were wrong, we found that the tumors either had uncharacteris-
+tic appearances or were located in unusual locations, such as
+vertebral bodies or the coccyx, where the characterization on plain
+ﬁlm was poor. In the second scenario where the model was right but
+the subspecialists were wrong, we found that almost all the cases
+were ill-deﬁned lytic lesions without aggressive periostitis. It appears
+that our deep learning model was better than the subspecialists at
+evaluating the zone of transition, which is often considered the most
+reliable plain ﬁlm indicator for benign versus malignant lesions as
+discussed above. In the third scenario where the model was wrong
+and the subspecialists were right, there are some common ﬁndings.
+These cases all had a permeative, moth-eaten appearance or an
+aggressive type of periosteal reaction (lamellated, amorphous, or
+sunburst). Although many benign lesions can cause aggressive peri-
+ostitis such as infection, eosinophilic granuloma, and trauma, our
+study only included primary bone tumors so aggressive periostitis
+helped the subspecialist recognize them as malignant. It seems that
+our deep learning model was not good at recognizing a permeative
+appearance or aggressive periostitis and associating it with malig-
+nancy. This can be explained by either a lack in number or variety of
+these patterns or both in training. It is also important to note that the
+difference in class distribution between model and subspecialist pre-
+dictions. The deep learning model predicted a greater number of
+benign tumors (50/C159% vs. 43/C152/C043/C155%) than subspecialists, largely at
+the expense of intermediate lesions (18 /C151% vs. 23 /C156/C024/C155%). This is
+most likely due to the class distribution in the training set (48 /C157%
+benign, 24 /C150% intermediate, and 27 /C152% malignant), as deep learning
+model predictions will tend toward the training distribution. This
+may also suggest that benign and intermediate lesions share similar
+features learned by the model, causing confusion between these 2
+classes.
+There are several limitations to our work. First, this is a retrospec-
+tive study with cases identi ﬁed from a search of pathology databases
+at ﬁve institutions. In the general population, benign bone tumors are
+far more common than malignant ones. But due to the tertiary care
+center character of the ﬁve including centers, most typical benign
+bone tumors are diagnosed directly, without biopsy and pathology.
+Therefore, our data contained a smaller number of benign bone
+tumor and large number of intermediate and malignant bone tumor,
+indicating selection bias. Second, we included only primary bone
+tumors, but did not consider other situations (e.g. osteomyelitis,
+metastasis, bone-tumor mimickers, etc.) commonly encountered in
+clinical practice that often cause diagnostic dif ﬁculty. It is also well
+known that benign processes such as infection and eosinophilic gran-
+uloma can mimic malignant tumors [5]. However, a lot of cases were
+without pathology or were not diagnosed with con ﬁdence on pathol-
+ogy. Future studies will include these cases. Third, the images were
+cropped by a MSK radiologist to highlight the tumor before being
+inputted into the network. To evaluate the impact of this manual
+cropped on model performance, a junior radiologist was asked to
+recrop the images in the external set and model performance was
+evaluated on this recropped set to compare with the original radiolo-
+gist. Although we believe that manual cropping keeps the radiologist
+in the loop who are already interpreting the study, is easy to imple-
+ment clinically and requires only seconds to complete, it is important
+to emphasize that the current pipeline is not ready for real-time clini-
+cal use. Future study will incorporate deep learning based lesion
+localization before classiﬁcation to achieve a fully automated pipeline
+for clinical integration. Finally, our cohort size is still small compared
+to the millions of images on ImageNet used to train deep neural net-
+work models. Algorithm development can bene ﬁt from incorporation
+of more data from additional institutions, which will result in better
+performance.
+In conclusion, our study shows that deep learning with DCNN can
+classify primary bone tumors on conventional radiographs using a
+multi-institutional dataset with similar accuracy to subspecialists,
+and better performance than the junior radiologists. Our algorithm
+has the potential to improve primary bone tumor radiographs inter-
+pretation to the level of the subspecialists. Future study will focus on
+development of a fully automatic pipeline including lesion localiza-
+tion, incorporation of studies such as CT or MRI through deep learn-
+ing and inclusion of bone tumor mimic pathologies.
+Author Contributions
+HXB and ZZ conceived the study; YH, JW, BB, MC,XP and PJZ col-
+lected the data; YH and JG preprocessed the images; HL, RAS, SP and
+JG evaluated the bone lesions; IP analyzed the data; HXB and KH
+helped in the analyses and discussion of the results; YH and IP wrote
+the manuscript; TY, ATD, EF, LJS helped in manuscript editing and
+revision. All authors contributed to the review, edit, and approvaled
+the ﬁnal version of the manuscript.
+Ethics approval and consent to participate
+The study was conducted in accordance with Declaration of Hel-
+sinki and approved by the Institutional Review Boards at Hospital of
+University of Pennsylvania, Children's Hospital of Philadelphia,
+Hunan Children ’s Hospital, Xiangya Hospital and Second Xiangya
+Hospital.
+Consent for publication
+The need for informed consent was waived by the institutional
+review board for this retrospective study.
+Availability of data and materials
+In respect of patient con ﬁdentiality and consent, the radiographs
+and clinical information datasets analyzed in this study are not avail-
+able for download but are available upon reasonable request to the
+corresponding author.
+Data sharing
+Source code have been uploaded to a public GitHub repository at:
+https://github.com/i-pan/bone-tumor.
+Declaration of Competing Interest
+The authors declare that they have no con ﬂicts of interests.
+Acknowledgments
+We acknowledged the help of Ke Jin (K.J.) in data collection.
+Funding sources
+The project described was supported by RSNA Research & Educa-
+tion Foundation, through grant number RSCH2004 to H. Bai. The con-
+tent is solely the responsibility of the authors and does not
+necessarily represent the of ﬁcial views of the RSNA R&E Foundation.
+The funders had no role in study design, data collection, data analysis,
+interpretation, writing of the manuscript.
+Supplementary materials
+Supplementary material associated with this article can be found,
+in the online version, at doi:10.1016/j.ebiom.2020.103121.
+Reference
+[1] Ward E, DeSantis C, Robbins A, Kohler B, Jemal A. Childhood and adolescent can-
+cer statistics, 2014. CA Cancer J Clin 2014;64:83 –103.
+[2] Siegel RL, Miller KD, Jemal A. Cancer statistics, 2018. CA Cancer J Clin 2018;68:7–30.
+[3] Fletcher CDM. World Health Organization. International Agency for research on
+cancer. WHO classi ﬁcation of tumours of soft tissue and bone. 4th ed Lyon: IARC
+Press; 2013. p. 468..
+[4] Do BH, Langlotz C, Beaulieu CF. Bone Tumor Diagnosis Using a Naive Bayesian
+Model of Demographic and Radiographic Features. J Digit Imaging 2017;30:640–7.
+[5] Helms. WEBCA. Fundamentals of diagnostic radiology. Philadelphia: Wolters
+Kluwer Health; 2012. p. 1420.
+[6] Lakhani P, Sundaram B. Deep learning at chest radiography: automated classi ﬁca-
+tion of pulmonary tuberculosis by using convolutional neural networks. Radiol-
+ogy 2017;284:574–82.
+[7] Bradshaw T, Perk T, Chen S, et al. Deep learning for classi ﬁcation of benign and
+malignant bone lesions in [F-18]NaF PET/CT images. J Nucl Med 2018;59:327.
+[8] Cheng CT, Ho TY, Lee TY, et al. Application of a deep learning algorithm for detec-
+tion and visualization of hip fractures on plain pelvic radiographs. Eur Radiol
+2019;29:5469–77.
+[9] De Fauw J, Ledsam JR, Romera-Paredes B, et al. Clinically applicable deep learning
+for diagnosis and referral in retinal disease. Nat Med 2018;24:1342 –50.
+[10] Chang K, Bai HX, Zhou H, et al. Residual convolutional neural network for the
+determination of IDH status in low- and high-grade gliomas from MR imaging.
+Clin Cancer Res 2018;24:1073 –81.
+[11] Xi IL, Wu J, Guan J, et al. Deep learning for differentiation of benign and malignant
+solid liver lesions on ultrasonography. Abdom Radiol 2020. doi: 10.1007/s00261-
+020-2564-w.
+[12] Xi IL, Zhao Y, Wang R, et al. Deep learning to distinguish benign from malignant
+renal lesions based on routine MR imaging. Clin Cancer Res 2020;26:1944 –52.
+[13] Zhao Y, Chang M, Wang R, et al. Deep learning based on MRI for differentiation of
+low- and high-grade in low-stage renal cell carcinoma. J Magn Reson Imaging
+2020. doi: 10.1002/jmri.27153.
+[14] Chang K, Beers AL, Bai HX, et al. Automatic assessment of glioma burden: a deep
+learning algorithm for fully automated volumetric and bidimensional measure-
+ment. NeuroOncol 2019;21:1412–22.
+[15] Zhou H, Chang K, Bai HX, et al. Machine learning reveals multimodal MRI patterns
+predictive of isocitrate dehydrogenase and 1p/19q status in diffuse low- and
+high-grade gliomas. J Neurooncol 2019;142:299 –307.
+[16] Kuthuru S, Deaderick W, Bai H, et al. A visually interpretable, dictionary-based
+approach to imaging-genomic modeling, with low-grade glioma as a case study.
+Cancer Inform 2018;17 DOI: 1176935118802796.
+[17] Zhou H, Vallieres M, Bai HX, et al. MRI features predict survival and molecular
+markers in diffuse lower-grade gliomas. Neuro Oncol 2017;19:862 –70.
+[18] Pan I, Agarwal S, Merck D. Generalizable Inter-Institutional Classi ﬁcation of
+Abnormal Chest Radiographs Using Ef ﬁcient Convolutional Neural Networks. J
+Digit Imaging 2019;32:888–96.
+[19] Luo YH, Xi IL, Wang R, et al. Deep learning based on mr imaging for predicting
+outcome of uterine
+ﬁbroid embolization. J Vasc Interv Radiol 2020;31 1010-7.e3.
+[20] Bai HX, Wang R, Xiong Z, et al. Arti ﬁcial intelligence augmentation of radiologist
+performance in distinguishing COVID-19 from pneumonia of other origin at chest
+CT. Radiology 2020;296:E156–E65.
+[21] Mingxing T, Quoc V L. Ef ﬁcientNet: rethinking model scaling for convolutional
+neural networks: ICML 2019 [Available from: https://arxiv.org/pdf/1905.11946.
+pdf.
+[22] Mankin HJ, Lange TA, Spanier SS. THE CLASSIC: The hazards of biopsy in patients
+with malignant primary bone and soft-tissue tumors. The Journal of Bone and
+Joint Surgery, 1982;64:1121-1127. Clin Orthop Relat Res 2006;450:4 –10.
+[23] Seeger LL. Revisiting tract seeding and compartmental anatomy for percutaneous
+image-guided musculoskeletal biopsies. Skeletal Radiol 2019;48:499 –501.
+[24] Altuntas AO, Slavin J, Smith PJ, et al. Accuracy of computed tomography guided
+core needle biopsy of musculoskeletal tumours. ANZ J Surg 2005;75:187 –91.
+[25] Wallace MT, Lin PP, Bird JE, Moon BS, Satcher RL, Lewis VO. The accuracy and clin-
+ical utility of intraoperative frozen section analysis in open biopsy of bone. J Am
+Acad Orthop Surg 2019;27:410 –7.
+[26] Ashford RU, McCarthy SW, Scolyer RA, Bonar SF, Karim RZ, Stalley PD. Surgical
+biopsy with intra-operative frozen section. An accurate and cost-effective method
+for diagnosis of musculoskeletal sarcomas. J Bone Jt Surg Br 2006;88:1207 –11.
+[27] Jelinek JS, Murphey MD, Welker JA, et al. Diagnosis of primary bone tumors with
+image-guided percutaneous biopsy: experience with 110 tumors. Radiology
+2002;223:731–7.
+[28] Saifuddin A, Mitchell R, Burnett SJ, Sandison A, Pringle JA. Ultrasound-guided nee-
+dle biopsy of primary bone tumours. J Bone Jt Surg Br 2000;82:50 –4.
+[29] Teo HE, Peh WC. Primary bone tumors of adulthood. Cancer Imaging 2004;4:74 –
+83.
+[30] Umer M, Hasan OHA, Khan D, Uddin N, Noordin S. Systematic approach to muscu-
+loskeletal benign tumors. Int J Surg Oncol 2017;2:e46.
+[31] Remotti F, Feldman F. Nonneoplastic lesions that simulate primary tumors of
+bone. Arch Pathol Lab Med 2012;136:772 –88.
+[32] Filograna L, Lenkowicz J, Cellini F, et al. Identi ﬁcation of the most signi ﬁcant mag-
+netic resonance imaging (MRI) radiomic features in oncological patients with ver-
+tebral bone marrow metastatic disease: a feasibility study. Radiol Med 2019;
+124:50–7.
+[33] Yin P, Mao N, Zhao C, et al. Comparison of radiomics machine-learning classi ﬁers
+and feature selection for differentiation of sacral chordoma and sacral giant cell
+tumour based on 3D computed tomography features. Eur Radiol 2019;29:1841–7.

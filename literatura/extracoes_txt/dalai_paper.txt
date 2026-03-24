@@ -1,0 +1,964 @@
+Original Clinical Science
+Surgical Innovation
+2025, Vol. 32(2) 94 –108
+© The Author(s) 2024
+Article reuse guidelines:
+sagepub.com/journals-permissions
+DOI: 10.1177/15533506241299886
+journals.sagepub.com/home/sri
+Automated Bone Cancer Detection
+Using Deep Learning on X-Ray Images
+Sasanka Sekhar Dalai, PhD1, Bharat Jyoti Ranjan Sahu, PhD1,
+Jyotirmayee Rautaray, PhD 1, M. Ijaz Khan, PhD 2,
+Bander A. Jabr, PhD 3, and Yasser A. Ali, PhD 3
+Abstract
+In recent days, bone cancer is a life-threatening health issue that can lead to death. However, physicians use CT-scan,
+X-rays, or MRI images to recognize bone cancer, but still require techniques to increase precision and reduce human
+labor. These methods face challenges such as high costs, time consumption, and the risk of misdiagnosis due to the
+complexity of bone tumor appearances. Therefore, it is essential to establish an automated system to detect healthy
+bones from cancerous ones. In this regard, Arti ﬁcial intelligence, particularly deep learning, shows increased attention in
+the medical image analysis process. This research presents a new Golden Search Optimization along with Deep Learning
+Enabled Computer Aided Diagnosis for Bone Cancer Classiﬁcation (GSODL-CADBCC) on X-ray images. The aim of the
+GSODL-CADBCC approach is to accurately distinguish the input X-ray images into healthy and cancerous. This re-
+search presents the GSODL-CADBCC technique that leverages the bilateral ﬁltering technique to remove the noise.
+This method uses the SqueezeNet model to generate feature vectors, and the GSO algorithm ef ﬁciently selects the
+hyperparameters. Finally, the extracted features can be classi ﬁed by improved cuckoo search with a long short-term
+memory model. The experimental results demonstrate that the GSODL- CADBCC approach attains highest per-
+formance with an average accuracy of 95.52% on the training set data and 94.79% on the testing set data. This automated
+approach not only reduces the need for manual interpretation but also minimizes the risk of diagnostic errors and
+provides a viable option for precise medical imaging-based bone cancer screening.
+Keywords
+computer aided diagnosis, golden search optimization, medical imaging, deep learning, bone cancer
+Introduction
+Muscles in the body are attached to bones to support
+movement. Spongy bone marrow is found within the ﬁ-
+brous tissue that makes up bone ligaments. A bone tumor
+starts off as normal cells and develops into malignant
+cells.
+1,2 It might destroy bone tissues and bone will be
+weaker. For cancer patients, early identiﬁcation is the only
+thing that increases their chances of survival. Differential
+diagnoses of bone cancer are based on the assessment of
+the age of the patient and traditional radiographs.
+3 The
+plain radiograph is the most useful analysis for dis-
+tinguishing such cases. Although positron emission to-
+mography (PET), computed tomography (CT), magnetic
+resonance imaging (MRI), and bone scans are more
+sensitive in detecting bone cancer, these modern imaging
+modalities are time-consuming and expensive. In addition
+to demographic data like the type of matrix, patient ’s age,
+location, presence of periosteal reaction, radiographic
+appearance of the tumours involving size, cortical de-
+struction, and margin are other important clues assisting
+the radiologist to distinguish indolent from aggressive
+bone cancers.
+4 Since bone tumors are relatively un-
+common and exhibit various appearances, only a few
+radiologists have developed suf ﬁcient expertise to make
+deﬁnitive diagnoses. Consequently, the accuracy of bone
+lesion analysis by radiologists is generally low, which can
+lead to frequent misdiagnoses that adversely affect patient
+outcomes.
+5
+Early classi ﬁcation and detection are done to assure
+effective medication of bone cancers. 6 Radical surgical
+resection for primary malignancy is only feasible if the
+1Department of Computer Science and Engineering, Siksha ‘O’
+Anusandhan (deemed to Be University), Bhubaneswar, India
+2Department of Mechanical Engineering, Lebanese American University,
+Beirut, Lebanon
+3Department of Computer Engineering, College of Computer and
+Information Sciences, King Saud University, Riyadh, Saudi Arabia
+Corresponding Author:
+M. Ijaz Khan, PhD, Department of Mechanical Engineering, Labanese
+American University, Beirut, Lebanon.
+Email: scientiﬁcresearchglobe@gmail.com
+
+cancer is detected in its early stages. Radiotherapy, pro-
+tected weight-bearing or surgical augmentation is required
+for preventing fractures around osteocytes cancers. 7
+Though plain radiographs were commonly utilized for
+routine screening for bone cancers, higher rate of mis-
+diagnoses upon visual inspection was stated, as bone
+cancers show common ambiguous features and various
+morphologies. Developments in artiﬁcial intelligence (AI)
+approaches are presenting novelties in the analysis of
+medical data.
+8 Higher-level NNs like DL, which resemble
+the human brain, can solve complex problems that lower-
+level AI cannot. Convolutional neural network (CNN)
+techniques produce better results while evaluating com-
+plex paradigm health care images. The ability of deep
+learning to understand 2D medical images is comparable
+to that of a typical human expert in the ﬁeld. Numerous
+studies have demonstrated exceptional results in the
+classiﬁcation or diagnosis of diseases using endoscopy,
+CT, MRI, microscope, ultrasound, and plain
+radiography.
+9,10 In this case, bone cancer is identi ﬁed
+using AI technology. Human error, time, and expense are
+signiﬁcantly reduced in medical practices when the AI-
+related classi ﬁcation technique performs well.
+The study presents a new Golden Search Optimization
+with Deep Learning Enabled Computer Aided Diagnosis
+for Bone Cancer Classi ﬁcation (GSODL-CADBCC) on
+X- ray images. The presented GSODL-CADBCC tech-
+nique makes use of bilateral ﬁltering (BF) technique to
+remove the noise. This approach, called GSODL-
+CADBCC, produces feature vectors by utilizing the
+SqueezeNet model and the hyperparameters are pro-
+ﬁciently chosen by the GSO algorithm. Finally, the ex-
+tracted features can be classi ﬁed by improved cuckoo
+search (ICS) with a long short-term memory (LSTM)
+module. An extensive set of experiments were performed
+to study the performance of the GSODL-CADBCC
+method on medical imaging datasets.
+Related Works
+Shabbir et al11 provide a way for using MRI to predict the
+malignancy of bone cancer. The MRI scans in the datasets
+have diagnoses that have been veri ﬁed through histo-
+logical analysis. Two pre-trained residual CNNs will
+classify the images taken from the T1 and T2 MRI da-
+tasets. With the aid of pre-trained CNN, the algorithm
+converges faster during training, and it trains on smaller
+data. Liu et al
+12 showed that using patient clinical char-
+acteristics and standard tumor radiographs, machine
+learning and deep learning fusion processes are validated
+and developed for the classi ﬁcation of intermediate,
+malignant, and benign bone tumors. The ML approach
+may improve the capacity to classify bone cancers by
+combining information from radiographs and clinical
+features. The studies lack focus on optimizing
+computational ef ﬁciency and utilizing more readily
+available imaging modalities such as X-rays. It shows
+dependency on MRI scans which are more expensive and
+less accessible than X-rays.
+Wang et al
+13 used a DL technique for automatically
+counting cells in colour bone marrow microscopic im-
+ages. The presented algorithm makes use of a Feature
+Pyramid Network and a Fast RCNN to create a model that
+considers different illumination levels and is accountable
+for the stability of the colour component. The empirical
+result shows that the presented model is comparable to
+certain sophisticated systems. Pathologists can easily
+operate the system with the help of a user interface. The
+study focused primarily on cell counting, not on the
+classiﬁcation of bone cancer.
+Calin et al
+14 presented a quick object-based catego-
+rization approach that makes it easier to comprehend
+bone scintigraphy images. Firstly, the full lambda-
+schedule technique along with an edge-based segmen-
+tation technique has been applied for identifying the
+objects in the bone scintigraphy, and the spatial and
+textural features of the object were evaluated. Next,
+a group of objects was chosen as training datasets de-
+rived on visual inspection of an image. Then were al-
+located to different stages of radionuclide accumulation
+prior to implementing the data classi ﬁcations with the
+help of SVM and KNN classi ﬁers. This study does not
+integrate advanced DL techniques for classi ﬁcation.
+Georgeanu et al
+15 present a CNN architecture in addition
+to image processing techniques for detecting and clas-
+sifying bone MRI scans into benign or malignant tumors.
+With the help of the transfer learning technique, the
+performance of both pre-trained CNN frameworks
+namely ResNet-50 and VGG-16 models were compared.
+It shows dependency on MRI scans which are more
+expensive and less accessible than X-rays. Moreover,
+exploring and comparing more pre-trained models could
+provide a broader understanding of which architectures
+are most effective for this task.
+Han et al
+16 assessed the effectiveness of DL classi ﬁers
+for prostate cancer patients bone scans. Two distinct 2D
+CNN frameworks have been introduced: (1) tandem ar-
+chitecture incorporating the entire body as well as local
+patches, given as “global–local uni ﬁed emphasis ”
+(GLUE), and (2) whole body –based (WB). The study
+does not integrate other relevant clinical data into the DL
+models such as serum PSA levels or other imaging
+ﬁndings. Incorporating these additional data sources could
+potentially improve diagnostic performance. Eweje et al
+17
+designed a DL approach that could discriminate benign
+and malignant bone cancers with patient demographics
+and MRI. Image-related models were produced with the
+help of EfﬁcientNet-B0 framework and an LR mechanism
+was trained through lesion position, patient age, and sex.
+At last, a voting ensemble model was constructed.
+Dalai et al 95
+Although the study includes external validation, the da-
+taset from external sources was limited. Broader valida-
+tion across diverse populations and institutions is
+necessary for greater generalizability. Table 1 shows
+a thorough comparison of literature surveys.
+The Proposed GSODL-CADBCC Model
+In this research, an effective GSODL-CADBCC approach
+was introduced for automated bone cancer classi ﬁcation
+on X-ray images. The presented GSODL-CADBCC
+technique encompasses BF with noise removal, GSO
+along with SqueezeNet consisting of feature extraction,
+LSTM classi ﬁcation, and ICS related hyperparameter
+tuning. Figure 1 Exhibits the working principle of
+GSODL-CADBCC technique.
+Image Preprocessing Using BF Technique
+Firstly, the GSODL-CADBCC technique annihilate the
+noise in the X-ray images with the help of BF technique.
+The BF algorithm is employed in the GSODL-CADBCC
+model to preprocess X-ray images by reducing noise
+while preserving important structural details like edges.
+This step is crucial because medical images, such as
+X-rays, often contain noise that can obscure critical
+features needed for accurate diagnosis. BF effectively
+removes noise from images, which is essential for en-
+hancing the clarity and quality of medical images. Noise
+can signi ﬁcantly affect the performance of feature ex-
+traction and classi ﬁcation algorithms. Unlike traditional
+smoothing techniques that blur edges, BF maintains sharp
+edges by considering both the spatial closeness and the
+intensity difference of pixels. This property is particularly
+important in medical imaging, where edges delineate
+anatomical structures and regions of interest. BF algo-
+rithm is a nonlinear ﬁltering technique that completely
+considers spatial and pixel value information and lastly
+forms a compromise processing on the image.
+18 In
+medical images, especially in X-rays, the regions of in-
+terest (such as bones and tumors) tend to be narrow and
+elongated compared to random noise, which is usually
+more dispersed and lacks structure. This characteristic
+allows BF to differentiate between true edges and noise.
+The results of the BF algorithm are evaluated in the
+equation ( 1).
+i
+newðx, yÞ¼
+Pxþc
+a¼x/C0 c
+Pyþc
+b¼y/C0 ciða, bÞω ða, bÞ
+Pxþc
+a¼x/C0 c
+Pyþc
+b¼y/C0 cω ða, bÞ (1)
+Where inðx /C0 yÞ denotes the pixel value obtained after-
+wards applying BF algorithm. C indicates the window size
+that affects the computation of ða, bÞ, ða, bÞ shows the
+pixel value of speci ﬁc point in the window, and ω ða, bÞ
+embodies the value computed by two Gaussian functions.
+The initial Gaussian function is evaluated using equation
+(2),
+ω
+sða, bÞ¼ e
+(
+ða /C0 xÞ2 þð b /C0 yÞ2
+2aσ2
+)
+(2)
+Where ða, bÞ signiﬁes the initial Gaussian function and
+value is controlled by variable σs. The second Gaussian
+function is evaluated using equation ( 3).
+wvða, bÞ¼ exp
+(
+ðða, bÞ/C0ð x, yÞÞ2
+2σ2
+)
+(3)
+Where ða, bÞ represents the second Gaussian function.
+The results of the BF algorithm are evaluated with the
+above equations ( 1)–(3) by computing a new pixel value
+using a weighted average of surrounding pixels. The
+weight ω ða, bÞ combines spatial closeness and intensity
+similarity which ensures that similar and nearby pixels
+have more inﬂuence. The spatial weight ω
+sða, bÞ depends
+on the distance between pixels, while the intensity weight
+ω
+yða, bÞ relies on intensity differences. This approach
+effectively reduces noise while preserving edges that are
+crucial for medical images where structural details are
+important. The ﬁnal pixel value is obtained by normal-
+izing the weighted sum of pixel values to enhance image
+clarity and usability.
+Table 1. Comparison of Literature Survey.
+Authors Imaging Dataset Size Models Algorithms
+Georgeanu
+et al. 11
+MRI 39 MRI (malignant and
+benign tumors)
+DL ResNet50
+Liu et al. 12 Bone tumors 643 patients and
+982 radiographs
+DL XGBoost, inception V3
+Wang et al. 13 White blood cells in
+bone marrow
+images
+609 white blood cell
+images
+DL Faster RCNN, feature pyramid network (deep CNN)
+Georgeanu
+et al.
+15
+MRI 166 Thigh bones DL VGG-16, ResNet-50
+Han et al. 16 Bone scan Positive: 2991, Negative:
+6142
+DL 2D-CNN
+Eweje et al. 17 MRI Benign lesions: 582,
+malignant lesions: 478.
+ML and
+DL
+Ensemble (Ef ﬁcientNet and LR)
+96 Surgical Innovation 32(2)
+Feature Extraction Using Optimal
+SqueezeNet Model
+During this stage, the SqueezeNet model received the
+preprocessed image as input in order to produce feature
+vectors. CNN typically consists of pooling, convolutional,
+and fully connected (FC) layers.
+19 Firstly, convolutional
+and pooling layers are used to extract the features. Then,
+the feature map in the convolution layer is transformed
+into 1D vector. Next, the output layer classi ﬁes the input
+images. The network lowers the square divergence be-
+tween the classi ﬁer and predictive outcomes and changes
+the weighted parameter through BP . The neurons in each
+layer are arranged in 3D height, width, and depth where
+depth determines the channel count of input images or
+amount of input feature map, and width and height
+identiﬁes the size of the neuron. The convolution layer
+encompasses multiple convolution ﬁlters, which extract
+features in the image with a convolutional model. To
+create the ﬁnal feature map and exclude local features, the
+current layer ’s convolution ﬁlter convoluted the input
+feature map. Next, the nonlinear feature map was realized
+by the activation function. The subsampling or pooling
+layers are ﬁnal convolution layers. It employs a down-
+sampling method with a particular value as outcomes in
+a speci ﬁc area. Figure 2 Shows the architecture of
+SqueezeNet model as follows:
+The parameter count for VGGNet and AlexNet opti-
+mize, the SqueezeNet architecture is developed with
+minimal parameters but maintained accuracy. In Squee-
+zeNet, the ﬁre element develops a signi ﬁcant component
+and is detached to Squeeze and Expand the architecture.
+The 1 × 1 convolution layer obtained substantial con-
+sideration. Consequently, accomplishing linear combi-
+nation of many feature maps and data integration on the
+channels. When the output and input channel count is
+greater, then the convolution kernel develops greater.
+Next, add 1 × 1 convolution to every inception system that
+reduces the input channel count, and the convolution
+kernel variable and complex function were decreased.
+Finally, add a 1 × 1 convolution layer to improve the
+number of channels as well as the feature extraction. A
+Figure 1. Workﬂow of GSODL-CADBCC model.
+Dalai et al 97
+higher activation graph was presented to the convolution
+layer once the sampling reduction technique is delayed,
+hence the highest activation graph reserves further data
+and provides improved ef ﬁcacy of the classi ﬁer.
+To improve the ef ﬁciency of the SqueezeNet module,
+the GSO is used. GSO includes exploitation and explo-
+ration stages and provides a balance between two con-
+ﬂicting capabilities. The model comprises three major
+phases namely initialization, evaluation, and updating the
+existing population. The proposed GSO steps are given in
+the following
+20:
+Oi ¼ lbi þ rand × ðubi /C0 lbiÞ; i ¼ 1, 2, …, N (4)
+In equation ( 4), Oi present the position of ith objects in
+the search range. Furthermore, ubi and lbi denotes the
+lower and upper boundaries of the object, correspond-
+ingly. During assessment, the initial population is as-
+sessed by using objective function and the objects with
+good ﬁtness values are considered as Ogbest
+i.I nt h e
+golden change phase, the object is sorted based on the
+ﬁtness and the object with worst ﬁtness is altered by the
+random solution. In every iteration, the object was
+moved towards the better solution with the help of step
+size operators ( St
+i). St equation comprises three phases.
+The initial part characterizes the preceding value of step
+size that is multiplied by the transform (T) operator that
+is repeatedly reduced for balancing global and local
+search space. The next part presents the distance among
+the present location of i-tℎ objects and their personal
+better location attained by the cosine of random number
+within [0,1]. The last portion signi ﬁes the distance
+between i-tℎ object’s present location and the better
+location attained, multiplied by the sine of randomly
+generated numbers amongst [0,1]. In the initial iteration,
+St
+i would be randomly generated and upgraded through
+subsequent formulas as follows 20:
+Sðt þ 1Þ¼ T : SðtÞþ C1: cosðr1Þ : ðObesti /C0 xiðtÞÞ
+þ C2: sinðr2Þ:
+/C0
+Ogbesti /C0 xiðtÞ
+/C1 (5)
+In Eq. ( 5), C1a n d C2 indicate a random integer within
+[0,1], r1a n d r2 denote some random number within
+[0,1], Obesti denotes the best prior location attained by the
+i- th objects and T indicates transfer operator that is used
+to transforms from exploration search to exploitation
+search for supervising the balance between global and
+local search in earlier and later iterations and improving
+the performance. T is a reducing function and is esti-
+mated as
+T ¼ 100 × exp
+/C18
+/C0 20 ×
+t
+tmax
+/C19
+(6)
+where tmax indicates the maximal amount of iterations. In
+all the iterations, the approach progresses by regulating
+the distance that every object proceeds in all the di-
+mensions of the problem space. Equation ( 6) demon-
+strates that the step size is a stochastic parameter and
+might enable the object to follow a broad cycle in the
+problem space. A reasonable interval is presented for
+controlling this oscillation and to prevent divergence and
+Figure 2. Structure of SqueezeNet.
+98 Surgical Innovation 32(2)
+explosion, to clamp the object movement based on the
+following expression:
+/C0 Stimax ≤ Sti ≤ Stmax (7)
+In equation ( 7), Stimax indicates a selected maximal
+movement permitted, which determines the maximal
+change one object might undergo in its positional co-
+ordinate during the iteration as follows:
+St
+imax ¼ 0:1× ðubi /C0 lbiÞ (8)
+Finally, the object proceeds to the global optimal in the
+search range as follows:
+ðt þ 1Þ¼ OðtÞþ Sti ðt þ 1Þ (9)
+Bone Cancer Classi ﬁcation
+For automated recognition of bone cancer, the LSTM
+model is used. LSTM is an innovative structure in RNN
+that is frequently employed to handle time series tasks.
+Traditional RNNs suffer from the vanishing gradient
+problem, where gradients become too small for effective
+learning during backpropagation. LSTMs mitigate this
+issue through their gating mechanisms which enable the
+network to learn and propagate gradients over long dis-
+tances. In comparison to conventional FFNN, LSTM has
+memory ability and allows the data stream to continue to
+ﬂow inside the network.
+21 It is capable of linking the prior
+data to the existing problem. However, the past status data
+is useful for deciding the present state of equipment. In
+medical imaging, especially for tasks like bone cancer
+detection, it is crucial to capture the sequential nature of
+the image slices. Each slice of an X-ray can be considered
+a step in a sequence, and LSTMs are adept at learning
+from these sequences. LSTM has four major components,
+viz, output gate, input gate, forget gate, and cell state. The
+data of the cell state is updated by using three gates that
+automatically make LSTM add or remove data to the
+neural network. LSTMs are capable of learning complex
+patterns and dependencies in the data, which improves
+classiﬁcation accuracy. With respect to bone cancer de-
+tection, the model can better distinguish between healthy
+and cancerous bone structures by leveraging temporal
+information and dependencies within the image slices.
+LSTMs can retain information over long sequences,
+which is bene ﬁcial for medical image analysis where the
+context from previous slices can provide essential clues
+for accurate diagnosis. LSTMs maintain a cell state that
+can preserve important information across many time
+steps. The use of input, output, and forget gates allows the
+network to decide which information to keep and which to
+discard enhances the model ’s ability to focus on relevant
+features. Forget gate decides how much data is forgotten
+from the prior cell state C
+t/C0 1 and it is mathematically
+modeled as:
+ft ¼
+/C0
+Wf /C1½ ht/C0 1, xt /C138þ bf
+/C1
+(10)
+ℎt/C0 1 and xt characterize hidden state at t /C0 1 time and input
+feature at t time, correspondingly. In the study, the input
+feature is the output of CNN. Every component of the
+feature map is regarded as the input of LSTM in one
+moment.
+W
+f and bf denote the weight parameter and bias term of
+forgetting the gate layer.
+σ shows the sigmoid function. The output of ft value
+lies between 0 to 1.
+1 shows the data of the cell state is fully retained,
+whereas 0 indicates the data has dropped out
+completely.
+Input gate determines how much of newly learned data
+is added to the present cell state C
+t:
+Ct ¼ tanhðWc /C1½ ht/C0 1, xt /C138þ bcÞ (11)
+It is evaluated by nonlinearly mapping prior hidden
+states and existing input features.
+Following, the input gate selects partial data from Ct as
+follows:
+it ¼ð Wi : ½ht/C0 1, xt /C138þ biÞ (12)
+The meaning of the parameter in equation ( 12) is the
+same as in equation (10). Combining equations (10)–(12),
+the present cell state Ct is evaluated by:
+Ct ¼ ft ⊙ Ct/C0 1 þ it ⊙ Ct (13)
+The present cell state is made up of two terms, viz, t ⊙
+Ct/C0 1 and it ⊙ Ct. The initial one signi ﬁes the ﬁltered data
+afterwards being rejected, and the last one represents the
+recently generated feature data. The ﬁnal gate, viz, output
+gate, deﬁnes which part of the cell state is going to output.
+The last output of hidden layer ℎt is evaluated by:
+ot ¼ Wo : ½ht/C0 1, xt /C138þ bo (14)
+ht ¼ Ot ⊙ tanhðCt Þ (15)
+From the above equations, it is clearly understood that
+the above mentioned three nonlinear gates regulate the
+data ﬂow in and out of the LSTM network. Furthermore,
+the hidden state ℎ
+t has every historical state data from time
+0t o t. The time series data is useful for constructing
+precise health indicators.
+Finally, the ICS algorithm ﬁne-tunes the hyper-
+parameter of the LSTM module to achieve maximum
+accuracy. CS is derived from the lifestyle of a bird family
+named cuckoo. The special lifestyle of this bird and its
+characteristics in breeding and egg laying are the primary
+Dalai et al 99
+motivation for the improvement of new evolutionary
+optimization techniques. 22 CS begins with an early
+population that has matured cuckoo and their eggs. Every
+matured cuckoo has its egg laying radius (ELR) and lays
+eggs in its ELR in host bird habitat. Next, some eggs that
+are less like host bird eggs will be discarded. The original
+CS algorithm can address various optimization challenges
+due to its exploration and exploitation capabilities.
+However, to improve its performance for speci ﬁc prob-
+lems, some modi ﬁcations are necessary. The original CS
+algorithm efﬁciently balances exploration (searching new
+areas) and exploitation (re ﬁning existing solutions).
+However, for complex or speci ﬁc optimization problems,
+this balance might need adjustment. The performance of
+the CS algorithm depends on parameters like step size and
+probability of discovery.
+Survived cuckoo population will be migrated to the
+best location. The ﬁrst cuckoo based on the location in
+environments is separated into some clusters and lastly,
+every cuckoo will be migrated towards the better cuckoo
+in the better cluster with λ percentage and with the de-
+viation of α radians. Once each position of the cuckoo
+became closer, the process ends. Being closer means that
+this environment has maximum food source and fewer
+eggs will demise. But the original CS is capable of re-
+solving a number of challenges, by shifting some of its
+operations, and based on the problems, we could enhance
+its overall performance. In the proposed model, local
+search technique is added termed “Simulated Annealing ”
+and few operations of CS are to enhance it. The outcomes
+demonstrated that the modi ﬁcation employed on the CS
+enhanced the over zperformance. To enhance the overall
+performance of the CS algorithm, we propose several
+modiﬁcations: adaptively decreasing the Egg egg-laying
+radius over iterations, adjusting the number of eggs
+based on ﬁtness, and implementing a repair mechanism
+for out-of-bound solutions. Additionally, integrating
+local search with Simulated Annealing to re ﬁne the best
+solutions and using clustering and migration to leverage
+collective intelligence. These enhancements improve
+exploration and exploitation balance, ensure feasible
+solutions, and accelerate convergence, making the ICS
+more effective for complex optimization problems in
+applications like the GSODL-CADBCC model. The
+changes are given below:
+Adaptive ELR. At the highest iteration, the estimated so-
+lution should be altered less than the prior iteration, and
+the size of ELR should be decreased. It shows that eggs
+aren’t laid farther away from the parents. In the presented
+method, the size of ELR is decreased while the amount of
+iterations is improved.
+Adaptive Number of Eggs. The number of eggs of every
+cuckoo is randomly de ﬁned, between the minimum and
+the maximum number of eggs. In the presented method, it
+is potential that a weaker cuckoo might lay more eggs
+when compared to the stronger one. This might decrease
+the convergence speed. In the presented technique, the
+number of eggs of every cuckoo is set based on the cost
+value:
+eggNum
+i ¼ minEggNum þ
+/C20
+ðfitnessi /C0 fitnessminÞ
+× maxEggNum /C0 minEggNum
+fitnessmax /C0 fitnessmin
+/C21
+(16)
+where, ﬁtnessmin = The minimal ﬁtness in the present
+population, ﬁtnessmax = The maximum ﬁtness in the
+existing population, ﬁtnessi = the ﬁtness value of the
+existing cuckoo. Result shows that this development in-
+creased the convergence speed for this type of problem.
+Repair the Malformed Cuckoo. In the original CS, few
+components of the habitation vector of cuckoo might
+surpass the search range of the problem. In such cases,
+these elements are returned to the search range of the
+problem. For instance, when the search range is [ /C0 M, M],
+a component with value of M + α would be M /C0 α after the
+repair step.
+Apply a Local Search for a Better Solution. In all the iter-
+ations, to enhance the better solution, we applied the AE
+algorithm on the better cuckoo of all the clusters. Once the
+better cuckoo at every cluster gets enhanced, remaining
+cuckoos are affected by these improvements because of
+the Migration step. The ICS technique not only acquires
+a ﬁtness function to attain high ef ﬁciency of the classi-
+ﬁcation and also de ﬁnes a positive integer to symbolize
+the good performance of the solution candidate. The
+decline of classi ﬁcation error rate was referred to as FF.
+fitnessðx
+iÞ¼ number of misclassified samples
+Total number of samples × 100
+(17)
+Algorithm 1: Pseudocode of the ICS
+100 Surgical Innovation 32(2)
+Results and Discussion
+The bone cancer classi ﬁer outcomes of the GSODL-
+CADBCC method are tested with a bone cancer X-ray
+dataset. The dataset holds 200 images with two classes, as
+provided in Table 2. Figure 3 Shows a few sample images
+of the dataset.
+Figure 4 Shows the confusion matrix generated by the
+GSODL-CADBCC model on the bone cancer classi ﬁ-
+cation process with distinct sizes of training set (TRS) and
+testing set (TSS). The outcomes demonstrated that the
+GSODL-CADBCC technique has accurately categorized
+the cancerous and healthy bone images.
+The bone cancer classi ﬁcation outcomes of the
+GSODL- CADBCC method on 80:20 of TRS and TSS are
+exhibited in Table 3 and Figure 5 . It is noticed that the
+GSODL-CADBCC technique has effectively identi ﬁed
+the cancerous and healthy bone images effectively. For
+instance, on 80% of TRS, the GSODL-CADBCC model
+has reached average accubal of 95.52%, precn of 95.76%,
+recal of 95.52%, Fscore of 95.60%, AUCscore of 95.52%,
+and MCC of 91.28%. At the same time, on 20% of TSS,
+the GSODL-CADBCC model has resulted in average
+accubal of 94.79%, precn of 94.79%, recal of 94.79%,
+Fscore of 94.79%, AUCscore of 94.79%, and MCC of
+89.58%.
+The bone cancer classi ﬁcation results of the GSODL-
+CADBCC model on 70:30 of TRS and TSS are dem-
+onstrated in Table 4 and Figure 6 . It is noticed that the
+GSODL- CADBCC model has identi ﬁed the cancerous
+Figure 3. Sample X-ray images.
+Table 2. Bone Cancer Dataset.
+Class No. Of Images
+Cancerous bone 100
+Healthy bone 100
+Total no. Of images 200
+Dalai et al 101
+and healthy bone images effectually. For example, on 70%
+of TRS, the GSODL-CADBCC method has reached
+average accubal of 92.43%, precn of 93.40%, recal of
+92.43%, Fscore of 92.74%, AUCscore of 92.43%, and
+MCC of 85.83%. However, on 30% of TSS, the GSODL-
+CADBCC model has resulted in average accubal of
+95.14%, precn of 94.57%, recal of 95.14%, Fscore of
+94.83%, AUCscore of 95.14%, and MCC of 89.71%.
+The training accuracy (TAC) and validation accuracy
+(V AC) study of the GSODL- CADBCC technique is
+depicted in Figure 7 . It can be easily noticeable that the
+GSODL-CADBCC model accomplishes improved values
+Figure 4. Confusion matrices of GSODL-CADBCC model (A) 80% of TRS, (B) 20% of TSS, (C)70% of TRS, (D) 30% of TRSS.
+102 Surgical Innovation 32(2)
+of TAC and V AC. It is also observed that the TAC and
+V AC reach maximum values at 200 epochs.
+The training loss (TLS) and validation loss (VLS)
+study of the GSODL-CADBCC model is exhibited in
+Figure 8 . It is noticed that the GSODL-CADBCC model
+gains reduced TLS and VLS values. In addition, it is
+assured that the TLS and VLS reach the least values at
+200 epochs.
+The selection and analysis of the loss function are
+crucial for training neural networks effectively. In the
+GSODL-CADBCC model, categorical cross-entropy loss
+is used because it is suitable for multi-class classi ﬁcation
+tasks. Categorical cross-entropy calculates the difference
+between the actual class distribution and predicted
+probability distribution. This is important for medical
+diagnosis tasks, where each class (healthy or cancerous) is
+Table 3. Bone Cancer Classi ﬁcation Results of GSODL-CADBCC Model on 80:20 of TRS/TSS.
+Class Labels Accubal Precn Recal Fscore AUCscore MCC
+Training phase (80%)
+Cancerous bone 93.42 97.26 93.42 95.30 95.52 91.28
+Healthy bone 97.62 94.25 97.62 95.91 95.52 91.28
+Average 95.52 95.76 95.52 95.60 95.52 91.28
+Testing phase (20%)
+Cancerous bone 95.83 95.83 95.83 95.83 94.79 89.58
+Healthy bone 93.75 93.75 93.75 93.75 94.79 89.58
+Average 94.79 94.79 94.79 94.79 94.79 89.58
+Figure 5. Average results of GSODL-CADBCC model on 80:20 of TRS/TSS.
+Table 4. Bone Cancer Classi ﬁcation Results of GSODL-CADBCC Method on 70:30 of TRS/TSS.
+Class Labels Accubal Precn Recal Fscore AUCscore MCC
+Training phase (70%)
+Cancerous bone 97.37 90.24 97.37 93.67 92.43 85.83
+Healthy bone 87.50 96.55 87.50 91.80 92.43 85.83
+Average 92.43 93.40 92.43 92.74 92.43 85.83
+Testing phase (30%)
+Cancerous bone 95.83 92.00 95.83 93.88 95.14 89.71
+Healthy bone 94.44 97.14 94.44 95.77 95.14 89.71
+Average 95.14 94.57 95.14 94.83 95.14 89.71
+Dalai et al 103
+associated with a probability. The model outputs a prob-
+ability for each class, and the categorical cross-entropy
+quantiﬁes how well these probabilities match the true
+labels. The model’s performance is validated using an 70:
+30 train-test split, where 70% of the data is used for
+training and 30% for testing. This ensures that the model ’s
+accuracy is tested on unseen data, thus providing a mea-
+sure of its generalizability.
+In Figure 9 ,t h e Precn /C0 recal study of the GSODL-
+CADBCC model on bone cancer classi ﬁcation is well
+studied. By looking at the results, it is guaranteed that the
+GSODL-CADBCC model reaches improved precn /C0 re-
+calvalues under both cancerous and healthy bone classes.
+The ROC study of the GSODL-CADBCC approach is
+shown in Figure 10 . The outcomes illustrated that the
+GSODL-CADBCC model is pro ﬁcient with increased
+ROC values under both cancerous and healthy bone
+classes.
+To exhibit the betterment of the GSODL-CADBCC
+method, a widespread comparison study with recent
+Figure 6. Average results of GSODL-CADBCC model on 70:30 of TRS/TSS.
+Figure 7. TAC and VAC study of GSODL-CADBCC model.
+104 Surgical Innovation 32(2)
+models23,24 is given in Table 5. The result indicates that
+the RF model has shown poor outcomes compared to
+other models. Medical images, particularly X-rays for
+bone cancer detection, often contain complex and subtle
+patterns that are challenging for traditional ensemble
+methods like RF to capture effectively. On the other side,
+the inherent ability of DL models to learn complex, hi-
+erarchical representations directly from raw image data
+Figure 8. TLS and VLS study of GSODL-CADBCC model.
+Figure 9. Precn /C0 recal study of GSODL-CADBCC model.
+Dalai et al 105
+gives them a signiﬁcant advantage over traditional models
+like RF in medical imaging tasks. The SVM model has
+shown good outcomes compared to the RF model due to
+its effective handling of high-dimensional data and ability
+to ﬁnd optimal decision boundaries that maximize the
+margin between classes. Its use of kernel functions allows
+it to capture complex relationships in the data, enhancing
+its versatility and power. In the context of the GSODL-
+CADBCC model, the combination of SqueezeNet feature
+extraction and SVM classi ﬁcation leverages the strengths
+of both DL and classical ML.
+Next, the learning-based intelligent optimization (LIO)
+model has shown somewhat improvised performance with
+accuy of 85.37%. Followed by, the SVM, FE-ML, and MRI-
+DL models have accomplished moderately closer accuy
+values of 93.59%, 92.81%, and 95.04% correspondingly.
+However, the GSODL-CADBCC model showed promising
+results with a maximum accuy of 95.52%.
+Table 6 and Figure 11 Show a comparative compu-
+tation time (CT) examination of the GSODL-CADBCC
+method. The experimental results indicate that the FE-ML
+model shows poor outcomes compared to other models
+with CT of 231s. Next, the MRI-DL and LIO models have
+shown somewhat improvised performance with accuy of
+226s and 204s correspondingly.
+Followed by, the RF and SVM models have accom-
+plished moderately closer reasonable CT of 112s and 156s
+correspondingly. However, the GSODL-CADBCC model
+showed promising results with minimal CT of 54s. These
+results demonstrated that the GSODL-CADBCC model
+can attain effective bone cancer classi ﬁcation perfor-
+mance. The validation process for the GSODL-CADBCC
+model is thorough, involving train-test splits and detailed
+evaluation metrics that ensure the model ’s robustness and
+generalizability. The use of performance metrics like
+precision, recall, F1-score, AUC, and MCC provides
+a comprehensive understanding of the model ’s perfor-
+mance. The consistent high performance across different
+data splits and metrics highlights the model ’s
+Figure 10. ROC study of GSODL-CADBCC model.
+Table 6. Comparative CT Analysis on Bone Cancer
+Classiﬁcation.
+Methods Computational Time (sec)
+GSODL-CADBCC 54
+RF algorithm 112
+SVM model 156
+LIO algorithm 204
+FE-ML model 231
+MRI-DL algorithm 226
+Table 5. Comparative Bone Cancer Classi ﬁcation Results.
+Measure Accuy Precn Recal F1score
+GSODL-CADBCC 95.52 95.76 95.52 95.60
+RF algorithm 70.39 76.95 80.06 78.55
+SVM model 93.59 91.45 96.13 94.08
+LIO algorithm 85.37 87.84 81.43 89.06
+FE-ML model 92.81 94.27 90.31 95.03
+MRI-DL algorithm 95.04 93.72 94.16 94.85
+106 Surgical Innovation 32(2)
+effectiveness in accurately classifying bone cancer from
+X-ray images. This rigorous validation ensures that the
+GSODL-CADBCC model can be reliably used in prac-
+tical medical settings, reducing the risk of diagnostic
+errors.
+Conclusion
+In this work, an effective GSODL-CADBCC approach
+was introduced for automated bone cancer classi ﬁcation
+on X-ray images. The presented GSODL-CADBCC
+technique encompasses BF based noise removal, GSO
+with SqueezeNet based feature extraction, LSTM clas-
+siﬁcation, and ICS based hyperparameter tuning. The
+design of GSO and ICS algorithms helps in the optimal
+selection of the hyper-parameters of the SqueezeNet and
+LSTM models. An extensive set of experiments was
+conducted to study the performance of the GSODL-
+CADBCC method on medical imaging datasets. Com-
+pared with recent DL models, the experimental outcomes
+demonstrated that the GSODL-CADBCC technique
+achieves promising performance on bone cancer classi-
+ﬁcation. Therefore, the GSODL-CADBCC technique can
+be exploited for automated and accurate bone cancer
+classiﬁcation. In the future, deep instance segmentation
+techniques can be included in the GSODL-CADBCC
+technique to improve its classi ﬁcation ef ﬁcacy.
+Acknowledgments
+The authors present their appreciation to King Saud University
+for funding this research through Researchers Supporting
+Program number (RSPD2024R918), King Saud University,
+Riyadh, Saudi Arabia.
+Authors’ Contributions
+All authors are equally contributed in the research work.
+Declaration of Con ﬂicting Interests
+The author(s) declared no potential con ﬂicts of interest with
+respect to the research, authorship, and/or publication of this
+article.
+Funding
+The author(s) disclosed receipt of the following ﬁnancial support
+for the research, authorship, and/or publication of this article:
+This work was supported by the King Saud University for
+funding this research through Researchers Supporting Program
+number (RSPD2024R918), King Saud University, Riyadh,
+Saudi Arabia.
+ORCID iD
+M. Ijaz Khan  https://orcid.org/0000-0001-7430-4451
+References
+1. He Y , Pan I, Bao B, et al. Deep learning-based classi ﬁcation
+of primary bone tumors on radiographs: a preliminary study.
+EBioMedicine. 2020;62:103121. doi: 10.1016/j.ebiom.
+2020.103121.
+2. Eweje FR, Bao B, Wu J, et al. Deep learning for classi ﬁ-
+cation of bone lesions on routine MRI. EBioMedicine. 2021;
+68:103402. doi: 10.1016/j.ebiom.2021.103402.
+3. Mascarenhas Saraiva M, Ribeiro T, Afonso J, et al. Deep
+learning and device-assisted enteroscopy: automatic
+Figure 11. Comparative CT assessment of GSODL-CADBCC model.
+Dalai et al 107
+detection of gastrointestinal Angioectasia. Medicina. 2021;
+57(12):1378. doi: 10.3390/medicina57121378.
+4. Gitto S, Cuocolo R, van Langevelde K, et al. MRI
+radiomics-based machine learning classi ﬁcation of atypical
+cartilaginous tumour and grade II chondrosarcoma of long
+bones. EBioMedicine. 2022;75:103757. doi: 10.1016/j.
+ebiom.2021.103757.
+5. Bandyopadhyay O, Biswas A, Bhattacharya BB. Bone
+cancer assessment and destruction pattern analysis in
+longbone X-ray image. J Digit Imaging . 2019;32(2):
+300-313. doi: 10.1007/s10278-018-0145-0.
+6. Shrivastava D, Sanyal S, Maji AK, Kandar D. Bone cancer
+detection using machine learning techniques. In: 2022 In-
+ternational Conference on Computational Modelling,
+Simulation and Optimization (ICCMSO) . Thailand: Pathum
+Thani; 2022:315-319. doi: 10.1109/ICCMSO58359.2022.
+00068.
+7. V andana BS, Antony PJ, Sathyavathi RA. Analysis of
+malignancy using enhanced graphcut-based clustering for
+diagnosis of bone cancer. In: Tuba M., Akashe S., Joshi A.,
+eds. Information and Communication Technology for
+Sustainable Development. Advances in Intelligent Systems
+and Computing . Singapore: Springer; 2019. doi: 10.1007/
+978-981-13-7166-0_45.
+8. Altameem T. Retracted article: fuzzy rank correlation-based
+segmentation method and deep neural network for bone
+cancer identi ﬁcation. Neural Comput Appl . 2020;32(3):
+805-815. doi: 10.1007/s00521-018-04005-8.
+9. von Schacky CE, Wilhelm NJ, Sch ¨afer VS, et al. Multitask
+deep learning for segmentation and classiﬁcation of primary
+bone tumors on radiographs. Radiology. 2021;301(2):
+398-406. doi: 10.1148/radiol.2021204531.
+10. Li W, Wang GG, Gandomi AH. A survey of learning based
+intelligent optimization algorithms. Arch Comput Methods
+Eng. 2021;28(5):3781-3799. doi: 10.1007/s11831-021-
+09562-1
+11. Shabbir A, Ali N, Ahmed J, et al. Satellite and scene image
+classiﬁcation based on transfer learning and ﬁne tuning of
+ResNet50. Mathematical Problems in Engineering . 2021;
+2021:1-18. doi: 10.1155/2021/5843816.
+12. Liu R, Pan D, Xu Y , et al. A deep learning-machine learning
+fusion approach for the classi ﬁcation of benign, malignant,
+and intermediate bone tumors. Eur Radiol . 2022;32(2):
+1371-1383. doi: 10.1007/s00330-021-08195-z.
+13. Wang D, Hwang M, Jiang WC, Ding K, Chang HC, Hwang
+KS. A deep learning method for counting white blood cells
+in bone marrow images. BMC bioinformatics . 2021;22(5):
+94-114. doi:
+10.1186/s12859-021-04003-z
+14. Calin MA, Elfarra FG, Parasca SV . Object-oriented clas-
+siﬁcation approach for bone metastasis mapping from
+whole-body bone scintigraphy. Phys Med . 2021;84:
+141-148. doi: 10.1016/j.ejmp.2021.03.040
+15. Georgeanu V , Mamuleanu ML, Selis¸teanu D. Convolutional
+neural networks for automated detection and classi ﬁcation
+of bone tumors in magnetic resonance imaging. In: IEEE
+International Conference on Arti ﬁcial Intelligence, Robot-
+ics, and Communication (ICAIRC) . Fuzhou: Fujian; 2021:
+5-7. doi: 10.1109/ICAIRC52191.2021.9545036
+16. Han S, Oh JS, Lee JJ. Diagnostic performance of deep
+learning models for detecting bone metastasis on whole-
+body bone scan in prostate cancer. Eur J Nucl Med Mol
+Imaging. 2022;49(2):585-595. doi: 10.1007/s00259-021-
+05481-2
+17. Eweje FR, Bao B, Wu J, et al. Deep learning for classi ﬁ-
+cation of bone lesions on routine MRI. EBioMedicine. 2021;
+68:103402. doi: 10.1016/j.ebiom.2021.103402
+18. Ding C, Xu C, Tao D. Multi-task pose-invariant face rec-
+ognition. IEEE Trans Image Process . 2015;24(3):980-993.
+doi:10.1109/TIP .2015.2390959
+19. Naveen P , Sivakumar P . Adaptive morphological and bi-
+lateral ﬁltering with ensemble convolutional neural network
+for pose-invariant face recognition. J Ambient Intell Hu-
+maniz Comput . 2021;12(11):10023-10033. doi: 10.1007/
+s12652-020-02753-x
+20. Noroozi M, Mohammadi H, Efatinasab E, Lashgari A,
+Eslami M, Khan B. Golden search optimization algorithm.
+IEEE Access . 2022;10:37515-37532.
+21. Belagoune S, Bali N, Bakdi A, Baadji B, Atif K. Deep
+learning through LSTM classi ﬁcation and regression for
+transmission line fault detection, diagnosis and location in
+large-scale multi-machine power systems. Measurement.
+2021;177:109330. doi:10.1016/j.measurement.2021.109330
+22. Mazraeh HD, Kalantari M, Tabasi SH, Aghaei AA, Ka-
+lantari Z, Fahimi F. Solving Fredholm integral equations of
+the second kind using an improved Cuckoo optimization
+algorithm. Global Analysis and Discrete Mathematics .
+2021;7(1):33-52. https://journals.du.ac.ir/article_235_
+33b8462e8eb6ffd4a0601eb0f7dae243
+23. Georgeanu V A, Mamuleanu M, Ghiea S, Selisteanu D.
+Malignant bone tumors diagnosis using magnetic resonance
+imaging based on deep learning algorithms. Medicina.
+2022;58(5):636. doi: 10.3390/medicina58050636
+24. Sharma A, Yadav DP , Garg H, Kumar M, Sharma B,
+Koundal D. Bone cancer detection using feature extraction
+based machine learning model. Comput Math Methods Med.
+2021;2021:7433186. doi: 10.1155/2021/7433186
+108 Surgical Innovation 32(2)

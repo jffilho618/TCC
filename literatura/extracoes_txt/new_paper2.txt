@@ -1,0 +1,1881 @@
+Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Sumários disponíveis emCiência Direta
+Processamento e Controle de Sinais Biomédicos
+Página inicial da revista:www.elsevier.com/locate/bspc
+Classificação radiográfica de tumores ósseos primários orientada por aprendizado profundo 
+usando modelos híbridos com atenção aumentada.
+Syed Mohsin BokhariumMuhammad Shafib,c ,∗
+umDepartamento de Engenharia Elétrica e de Computação, Universidade de Engenharia e Tecnologia (UET), Taxila, Paquistão
+bEscola de Computação, Universidade de Ulster, Reino Unido
+cFaculdade de Computação e Tecnologia da Informação, Universidade de Sohar, Omã
+INFORMAÇÕES DO ARTIGO RESUMO
+Palavras-chave:
+Rede Neural Convolucional Transformer 
+híbrida (CNNT)
+ResNet50 com Módulo de Atenção de Bloco 
+Convolucional (CBAM)
+Filtragem 3D por Correspondência de Blocos (BM3D) 
+Técnica de Sobreamostragem Sintética da Minoria (SMOTE)
+Inteligência Artificial na Área da Saúde
+A classificação precisa de tumores ósseos primários é essencial para o diagnóstico precoce e o planejamento eficaz do 
+tratamento, especialmente devido à complexa heterogeneidade radiográfica exibida pelos subtipos tumorais. Este estudo 
+apresenta dois novos modelos de aprendizado profundo: um híbrido de Rede Neural Convolucional Transformer (CNNT) e um 
+modelo de Rede Residual 50 (ResNet50), ambos aprimorados por um Módulo de Atenção de Bloco Convolucional (CBAM) para 
+melhorar a discriminação de características e a compreensão contextual em imagens radiográficas. Os modelos foram 
+treinados e validados no conjunto de dados Bone Tumor X-ray Radiograph Dataset (BTXRD), composto por 3.746 radiografias 
+rotuladas contendo nove subtipos tumorais. Para mitigar os efeitos do ruído e do desequilíbrio de classes, foram empregados 
+métodos avançados de pré-processamento, como a Filtragem 3D por Correspondência de Blocos (BM3D) e o balanceamento 
+de dados utilizando a Técnica de Sobreamostragem Sintética da Minoria (SMOTE).
+Testes extensivos demonstram que nossas abordagens superam os modelos de última geração atuais, como ResNet50, 
+EfficientNet versão B3 (EfficientNet-b3), You Only Look Once versão 8 (YOLOv8s-cls) e Deep Supervision Network (DS-Net). 
+Especificamente, a arquitetura ResNet50-CBAM alcança uma pontuação F1 de 0,9759, uma pontuação AUC-ROC de 0,984, uma 
+acurácia média de 97,41% e um coeficiente Kappa de Cohen de 0,9718, superando os benchmarks existentes para 
+classificação binária de tumores. O modelo CNNT também alcança um desempenho competitivo, atingindo uma pontuação F1 
+de 0,9595 com uma acurácia de 92,56%. A incorporação de mecanismos de atenção e pré-processamento guiado por 
+conjunto de dados torna essa estrutura adequada para aplicações clínicas práticas. Os resultados desta pesquisa têm 
+implicações significativas para o setor de saúde, ao introduzir um sistema de diagnóstico baseado em Inteligência Artificial 
+(IA) escalável, interpretável e altamente preciso, que pode auxiliar os radiologistas em diagnósticos oportunos e processos de 
+tomada de decisão, contribuindo, em última análise, para melhores resultados para os pacientes e aliviando a carga 
+diagnóstica na oncologia musculoesquelética.
+1. Introdução
+Os métodos têm demonstrado desempenho sem precedentes em diversas 
+tarefas, como segmentação, detecção, classificação e aprimoramento de imagens 
+em várias aplicações médicas. No campo da oncologia musculoesquelética, 
+estudos comprovaram a eficácia de modelos de aprendizado profundo na 
+detecção e avaliação de tumores ósseos utilizando imagens radiográficas, um 
+avanço significativo na área de radiologia diagnóstica. Por exemplo, um modelo 
+de aprendizado profundo multitarefa desenvolvido por von Schacky et al. alcançou 
+uma acurácia de 80,2% na classificação de tumores ósseos primários como 
+malignos ou benignos, superando residentes de radiologia, mas igualando o 
+desempenho de radiologistas com especialização [2].
+A integração de ferramentas de diagnóstico por IA na clínica é dificultada, entre 
+outros fatores, pela falta de grandes conjuntos de dados radiográficos bem anotados e 
+disponíveis publicamente para tumores ósseos. A raridade desses tumores...
+Os tumores ósseos primários, embora raros, representam uma preocupação 
+significativa para a saúde, especialmente em pessoas com menos de 20 anos de idade.1], 
+visto que são a terceira causa mais frequente de morte relacionada ao câncer nessa faixa 
+etária. O diagnóstico preciso e precoce é parte fundamental do melhor manejo 
+terapêutico e de um melhor prognóstico para o paciente. A radiografia continua sendo a 
+técnica principal na avaliação inicial de suspeita de tumores ósseos, fornecendo 
+informações valiosas sobre a localização, as características arquitetônicas e a potencial 
+malignidade do câncer. No entanto, as apresentações radiográficas altamente variáveis   
+dos tumores ósseos representam problemas diagnósticos complexos, mesmo para 
+radiologistas experientes [1].
+Os recentes avanços em Inteligência Artificial (IA), especificamente aqueles provenientes de 
+métodos de aprendizagem profunda, transformaram radicalmente o campo do Diagnóstico 
+Auxiliado por Computador (CAD) em imagens médicas. Essas tecnologias baseadas em IA...
+∗ Autor correspondente.
+Endereço de email:m.shafi@ulster.ac.uk (M. Shafi).
+https://doi.org/10.1016/j.bspc.2025.108888
+Recebido em 5 de maio de 2025; Recebido em versão revisada em 1 de agosto de 2025; Aceito em 5 de outubro de 2025.
+Disponível online em 14 de outubro de 2025.
+1746-8094/© 2025 Os Autores. Publicado pela Elsevier Ltd. Este é um artigo de acesso aberto sob a licença CC BY (http://creativecommons.org/licenses/by/4.0/).
+Traduzido do Inglês para o Português - www.onlinedoctranslator.com
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Como o osteossarcoma resulta em um número reduzido de casos, predominantemente 
+concentrados em grandes hospitais universitários, as questões de privacidade do 
+paciente também envolvem imagens médicas, dificultando a obtenção de permissões em 
+larga escala. Além disso, a anotação de imagens é demorada e trabalhosa, exigindo 
+muito tempo até mesmo de médicos experientes. Essa ausência de conjuntos de dados 
+robustos limita o desenvolvimento, a validação e a generalização de modelos de IA, 
+restringindo seu uso clínico.2Yu He et al. desenvolveram um banco de dados com 2899 
+imagens de raios X em cinco centros, sendo 2158 não malignas e 741 malignas. As 
+imagens não continham informações clínicas significativas, como sexo, idade e 
+localização geográfica. O conjunto de dados do Hospital Universitário Nacional de 
+Chonnam (CNUH) inclui 1195 imagens de tumores e 381 imagens padrão, mas se limita a 
+tumores ósseos do joelho, restringindo suas aplicações. Outros estudos, como os de Dan 
+Yu, Chan Woo Park e Sarah Consalvo, apresentam as mesmas limitações, como tamanho 
+amostral reduzido, imagens ósseas padronizadas e informações demográficas [3].
+Estão sendo feitos esforços para resolver esses problemas [2O conjunto de dados de 
+radiografias de tumores ósseos (BTXRD) foi criado para apoiar o desenvolvimento de algoritmos 
+de IA no diagnóstico de tumores ósseos primários. O conjunto de dados inclui 3746 imagens 
+ósseas, tumores e casos típicos, juntamente com dados clínicos e anotações.1O conjunto de 
+dados Bone Scan 80K (BS-80K) contém muitas imagens de cintilografia óssea para pesquisa em 
+diagnóstico assistido por computador. No entanto, a disponibilidade geral do conjunto de dados 
+é limitada, o que indica a necessidade de aprimorar ainda mais a coleta e o compartilhamento de 
+dados para desenvolver IA no diagnóstico de tumores ósseos.3].
+O uso da inteligência artificial (IA) para a classificação de tumores ósseos tem 
+uma longa história de desenvolvimento, desde o trabalho inicial de Lodwick et al. [
+4] em 1980 com os primeiros modelos computacionais para avaliação de tumores, 
+de acordo com Reinus et al. [5Em 1994, Do et al. utilizaram modelos baseados em 
+redes neurais que traduziram características de imagem de 709 lesões ósseas em 
+bancos de dados estruturados, alcançando uma precisão diagnóstica de 85% na 
+diferenciação entre condições benignas e malignas. Em seguida, Do et al. [6] 
+apresentaram um modelo de inferência Bayesiana em 2017, alcançando 62% de 
+precisão na previsão de diagnósticos precisos e 80% no diagnóstico diferencial a 
+partir de 710 radiografias Do et al. Além da classificação, a IA tornou-se altamente 
+prevalente na segmentação de limites tumorais. Por exemplo, Huang et al. [7
+Huang et al. projetaram uma Rede Convolucional Totalmente Supervisionada 
+Múltipla (MSFCN) com um Coeficiente de Similaridade de Dice (DSC) de 87,8% e 
+uma pontuação F1 de 0,908, superior aos modelos de Rede Convolucional 
+Totalmente Convolucional (FCN), Rede Convolucional em Forma de U (U-Net) e 
+Detecção de Bordas de Hipercoluna (HED) em segmentação. [7O modelo 
+subsequente MSRN aprimorou ainda mais as métricas de segmentação em 8,78% 
+DSC em relação às linhas de base de última geração (Do et al.). Trabalhos mais 
+recentes também se aventuraram na modelagem preditiva para recorrência 
+tumoral pós-operatória (He et al.).8] aplicaram CNNs a dados de ressonância 
+magnética (RM) de 56 pacientes com tumor de células gigantes, com precisões de 
+CNN de 75,5% e precisões de CNN + regressão de 78,6%, superando a precisão de 
+64,3% dos radiologistas, com ganhos de sensibilidade de mais de 20% He et al. [9
+Esses exemplos demonstram coletivamente a crescente sofisticação e o potencial 
+da IA   para o diagnóstico, localização e prognóstico de tumores ósseos.
+Apesar desses avanços, diversas limitações significativas ainda estão 
+presentes na literatura existente. Vários modelos, tanto antigos quanto novos, são 
+afetados por diversidade t, ausência de metadados demográficos,
+e anotações de subtipos incompletas, que restringem sua capacidade de 
+generalização.
+e outros utilizam
+uma taxonomia multiclasse completa ou anotações consistentes de alta 
+resolução restrito a áreas anatômicas específicas
+(ex.: especificamente para o joelho) [1,2Além disso, arquiteturas tradicionais 
+como Re orc 50 0) ou Inception V3, embora
+Adequados para uso geral, falham em distinguir subtipos tumorais visualmente 
+comparáveis   devido à sua incapacidade de compreender o contexto geral e a 
+complexidade do tumor. [10,11Por fim, poucos estudos utilizaram métodos avançados.
+métodos de redução de ruído ou abordaram o desequilíbrio extremo de classes comumente 
+encontrado mais conjuntos de dados [12].
+Nosso trabalho propõe uma solução de modelo duplo para abordar essas lacunas: uma CNN 
+Trans
+Bloco Nacional
+Figura 1.A estrutura proposta.
+O conjunto de dados BTXRD é um conjunto de dados robusto e multicêntrico com 3746 
+radiografias de nove subtipos de tumores ósseos e metadados demográficos, 
+anatômicos e de imagem anotados [1Nossa solução também incorpora a filtragem 
+BM3D, um método de redução de ruído de última geração testado em modalidades de 
+imagem de Tomografia Computadorizada (TC), Ressonância Magnética (RM) e 
+histopatologia, e a sobreamostragem SMOTE para lidar com o desequilíbrio de classes de 
+forma eficiente. A ResNet50 aprimorada por CBAM detecta dependências espaciais e de 
+canal críticas, enquanto o módulo Transformer da CNNT é particularmente bem ajustado 
+para modelar relações contextuais de longo alcance. Essas melhorias alcançam ganhos 
+significativos em relação a benchmarks recentes (por exemplo, You Only Look Once 
+versão 8 (YOLOv8s-cls), EfficientNet, Deep Supervision Network (DS-Net)), com uma 
+pontuação F1 de 0,9759   e um Kappa de Cohen de 0,9718, superando confortavelmente 
+os recordes por uma ampla margem.1,3,12A seguir, apresentamos as principais 
+contribuições do nosso trabalho proposto.
+1. Proposta de uma estrutura de dois caminhos que combina CNN, CBAM e 
+Transformer para modelagem eficiente de características locais e globais.
+2. Utilizando a redução de ruído BM3D e o balanceamento SMOTE para melhorar a 
+qualidade da imagem e corrigir o desequilíbrio de classes.
+3. Utilização do conjunto de dados abrangente BTXRD com metadados clínicos 
+detalhados para melhor generalização.
+4. Alcançar desempenho superior em métricas de classificação multiclasse 
+(AUC-ROC, precisão, pontuação F1, especificidade).
+5. A avaliação em comparação com ResNet50, EfficientNet, YOLOv8s-cls e DS-
+Net produz resultados de última geração.
+6. Alcançar um treinamento eficaz com menor complexidade e convergência 
+mais rápida, adequado para uso clínico em ambientes do mundo real.
+dados ruins
+idade [10]. Re
+ze rico infor
+mecanismos de busca como von Schacky et al. e conjuntos 
+de dados de Yao mation; no entanto, eles não contêm
+d são frequentes
+O restante do artigo está organizado da seguinte forma. Seção2Abrange 
+a preparação e o pré-processamento de dados, Seção3Abrange a 
+metodologia proposta, Seção4Apresenta os resultados e a discussão, e a 
+Seção5 O artigo conclui com sugestões para pesquisas futuras.
+Rede sidual (ResNet5
+características cal
+2. Preparação e pré-processamento de dados
+d em tu ósseo
+ex-híbrido
+k Atenção
+rid (CNNT) e um modelo ResNet50 com módulo de 
+convolução (CBAM). Nossos modelos são treinados no
+A descrição passo a passo da metodologia adotada nesta pesquisa, desde a 
+aquisição de dados até a avaliação do modelo, é ilustrada emFigura 1.
+2
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Figura 2.Distribuição dos subtipos de tumores ósseos no conjunto de dados BTXRD.
+O documento descreve o fluxo de trabalho passo a passo, que inclui pré-processamento 
+de imagem, extração de características, aprimoramento da atenção, classificação e 
+avaliação de desempenho.
+Figura 1Apresenta-se o fluxo de trabalho metodológico geral referente ao estudo 
+proposto. O processo inicia-se com a aquisição do conjunto de dados BTXRD e, em 
+seguida, com o pré-processamento dos dados, incluindo a remoção de ruído utilizando 
+BM3D, aumento de dados e balanceamento utilizando SMOTE. As imagens pré-
+processadas são então submetidas a dois modelos híbridos de aprendizado profundo: 
+CNNT e ResNet50-CBAM. Esses modelos realizam a extração de características e a 
+classificação. Os modelos são avaliados utilizando acurácia, pontuação F1, AUC-ROC, MCC 
+e matriz de confusão. As subseções seguintes fornecem detalhes sobre o conjunto de 
+dados e as etapas de pré-processamento antes que os dados possam ser inseridos nos 
+modelos de aprendizado profundo propostos.
+Figura 3.(a) CNNT: Modelo de Rede Neural Convolucional Transformer que integra 
+extração de características locais por meio de camadas CNN e modelagem de contexto 
+global via autoatenção multi-cabeças. (b) ResNet50-CBAM: Uma arquitetura baseada em 
+ResNet50 aprimorada para extração de características com um Módulo de Atenção de 
+Bloco Convolucional (CBAM) integrado para melhorar a atenção espacial e por canal para 
+representação de características discriminativas.
+Os procedimentos de rotulagem foram conduzidos pelos autores do conjunto de 
+dados, conforme citado em [13], e não foram realizados neste estudo. Nossa 
+pesquisa se concentra na classificação de tumores ósseos primários em nove 
+classes diferentes: Tumor de Células Gigantes, Osteocondromas Múltiplos, 
+Osteocondroma, Osteofibroma, Osteossarcoma, Outros Tumores Benignos, 
+Outros Tumores Malignos, Cisto Ósseo Simples, Osteocondroma Sinovial, 
+apresentados emFigura 2Dentre esses, osteocondroma, osteossarcoma, 
+osteocondromas múltiplos e cisto ósseo simples são os subtipos mais comuns nos 
+dados.
+2.1. Conjunto de dados
+Neste trabalho, utilizamos o conjunto de dados BTXRD, um conjunto de dados aberto 
+para a classificação, localização e segmentação de tumores ósseos primários a partir de 
+radiografias [13O conjunto de dados consiste em 3746 imagens de raios X, incluindo 
+1879 imagens ósseas padrão, 1525 imagens de tumores ósseos benignos e 342 imagens 
+de tumores ósseos malignos. Cada imagem também contém anotações sobre dados 
+demográficos do paciente (idade, sexo), região anatômica e parâmetros de imagem 
+(ângulo de disparo). Além disso, as imagens de tumores ósseos também contêm 
+informações sobre o status benigno/maligno, classificações de subtipo e características 
+anatômicas.
+nós
+centros médicos, nomeadamente o Primeiro Hospital Afiliado da Faculdade de Medicina de Guangxi
+Universidade, Hospital Afiliado de Yo 
+alities e Hospital Popular de Baise;
+portal de radiologia; e (3) MedPix, um banco de dados aberto de imagens médicas. Para
+o
+a baixa disponibilidade e ocorrência de artefatos de imagem. Portanto, o
+tumores do
+articulações do cotovelo,
+articulações do tornozelo,
+anotação e
+s, onde um
+a réncia carregava
+ferramenta de anotação
+especialista em emergências com
+n. Além disso,
+após um mês
+das anotações. Toda a coleta de conjuntos de dados e
+O conjunto de dados BTXRD foi meticulosamente selecionado por meio de um 
+processo rigoroso e multifásico, visando minimizar potenciais fontes de viés e 
+aprimorar a integridade dos dados. Dados radiográficos de alta qualidade foram 
+adquiridos seletivamente de diversos centros clínicos, com atenção especial aos 
+dados dos Centros 2 e 3, identificados como potenciais fontes de variabilidade. 
+Protocolos abrangentes de pré-processamento, incluindo limpeza, filtragem e 
+validação de dados, foram aplicados para excluir imagens incompletas, de baixa 
+resolução ou redundantes, garantindo a inclusão apenas de amostras relevantes 
+para o diagnóstico. Metadados clínicos e demográficos foram padronizados em 
+um esquema uniforme para facilitar a consistência e a interoperabilidade entre as 
+fontes. Radiologistas especialistas realizaram anotações manuais de radiografias 
+de tumores ósseos por meio de uma estrutura de revisão em múltiplos níveis, 
+gerando máscaras de segmentação e caixas delimitadoras de alta precisão. Essa 
+estratégia rigorosa de anotação foi projetada para minimizar a variabilidade entre 
+observadores e melhorar a confiabilidade dos rótulos de referência. Para 
+fortalecer ainda mais a utilidade do conjunto de dados para aplicações de 
+aprendizado profundo, a segmentação — uma tarefa essencial para isolar 
+estruturas anatômicas clinicamente significativas — foi implementada usando o 
+YOLOv8s-seg [15Este modelo de segmentação de instâncias de última geração, 
+em tempo real, combina detecção de objetos com máscara em nível de pixel.
+l site anotado
+reunidos de
+para manter
+m três extensos
+categoria completa
+coleta de dados
+organização. Os dados
+s: (1) três chineses
+ujiang Médico
+(2) Radiopaedi
+Faculdade para a Nação-
+a.org, um site popular
+dados consistentesA garantia de qualidade, amostras de tumor ósseo primário envolvendo 
+o fígado e regiões abdominais foram rejeitadas devido acabeça, pescoço, c
+O conjunto de dados concentra-se em imagens de raios X dos ossos do 
+membro superior (mãos, ulna, rádio, úmero, articulações do punho,
+e articulações do ombro), membros inferiores (pés, tíbia, fíbula, fêmur e 
+articulações do joelho) e pelve (quadris, articulações do quadril). O 
+trabalho de rotulagem foi realizado por um especialista profissional em 
+tumores ósseos com 10 anos de experiência em diagnóstico, que 
+realizou a segmentação inicial usando o Label me [14] e marcação de 
+tumor usando caixas delimitadoras. Então, o outro
+Com base em 20 anos de experiência, foi feita a revisão para verificação da precisão.
+50 das imagens selecionadas aleatoriamente foram resegmentadas.
+para verificar a confiabilidade
+3
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+geração em uma arquitetura de estágio único. Sua capacidade de localizar 
+simultaneamente caixas delimitadoras e prever máscaras de segmentação contribui 
+tanto para a eficiência computacional quanto para a delimitação precisa de regiões 
+patológicas. Coletivamente, essas medidas estabelecem o BTXRD como um benchmark 
+robusto e de alta fidelidade para o desenvolvimento e avaliação de modelos 
+automatizados de diagnóstico de tumores ósseos [16].
+Algoritmo 1Remoção de ruído de imagem baseada em BM3D
+Requisitos:Diretório de entrada -inpotDiretório de saída -otput, Parâmetro de ruído-
+eters ( r,  g,  b)
+Garantir:As imagens com ruído reduzido são salvas em -otput
+1:Inicializar r=10, g=12, b=14
+2: Criar -otputSe não existir 3: 
+Defina o contadorC=0
+4:paracada imagemF∈ -inpotfazer
+O conjunto de dados BTXRD consiste em nove subtipos de tumores com frequências 
+de classe variáveis. A distribuição dos subtipos no conjunto de dados é apresentada em
+Figura 2. 5:
+6:
+7:
+8:
+9:
+10:
+11:
+seFé um formato de imagem válidoentão
+Carregar deF;Ignorar se houver 
+erro (R, G, B)←dividir( )
+(R, G, B)←BM3D(R, σr),BM3D(G, σg),BM3D(B, πb) 
+Salvar mesclado (R, G, B)como        ∈ -otput
+C←C+1;Mensagem de sucesso na impressão 
+fim se
+Figura 2A figura mostra a distribuição por classe dos subtipos de tumores ósseos no 
+conjunto de dados BTXRD. Pode-se observar na figura que existe um desequilíbrio entre 
+as classes, por exemplo,OsteocondromaeCistos ósseos simplescontêm contagens de 
+amostras muito maiores do que aquelas que ocorrem com pouca frequência, como 
+OsteofibromaIsso motivou nossa aplicação do SMOTE para atenuar a assimetria e 
+aprimorar o aprendizado do modelo em relação às classes minoritárias. 12:fim para
+13: Imprimir "Total de imagens processadas:C"
+2.2. Remoção de ruído dos dados
+Algoritmo1A figura ilustra a redução de ruído em imagens radiográficas por meio de 
+Correspondência de Blocos e Filtragem 3D (BM3D). A redução de ruído é aplicada a todas 
+as imagens do conjunto de dados em determinados níveis de ruído. Os resultados são 
+combinados e salvos como imagens com ruído reduzido, sendo utilizados para 
+treinamento e teste, aumentando assim a interpretabilidade das características e 
+reduzindo artefatos de classificação.
+Os conjuntos de dados de imagens médicas geralmente apresentam ruído devido a 
+variações nas condições de aquisição, defeitos nos sensores e outras condições externas. 
+O ruído pode degradar o desempenho dos modelos de aprendizado profundo e, 
+portanto, métodos robustos de remoção de ruído são necessários para o pré-
+processamento. Nossa pesquisa utiliza o algoritmo Block Matching and 3D Filtering 
+(BM3D) [17O BM3D é um método de ponta para remover ruídos do conjunto de dados de 
+imagens de tumores ósseos antes de dividi-lo em subconjuntos de treinamento e teste. 
+Ele constrói patches de imagem semelhantes, converte-os em um espaço de dimensão 
+superior, realiza operações de filtragem por redução de tamanho e aplica uma 
+transformação inversa para construir uma imagem sem ruído. O algoritmo preserva com 
+eficiência os detalhes estruturais enquanto elimina o ruído, tornando-o muito eficaz para 
+o processamento de imagens médicas.
+2.3. Aumento de dados
+Para aprimorar a robustez e a generalização do nosso modelo de aprendizado 
+profundo para classificação de tumores, empregamos uma variedade de métodos de 
+aumento e pré-processamento de dados. O aumento de dados é essencial para 
+incrementar a diversidade do conjunto de dados, reduzir o sobreajuste e melhorar o 
+desempenho do modelo.
+O processo de transformação começa com o redimensionamento das imagens 
+para uma resolução alvo, seguido pela adição de inversão horizontal aleatória 
+para simular a variabilidade natural em diversas imagens de tumores ósseos. Uma 
+rotação aleatória em intervalos de 15 graus também é adicionada, juntamente 
+com uma variação de cor que envolve ajustes controlados de brilho, contraste, 
+saturação e matiz. Para maior robustez, uma distorção de perspectiva aleatória é 
+adicionada, com uma escala de distorção de 0,2 e probabilidade de 0,5, facilitando 
+assim a generalização do modelo para pequenas deformações espaciais. Um 
+desfoque gaussiano com tamanho de kernel de 3 também é adicionado para 
+reduzir as variações na nitidez das imagens. Finalmente, as imagens são 
+convertidas em tensores e normalizadas para uma média de 0,5 e desvio padrão 
+de 0,5 para estabilizar o treinamento.
+Estudos recentes indicaram as vantagens do BM3D em operações de imagem 
+biomédica. Por exemplo, Zhang et al. [18] aplicaram com sucesso o BM3D para melhorar 
+a qualidade das tomografias computadorizadas de baixa dose, contribuindo para uma 
+maior precisão diagnóstica. Da mesma forma, Liu et al. [19Wang et al. [ ] aplicaram 
+arquiteturas BM3D e de aprendizado profundo para remoção de ruído em imagens 
+histopatológicas e obtiveram desempenho aprimorado na extração de características e 
+na classificação.20Em um estudo, foram aplicados métodos de pré-processamento 
+baseados em BM3D para melhorar imagens de fundo de retina, o que contribuiu para 
+um melhor desempenho de segmentação na detecção de doenças oftalmológicas. Além 
+disso, foram pesquisados   métodos híbridos que integram BM3D e modelos de 
+aprendizado profundo, como ilustrado no trabalho de pesquisa de Chen et al. [21], onde 
+o BM3D foi usado para remover ruídos de exames de ressonância magnética cerebral 
+antes da extração de características e melhorar a confiabilidade da classificação. 2.4. Balanceamento de dados
+Em nossa abordagem, cada imagem é pré-processada com BM3D antes que o conjunto de 
+dados seja dividido em conjuntos de treino e teste. O algoritmo é executado independentemente 
+para os canais de cor Vermelho, Verde e Azul (RGB) com parâmetros de ruído predeterminados, 
+conforme definido no Algoritmo.1As imagens com ruído reduzido são armazenadas para 
+treinamento subsequente do modelo, evitando assim distorções causadas por ruído que afetam 
+o desempenho da classificação. A aplicação do BM3D em nosso procedimento de pré-
+processamento melhora drasticamente a qualidade do conjunto de dados de imagens tumorais, 
+aumentando, consequentemente, a confiabilidade e a precisão da classificação tumoral. 
+Estratégias adaptativas de BM3D e arquiteturas de redução de ruído baseadas em aprendizado 
+profundo podem ser exploradas em pesquisas futuras para aprimorar ainda mais a qualidade da 
+imagem e maximizar a acurácia da classificação.
+O desequilíbrio de classes é um problema significativo na análise de imagens 
+médicas que pode distorcer os modelos preditivos, levando a um desempenho 
+ruim nas classes minoritárias. Esse problema é especialmente relevante em 
+conjuntos de dados de anomalias congênitas incomuns. Para mitigar esse 
+problema, utilizamos a Técnica de Sobreamostragem Sintética de Minorias 
+(SMOTE) [22], uma técnica típica de aumento de dados que cria instâncias 
+sintéticas interpolando entre instâncias existentes da classe minoritária. No nosso 
+caso, usamos o SMOTE para equilibrar a distribuição de classes entre várias 
+imagens de tumores ósseos, de modo que o modelo seja treinado em um 
+conjunto mais representativo. O SMOTE mitiga o viés em conjuntos de dados 
+desbalanceados criando instâncias sintéticas para as classes minoritárias em vez 
+de replicar instâncias, evitando o sobreajuste e melhorando a generalização. O 
+algoritmo escolhe instâncias aleatórias da classe minoritária e cria instâncias 
+sintéticas ao longo dos segmentos de reta entre os k vizinhos mais próximos no 
+espaço de características, aumentando assim a representação de classes sub-
+representadas sem preservar a estrutura original dos dados.
+Utilizamos um pipeline de remoção de ruído com a abordagem BM3D para fornecer 
+dados de alta qualidade para o treinamento do modelo. O procedimento passo a passo 
+para a remoção de ruído em todo o conjunto de dados nos canais RGB usando BM3D é 
+apresentado no Algoritmo.1.
+4
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Estudos recentes demonstraram a eficácia do SMOTE na melhoria do 
+desempenho da classificação de dados biomédicos desbalanceados. Por exemplo, 
+Zhao et al. [23] aplicaram SMOTE a dados de imagens dermatológicas, 
+melhorando a precisão da classificação para doenças raras da pele. Da mesma 
+forma, Lee et al. [24] aplicaram técnicas de aumento de dados baseadas em 
+SMOTE para alcançar equilíbrio em dados de anomalias craniofaciais pediátricas, 
+refletindo uma melhoria significativa na estabilidade dos modelos de aprendizado 
+profundo. Além disso, o SMOTE tem sido usado em modelos de aprendizado 
+profundo em questões biomédicas, incluindo o diagnóstico de doenças raras [25] 
+e detecção de anomalias congênitas [26], demonstrando sua eficácia na 
+compensação de distribuições desequilibradas. Por exemplo, [27] melhorou o 
+desempenho em modelos profundos para detecção de patologias raras quando o 
+SMOTE foi aplicado na fase de pré-processamento. Da mesma forma, [28] 
+demonstraram a eficácia do SMOTE no tratamento de dados biomédicos de alta 
+dimensionalidade, que é o cenário da nossa aplicação. Embora o SMOTE envolva 
+algum custo computacional, sua eficácia na correção de distribuições enviesadas o 
+torna vantajoso, como demonstrado por sua ampla aplicação na literatura recente 
+[28,29].
+Em nossa implementação, utilizamos o SMOTE no conjunto de dados indexado, 
+realizando sobreamostragem das classes minoritárias para obter uma distribuição 
+aproximadamente uniforme antes do treinamento. Isso garante que a generalização do 
+modelo de classificação seja aprimorada, prevenindo o viés causado por distribuições de 
+classes desbalanceadas. Ao incorporar o SMOTE na etapa de pré-processamento, nosso 
+método assegura que o conjunto de dados de imagens de tumores ósseos proposto 
+possa ser efetivamente utilizado para diagnóstico médico sem ser comprometido por 
+distribuições de classes enviesadas.
+A estrutura arquitetônica básica dos dois modelos CNNT e 
+ResNet50-CBAM é apresentada emFigura 3.
+Os parâmetros da rede são definidos com retropropagação e descida de 
+gradiente. Métricas de desempenho como Acurácia, Precisão, Revocação e F1-
+score, bem como AUC-ROC, são calculadas ao final de cada época para monitorar 
+o desempenho do treinamento e do teste. O modelo é então submetido a um 
+processo de avaliação, no qual é alternado para o modo de inferência e executado 
+em amostras de teste não vistas. As saídas previstas são comparadas com os 
+rótulos de verdade fundamental, resultando no cálculo das principais métricas de 
+desempenho. Esse processo organizado de treinamento e avaliação ajuda a 
+desenvolver um modelo de classificação robusto e generalizável, capaz de 
+discriminar entre vários subtipos de tumores ósseos, como Tumor de Células 
+Gigantes, Osteocondromas Múltiplos, Osteocondroma, Osteofibroma, 
+Osteossarcoma, Outros Tumores Benignos, Outros Tumores Malignos, Cisto 
+Ósseo Simples e Osteocondroma Sinovial.
+O modelo processa uma imagem de tumor ósseo como entrada. ∈RH×W×C, 
+ondeH,W,eCrepresentam a altura, a largura e o número de canais, 
+respectivamente. A representação de características é realizada por um módulo 
+composto por múltiplas camadas convolucionais, normalização em lote e funções 
+de ativação não lineares, utilizando um módulo baseado em Rede Neural 
+Convolucional (CNN). A representação de características é feita da seguinte forma:
+FCNN= ReLU(BatchNorm(Conv2D(I, WCNN))) (1)
+ondeWCNNsão parâmetros treináveis   dos kernels convolucionais. Esta operação extrai 
+características espaciais locais, mantendo padrões significativos da estrutura da imagem 
+óssea. Uma operação de MaxPooling MaxPool2D(2× 2)Em seguida, aplica-se uma 
+subamostragem das dimensões espaciais para selecionar as ativações dominantes, 
+melhorando assim a eficiência computacional e retendo informações estruturais 
+significativas. A rede aprende características hierárquicas, desde informações de borda 
+de baixo nível até representações de forma de alto nível, por meio de diversas camadas 
+convolucionais. Essas características são então inseridas no mecanismo de atenção 
+baseado em Transformer, refinando ainda mais as dependências entre as características 
+com base em relações espaciais de longo alcance.
+3. Os modelos propostos
+Primeiramente, dividimos o conjunto de dados em conjuntos de treinamento e teste. 
+Isso nos permitiu testar o modelo de aprendizado profundo com precisão e sem viés. 
+Adotamos uma proporção de 80:20, com 80% para treinamento e 20% para teste. 
+Aplicamos o SMOTE somente no conjunto de treinamento para lidar com o desequilíbrio 
+de classes, garantindo que nenhuma amostra sintética ou imagem aumentada fosse 
+incluída no conjunto de teste.
+A extração de características, por meio de uma camada de Pooling Médio Global 
+Adaptativo (GAP), agrega informações espaciais em um descritor global compacto. 
+Matematicamente, essa operação é expressa como:
+1
+H×W
+∑∑ 
+Fbrecha= FCNN(i, j) (2)
+=1 =1
+3.1. Modelo de Redes Neurais Convolucionais Transformer (CNNT)
+ondeHeWdenotam as dimensões espaciais do mapa de características, eFCNN(i, j)
+representa os valores de ativação na posição (i, jAo contrário das camadas 
+totalmente conectadas padrão, o GAP permite o aprendizado de representações 
+invariantes à escala, compactando características espaciais sem perder padrões 
+essenciais.
+O processo de treinamento é projetado sistematicamente, começando com a 
+inicialização dos modelos, onde um módulo CNN gera características espaciais a 
+partir de uma sequência de camadas convolucionais, seguida por normalização 
+em lote, ativação ReLU (Unidade Linear Retificada) e max pooling. Os mapas de 
+características obtidos passam por uma camada de pooling médio adaptativo para 
+preservar uma representação de tamanho fixo, que é então transformada em um 
+espaço de incorporação D-dimensional. As incorporações são passadas como 
+entrada para o codificador Transformer, que consiste em várias camadas com 
+mecanismos de autoatenção multi-cabeças integrados para capturar efetivamente 
+as dependências de longo alcance e as relações contextuais nas imagens. A 
+classificação final é alcançada por meio de uma camada totalmente conectada 
+com ativação softmax para produzir saídas probabilísticas em relação às 
+categorias de várias imagens de tumores ósseos. A arquitetura do modelo CNNT 
+proposto é mostrada no algoritmo.2O modelo proposto compreende vários 
+elementos-chave: extração de características convolucionais, pooling adaptativo, 
+incorporação linear e modelagem de atenção baseada em transformadores, 
+seguidos por camadas de classificação, conforme mostrado em Figura 3.
+Para aumentar a eficiência do processo de aprendizagem, utilizamos o 
+otimizador Adam com uma taxa de aprendizagem fixa, e a função de perda 
+é definida usando entropia cruzada categórica. Durante o processo de 
+treinamento, o conjunto de dados é dividido em mini-lotes. Para cada lote de 
+indivíduos, o modelo faz previsões, calcula a perda e atualiza o modelo.
+O mapa de características gerado é transformado em um vetor unidimensional para facilitar 
+a compatibilidade com o módulo de codificação baseado em Transformer. O codificador 
+Transformer compreende camadas de autoatenção e feedforward com múltiplas cabeças que 
+capturam dependências de longa distância entre as dimensões das características. Os 
+mecanismos de autoatenção aprendem a dimensionar as interações entre as características para 
+facilitar o aprendizado de uma representação contextual robusta.
+dinamicamente. Matematicamente, o mecanismo de autoatenção calcula:
+( )
+T
+dk
+Atenção(Q, K, V) =softmax√ V (3)
+ondeQ,K, eVsão as matrizes de consulta, chave e valor derivadas do 
+vetor de características, edké o fator de escala.
+Para capturar as dependências de longo alcance do tumor ósseo, adicionamos um bloco de 
+codificador Transformer para processar o vetor de características extraído. O vetor de 
+características é primeiro incorporado por meio de uma transformação de incorporação linear 
+para projetá-lo em um espaço de dimensão superior.
+Fincorporar=WeFbrecha+be (4)
+5
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+ondeWeebesão parâmetros aprendíveis. Essa conversão permite a 
+compatibilidade com o módulo Transformer ao inserir representações de 
+características.
+Coadaptação de características. A regularização L2 (weight decay) desencoraja valores de 
+peso elevados, adicionando um termo de penalização à função de perda.
+O desempenho do modelo é monitorado continuamente por meio da acurácia e da 
+perda de validação. Se a perda de validação estagnar ou aumentar ao longo de épocas 
+sucessivas, a parada antecipada interrompe o treinamento, preservando os pesos com 
+melhor desempenho. Essa estratégia garante que o modelo permaneça eficiente, 
+evitando cálculos desnecessários e levando ao desempenho ideal.
+O codificador Transformer utiliza a Autoatenção Multi-Cabeças (MHSA) para 
+aprender interdependências complexas entre diferentes elementos de características.
+mentos. O mecanismo de autoatenção funciona da seguinte maneira
+( )
+T
+dk
+Atenção(Q, K, V) =softmax√ V (5) classificação do tumor.
+O modelo CNNT proposto é treinado por meio de um pipeline adequadamente 
+projetado que integra a modelagem de características globais e locais. O extenso 
+processo de treinamento é mostrado no Algoritmo.2.
+ondeQ, K, Vsão as matrizes de consulta, chave e valor derivadas de Fincorporar, edk
+representa a dimensionalidade do espaço de características. O mecanismo de 
+autoatenção permite que o modelo atribua pesos de importância diferentes a 
+diferentes áreas espaciais no mapa de características de entrada e, assim, capture 
+dependências de longo alcance de forma eficaz. Algoritmo 2Treinamento de modelo CNN + Transformer para classificação de 
+tumores ósseos
+Requisitos:Conjunto de dados de imagens - com rótulos -, tamanho do loteBtaxa de aprendizagem ,
+número de épocasE
+Requisitos:Número de camadas da CNNL   ,neurônios da CNNN   ,Trans-
+camadas anterioresL     , número de cabeçasHdimensão ocultaD, 
+número de classesNc
+1:Inicialização do modelo:
+2: Defina as camadas da CNN comL   blocos convolucionais, cada um com
+Conv2D, BatchNorm, ReLU e MaxPool
+3: Aplicar o Pooling Médio Adaptativo ao tamanho de saída (8,8)
+4: Defina a camada de incorporação para mapear a saída da CNN paraDEspaço 
+-dimensional 5: Construir um codificador Transformer comL     camadas eHatenção
+cabeças
+6: Definir classificador: Camada totalmente conectada com ativação Softmax 
+7: Inicializar o modelo HybridCNNTransformer -
+8:Defina a função de perda e o otimizador:
+9: Defina a função de perda como entropia cruzada categórica. 
+10: Use o otimizador Adam com taxa de aprendizado. 
+11:Treinamento do modelo:
+12:paraepoc=1paraEfazer
+Após o MHSA, o codificador de transformador emprega uma Rede 
+Feedforward (FFN) composta por duas camadas totalmente conectadas com 
+ativação não linear.
+Ftrans= ReLU(W1Fincorporar+b1)W2+b2 (6)
+Este projeto aprimora a representação das características aprendidas, concentrando-
+se nos principais padrões estruturais e eliminando ruídos redundantes. A normalização 
+de camadas é aplicada entre as camadas de alimentação direta e de atenção para 
+permitir um treinamento estável e melhor convergência.
+Ao integrar a extração de características locais baseada em CNN e a 
+modelagem global baseada em Transformers, a estrutura proposta demonstra 
+capacidade de representar com precisão informações espaciais e contextuais. Essa 
+abordagem híbrida aprimora a classificação de diversos subtipos de tumores 
+ósseos, como tumor de células gigantes, osteocondromas múltiplos, 
+osteocondroma, osteofibroma, osteossarcoma, outros tumores benignos, outros 
+tumores malignos, cisto ósseo simples e osteocondroma sinovial, garantindo 
+diagnósticos médicos precisos.
+A representação final do codificador Transformer é passada por uma 
+camada totalmente conectada, seguida por uma função de ativação softmax 
+para classificação multiclasse.
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+Configurar modelo - para modo de treinamento
+Inicializar a perda de treinamento -     =0,previsões corretasC     =0 Iniciar 
+cronômetro de treinamento
+paracada lote (Xb,  b)em -     fazer
+Mover (Xb,  b)Para o dispositivo, os gradientes zero do 
+otimizador calculam a saída do modelo:Yb= -(Xb) Calcular 
+perda: - = CrossEntropyLoss(Yb,  b) Realizar 
+retropropagação e atualizar os pesos. Acumular a perda 
+de treinamento e corrigir as previsões. fim para
+Parar o cronômetro de treinamento
+Calcular a precisão do treinamento: Acc     =      × 100
+?̂?=softmax(W Ftrans+b) (7)
+ondeWebsão parâmetros a serem aprendidos, e
+ℎ   são as probabilidades de classe para diferentes tipos de tumor ósseo. Para melhorar o 
+desempenho do modelo, utiliza-se a função de perda de entropia cruzada categórica.
+∑N
+L= −  registro(?̂? ) (8)
+ =1
+ondeNé o número de classes, que é 5.  é o rótulo da verdade fundamental, e
+?̂? é a probabilidade prevista para cada classe. Essa função de perda 
+específica incentiva a atribuição de altas probabilidades à classe correta e 
+penaliza previsões incorretas. Estratégias de otimização baseadas em 
+gradiente são utilizadas para treinar o modelo, permitindo o aprendizado 
+eficaz da classificação precisa de nove tipos de tumores.
+|-     |
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+Avaliação do modelo:
+Configurar modelo - para o modo de avaliação
+Inicializar perda de teste -    =0,previsões corretasC    =0 Iniciar 
+cronômetro de avaliação
+paracada lote (Xb,  b)em -    fazer
+Mover (Xb,  b)Saída do modelo de computação do 
+dispositivo:Yb= -(Xb) Calcular perda: - = 
+CrossEntropyLoss(Yb,  b) Acumule perdas nos testes 
+e corrija as previsões. fim para
+Interromper o cronômetro de avaliação
+Calcular a precisão do teste: Acc    =     × 100
+O processo de treinamento utiliza o otimizador Adam com uma taxa de aprendizado 
+inicial de 10.-4, um tamanho de lote de 32 e parada antecipada baseada na perda de teste 
+para evitar sobreajuste. O modelo é treinado por 60 épocas, com atualizações de peso 
+realizadas por meio de retropropagação.
+  
+  W←W−  (9) 36:
+37:
+38:
+|-    |
+onde representa a taxa de aprendizagem, e é o gradiente da perda
+função em relação aos parâmetros do modelo.
+Imprimir resultados da época: Perda de treinamento, Precisão de treinamento, Tempo de 
+treinamento, Perda de teste, Precisão de teste, Tempo de teste
+  
+Técnicas de regularização, como dropout e decaimento de peso, são aplicadas para 
+aprimorar a generalização e mitigar o sobreajuste. O dropout desativa aleatoriamente uma 
+fração dos neurônios durante o treinamento, impedindo que eles se tornem repetitivos.
+39:fim para
+40: Calcular acurácia, AUC-ROC, precisão, recall e pontuação F1. 41: 
+Outros parâmetros estatísticos.
+6
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Algoritmo2Este documento descreve o processo de treinamento do modelo CNNT. 
+Ele envolve a inicialização do modelo com camadas CNN e Transformer, seguida de 
+treinamento em mini-lotes usando a perda de entropia cruzada categórica. A propagação 
+direta, o cálculo da perda, a retropropagação e as atualizações de pesos são realizadas 
+em cada época. O desempenho é monitorado por meio da acurácia, AUC-ROC, pontuação 
+F1 e outras métricas importantes. A avaliação é realizada após cada época usando dados 
+de teste não vistos.
+Algoritmo 3Treinamento do modelo ResNet50 + CBAM para classificação de 
+tumores ósseos
+Requisitos:Conjunto de dados de imagens - com rótulos -, tamanho do loteBtaxa de aprendizagem ,
+perda de peso , suavização de rótulos , número de épocasE Requisitos:
+Número de turmasNc, backbone ResNet50 pré-treinado, CBAM
+módulo de atenção
+Inicialização do modelo:
+2: Carregue a ResNet50 com pesos pré-treinados e remova completamente os pesos finais.
+camada conectada
+Adicionar módulo de atenção CBAM para aprimorar os mapas de recursos.
+4: Defina o classificador: Camadas totalmente conectadas com BatchNorm, ReLU,
+Dropout e Softmax
+Inicializar modelo - com ResNet50 + CBAM
+6:Defina a função de perda e o otimizador:
+Defina a função de perda como entropia cruzada categórica com suavização de rótulos.  
+8: Use o otimizador AdamW com taxa de aprendizado e perda de peso 
+Defina o agendador de taxa de aprendizado: ReduceLROnPlateau
+10:Treinamento do modelo:
+paraepoc=1paraEfazer
+Configurar modelo - para modo de treinamento
+Inicializar a perda de treinamento -     =0,previsões corretasC     =0, 
+amostras totaisN     =0
+Iniciar cronômetro de treinamento
+paracada lote (Xb,  b)em -     fazer
+Mover (Xb,  b)Para o dispositivo, os gradientes zero do 
+otimizador calculam a saída do modelo:Yb= -(Xb) Calcular 
+perda: - = CrossEntropyLoss(Yb,  b) Realizar 
+retropropagação e atualizar os pesos. Acumular a perda 
+de treinamento e corrigir as previsões. fim para
+Parar o cronômetro de treinamento
+Calcular a precisão do treinamento: Acc     =      × 100
+3.2. Modelo ResNet50 e Módulo de Atenção de Bloco Convolucional 
+(CBAM)
+O modelo proposto, ResNet50 e Módulo de Atenção de Bloco Convolucional (CBAM), 
+foi projetado para aprimorar o desempenho da classificação de diversas imagens de 
+tumores ósseos, integrando uma arquitetura ResNet50 pré-treinada e o CBAM. Essa 
+integração melhora efetivamente a extração de características por meio de mecanismos 
+de atenção espacial e de canal. O processo de treinamento segue uma estrutura 
+sistemática, conforme descrito no algoritmo.3O modelo é desenvolvido para auxiliar na 
+classificação de tumores ósseos, incluindo a inicialização, a seleção da função de perda, 
+as etapas de otimização, o treinamento e, por fim, o teste. O modelo é inicializado 
+carregando a ResNet50 com pesos pré-treinados, exceto pela última camada totalmente 
+conectada. O módulo CBAM é então integrado para destacar as características mais 
+discriminativas nas imagens por meio da ponderação adaptativa das representações de 
+características espaciais e por canal. Esse mecanismo aprimora a capacidade do modelo 
+de se concentrar em regiões discriminativas das imagens ósseas, o que é essencial para 
+distinguir entre vários subtipos de tumores ósseos, como tumor de células gigantes, 
+osteocondromas múltiplos, osteocondroma, osteofibroma, osteossarcoma, outros 
+tumores benignos, outros tumores malignos, cisto ósseo simples e osteocondroma 
+sinovial. Um classificador totalmente conectado é utilizado para melhorar a eficácia da 
+classificação, incluindo normalização em lote, ativação ReLU, dropout e ativação softmax, 
+garantindo assim um aprendizado eficaz e estável.
+Para aprimorar o processo de treinamento, utiliza-se a perda de entropia 
+cruzada categórica com suavização de rótulos, o que reduz o impacto de rótulos 
+ruidosos e impede que o modelo demonstre excesso de confiança em suas 
+previsões. O otimizador AdamW é utilizado devido à sua capacidade de otimizar 
+paisagens de otimização complexas de forma eficiente, e um agendador de taxa 
+de aprendizado (ReduceLROnPlateau) ajusta dinamicamente a taxa de 
+aprendizado em função dos padrões observados na perda de teste para uma 
+convergência estável e eficiente. O processo de treinamento envolve o 
+processamento repetido de mini-lotes, a movimentação dos dados de imagem 
+para a Unidade de Processamento Gráfico (GPU), a passagem pelo modelo 
+ResNet50 CBAM e o cálculo da perda de classificação. Posteriormente, o método 
+do gradiente descendente é utilizado para atualizar os parâmetros do modelo, 
+permitindo uma melhoria contínua ao longo do tempo.Népocas (E). Após concluir 
+o processo de treinamento, o modelo passa para a fase de avaliação, onde é 
+testado em dados não vistos para analisar sua capacidade de generalização. O 
+desempenho do modelo é avaliado usando uma variedade de métricas-chave, 
+incluindo acurácia, AUC-ROC, precisão, recall e F1-score, para uma avaliação 
+abrangente de seu desempenho de classificação.
+Para aprimorar o aprendizado de características discriminativas, combinamos 
+o CBAM com uma arquitetura ResNet50. O pipeline de treinamento completo do 
+modelo ResNet50-CBAM é apresentado no Algoritmo.3.
+Algoritmo3Este artigo resume o processo de treinamento do modelo ResNet50-
+CBAM. Ele envolve o carregamento dos pesos pré-treinados do ResNet50, a adição do 
+CBAM, a inicialização do classificador e a otimização AdamW com diferentes taxas de 
+aprendizado. O modelo é avaliado em amostras não vistas em cada época durante o 
+treinamento, utilizando métricas de classificação e medidas estatísticas para avaliar a 
+convergência e a generalização.
+O núcleo do modelo é o ResNet-50 com CBAM, conforme mostrado emFigura 3, que 
+é uma CNN profunda para extração de características na classificação robusta de 
+tumores. Ela utiliza conexões residuais para evitar o desaparecimento de gradientes e 
+aprimorar a propagação de características. Dada uma imagem de entrada , os mapas de 
+recursos Fressão calculados como:
+12:
+14:
+16:
+18:
+20:
+22:
+24:
+Avaliação do modelo:
+Configurar modelo - para o modo de avaliação
+Inicializar perda de teste -    =0,previsões corretasC    =0,amostras 
+totaisN    =0
+Iniciar cronômetro de avaliação
+paracada lote (Xb,  b)em -    fazer
+Mover (Xb,  b)Saída do modelo de computação do 
+dispositivo:Yb= -(Xb) Calcular perda: - = 
+CrossEntropyLoss(Yb,  b) Acumule perdas nos testes 
+e corrija as previsões. fim para
+Interromper o cronômetro de avaliação
+Calcular a precisão do teste: Acc    =     × 100
+26:
+28:
+30:
+32:
+34:
+36:
+Ajuste a taxa de aprendizado usando o agendador com base na perda de teste. Imprima os 
+resultados da época: Perda de Treinamento, Precisão de Treinamento, Tempo de Treinamento, 
+Perda de Teste, Precisão de Teste, Tempo de Teste.
+fim para
+40: Calcule a acurácia, AUC-ROC, precisão, recall e pontuação F1.
+Outros parâmetros estatísticos
+38:
+ondeFres∈RH×W×Csão mapas de características de alturaH, larguraW, e canais
+CAs características são ainda mais aprimoradas usando CBAM para uma 
+atenção espacial e por canal mais forte, a fim de melhorar a precisão da 
+classificação.
+Para aprimorar ainda mais a capacidade discriminativa dos mapas de 
+características extraídos do codificador, o Módulo de Atenção de Bloco 
+Convolucional (CBAM) é incorporado ao modelo. O CBAM emprega mecanismos 
+de atenção tanto de canal quanto espacial para focar em características essenciais, 
+reduzindo a influência de informações irrelevantes.Fres= ResNet50( ) (10)
+7
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Os mapas de características refinados, denominados comoFcbam, são calculados da seguinte forma: onde?̂?representa as probabilidades de classe previstas. A função softmax 
+garante que as saídas somem 1, permitindo a interpretação probabilística 
+para classificação multiclasse. Essa abordagem aprimora o modelo de 
+classificação de tumores, tornando-o preciso e eficiente.Fcbam=Fres⋅Mc(Fres)⋅Ms(Fres)
+onde:
+(11)
+O modelo é treinado usando a função de perda de entropia cruzada 
+categórica, que mede a diferença entre os rótulos verdadeiros.  e as 
+probabilidades previstas?̂? :• Mc(Fres)Representa o mapa de atenção do canal, que atribui maior 
+peso aos canais de características mais importantes. É calculado 
+usando uma combinação de Pooling Médio Global (GAP) e Pooling 
+Máximo Global (GMP), seguida por um perceptron multicamadas 
+(MLP).
+• Ms(Fres)Representa o mapa de atenção espacial, que destaca regiões 
+espaciais relevantes usando operações convolucionais e agrupamento em 
+mapas de características.
+∑5
+L= −  registro(?̂? ) (16)
+ =1
+ondeLA função de perda garante que o modelo aprenda a minimizar os erros de 
+classificação, ao mesmo tempo que melhora as previsões de probabilidade de classe. O 
+otimizador Adam é empregado para a otimização do modelo com uma taxa de 
+aprendizado inicial de 0,0001, que equilibra convergência rápida e estabilidade. O 
+treinamento é realizado com um tamanho de lote de 32, o que é eficiente em termos de 
+memória e estável na atualização do gradiente. A parada antecipada é aplicada à perda 
+de teste para evitar sobreajuste e melhorar a generalização. A retropropagação calcula 
+os gradientes da função de perda em relação aos parâmetros do modelo durante o 
+treinamento. Esses gradientes são usados   para atualizar os pesos.W e preconceitosb
+Com base na regra de otimização Adam, o modelo aprimora a extração de características 
+e o desempenho da classificação. O processo é repetido até que a convergência ou as 
+condições de parada sejam atendidas, garantindo o desempenho ideal do modelo.
+Esse mecanismo de atenção dimensiona adaptativamente as representações de 
+características, permitindo que o modelo se concentre em diversas imagens discriminativas de 
+tumores ósseos, melhorando assim o desempenho da classificação.
+O mecanismo de atenção de canal no CBAM realça as características de 
+canal mais informativas realizando operações GAP e GMP. Essas operações 
+agregam informações espaciais de todos os pixels em um mapa de 
+características, capturando dependências contextuais globais. Seus 
+resultados são encaminhados para o Perceptron Multicamadas (MLP) 
+compartilhado, que aprende a importância de cada canal. Os resultados das 
+duas operações de pooling são concatenados e encaminhados para uma 
+função de ativação sigmoide para gerar o mapa de atenção de canal final.
+4. Resultados e discussão
+Cada modelo é treinado usando 5421 amostras de dados para treinamento, 
+enquanto 1356 amostras são utilizadas para teste. O desempenhoMc(Fres) = (MLP(GAP(Fres)) +MLP(MaxPool(Fres))) (12)
+onde é a função de ativação sigmoide, que escala os valores de atenção entre 0 e 
+1. O mapa de atenção resultante é então normalizado em relação aos mapas de 
+características originais.Fres, reponderando a contribuição de cada canal para 
+destacar características discriminativas na classificação de tumores.
+O mecanismo de atenção espacial aprimora a detecção de localizações de 
+características significativas dentro de um espaço. Ele aplica funções de pooling médio e 
+pooling máximo ao longo da dimensão do canal, extraindo assim características 
+dominantes e sutis. Os mapas de características resultantes do pooling são concatenados 
+e então alimentados em uma camada convolucional com 7×O tamanho do kernel é 
+definido em 7 para permitir que a rede aprenda a significância espacial adequadamente. 
+O mapa de atenção espacial final é obtido usando uma função de ativação sigmoide.
+A eficácia do esquema proposto e das metodologias de referência é avaliada 
+por meio de uma explicação detalhada da matriz de confusão para cada 
+estratégia. Diversas métricas são empregadas para avaliar a eficácia do 
+modelo na classificação de tumores. Acurácia, precisão, recall e F1-score são 
+utilizados em uma medida equilibrada de falsos positivos e falsos negativos. 
+A medida AUC-ROC avalia a capacidade do modelo de distinguir entre 
+classes, fornecendo assim informações sobre sua eficácia discriminatória. O 
+Coeficiente de Correlação de Matthews (MCC) e o Kappa de Cohen também 
+são empregados para avaliar a confiabilidade da classificação, 
+particularmente em conjuntos de dados desbalanceados. A combinação das 
+métricas avalia de forma abrangente o desempenho do modelo em diversas 
+categorias de deformidades.
+(
+Ms(Fres) = Conv AvgPool(Fres);MaxPool(Fres)
+([ ])) (13) 4.1. Modelo de Redes Neurais Convolucionais Transformer (CNNT)
+onde Conv denota a operação de convolução e [ ; ] denota concatenação. O 
+mecanismo de atenção espacial permite que o modelo se concentre em 
+áreas auriculares informativas, suprimindo assim o ruído de fundo e 
+aumentando a robustez da classificação. Através do uso sequencial de 
+atenção espacial e de canal, o CBAM aprimora efetivamente a representação 
+de características, resultando em melhor desempenho na detecção de 
+tumores.
+Após o refinamento da atenção, os mapas de características passam pelo GAP 
+para reduzir suas dimensões espaciais, preservando informações valiosas. Esse 
+processo resulta em um vetor descritor global.Fbrecha, que representa as 
+características mais proeminentes extraídas dos mapas de características 
+aprimorados pelo CBAM:
+O modelo CNNT é altamente eficiente na classificação, como demonstrado na matriz 
+de confusão emFigura 4O modelo apresenta uma classificação praticamente perfeita de 
+Tumor de Células Gigantes (99,33%), Osteofibroma (99,36%) e Osteocondroma Sinovial 
+(100%), refletindo um nível extremamente alto de precisão na detecção dessas formas 
+específicas de tumor com erro mínimo ou nulo. Mesmo com esse desempenho notável, 
+algumas categorias de tumor apresentam classificação incorreta devido a semelhanças 
+em suas características. Por exemplo, o Osteocondroma foi classificado erroneamente 
+como Osteocondromas Múltiplos em 3,21% dos casos e Osteossarcoma em 5,13%, o que 
+implica em características estruturais ou morfológicas semelhantes entre essas classes. 
+Da mesma forma, os Osteocondromas Múltiplos apresentam uma taxa de classificação 
+incorreta de 8,70% como Osteocondroma, refletindo a dificuldade em diferenciar essas 
+categorias semelhantes. Um problema semelhante foi relatado no Osteossarcoma, em 
+que 9,63% dos casos foram classificados erroneamente como Osteocondroma. Da 
+mesma forma, o Cisto Ósseo Simples apresenta uma taxa de classificação incorreta como 
+Osteocondroma de 7,79%, indicando a possibilidade de sobreposição de características 
+que requerem ajustes. Essas classificações incorretas indicam que os mecanismos de 
+extração e representação de características precisam ser otimizados para melhorar a 
+separabilidade entre as classes.
+O relatório de classificação emTabela 1O modelo CNNT demonstra desempenho 
+exemplar nas classes de tumores ósseos, com alta precisão, recall, pontuação F1 e 
+especificidade. O osteocondroma sinovial é classificado de forma ideal, com todas as 
+métricas em 1 e sem falsos negativos ou positivos. O osteofibroma também é bem 
+classificado em termos de precisão, recall e pontuação F1.
+Fbrecha= GAP(Fcbam) (14)
+ondeFbrecha∈RCé uma representação compacta comCO GAP utiliza canais de 
+características, tornando-o computacionalmente eficiente e, ao mesmo tempo, 
+mantendo uma forte agregação de características. Ele reduz efetivamente o sobreajuste, 
+eliminando a redundância espacial sem perder informações globais essenciais.
+Para fins de classificação,Fbrechaé passado por uma camada totalmente conectada 
+(FC) com parâmetros treináveis, incluindo o peso.We preconceitob, seguida por uma 
+função de ativação softmax para obter as probabilidades de classe:
+?̂?=softmax(W Fbrecha+b) (15)
+8
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Figura 4.Matriz de confusão do modelo CNNT. Figura 5.Matriz de confusão do modelo Resnet50 CBAM.
+Tabela 1
+Relatório de classificação do modelo CNNT. No entanto, a classificação de Osteocondromas Múltiplos apresenta uma acurácia de 
+94,74%, com 2,26% de classificações incorretas como Osteocondroma e 1,50% como Outros 
+Tumores Benignos ou Cisto Ósseo Simples. Essas pequenas porcentagens de classificação 
+incorreta podem ser explicadas pela similaridade na representação das características desses 
+tumores. O Osteocondroma é classificado corretamente em 94,59% dos casos, com uma taxa de 
+classificação incorreta muito baixa: 1,35% como Osteocondromas Múltiplos e 3,38% como Outros 
+Tumores Benignos, demonstrando que o modelo pode ser aprimorado com ajustes adicionais 
+para diferenciar melhor essas classes. O Osteossarcoma é classificado corretamente em 96,35% 
+dos casos e classificado incorretamente como Osteocondroma e Outros Tumores Malignos em 
+0,73%, apresentando uma sobreposição mínima nas representações aprendidas. O cisto ósseo 
+simples é diagnosticado com 95,86% de precisão, com 3,45% de diagnósticos errôneos como 
+outros tumores benignos, o que pode ser explicado por características morfológicas 
+semelhantes.
+O relatório de classificação do modelo ResNet50-CBAM emTabela 2Apresenta melhor 
+desempenho na classificação de tumores ósseos, com alta precisão, sensibilidade, 
+pontuação F1 e especificidade. A alta confiabilidade, especialmente para tumores com 
+tipos bem definidos, é indicada pelos resultados com mínimas classificações incorretas.
+Osteofibroma e osteocondroma sinovial são classificados com precisão 
+completa pelo modelo, com todas as pontuações iguais a 1, o que significa que 
+não há erros. Outros tumores malignos também apresentam desempenho quase 
+perfeito: precisão de 0,9936, recall de 1 e pontuação F1 de 0,9968, demonstrando 
+o bom desempenho do modelo na detecção de casos malignos. O modelo para 
+osteossarcoma apresenta uma pontuação F1 de 0,9778, com precisão de 0,9925 e 
+recall de 0,9635, o que significa classificação altamente precisa com mínima 
+classificação incorreta. Uma especificidade de 0,9992 também evidencia sua 
+capacidade de classificar com precisão tumores não osteossarcomas.
+O Tumor de Células Gigantes apresenta um escore F1 de 0,9689, precisão de 0,9873 
+e recall de 0,9512, o que indica potencial para melhoria do recall para uma identificação 
+mais precisa dos casos reais. Osteocondromas Múltiplos apresentam um escore F1 de 
+0,9655, precisão de 0,9844 e recall de 0,9474, o que indica alta acurácia, mas com 
+pequenos problemas de recall. O osteocondroma é classificado com um escore F1 de 
+0,9589, precisão de 0,9722 e recall de 0,9459. No entanto, uma alta especificidade de 
+0,9967 significa que o modelo consegue separar bem os casos que não são 
+osteocondromas. Outros Tumores Benignos também apresentam um recall perfeito (1), 
+mas uma precisão menor (0,9138) e, portanto, um escore F1 de 0,9550. O diagnóstico de 
+Cisto Ósseo Simples apresentou uma pontuação F1 de 0,9488, precisão de 0,9392 e 
+sensibilidade de 0,9586, indicando uma boa classificação, porém com um leve viés de 
+falsos positivos. Uma especificidade de 0,9926 significa que o modelo consegue 
+identificar os casos de Cisto Ósseo que não são simples.
+Aula Precisão Lembrar Pontuação F1 Especificidade
+tumor de células gigantes
+Osteocondromas múltiplos 
+Osteocondroma
+Osteofibroma
+Osteossarcoma
+Outros tumores benignos
+Outros tumores malignos
+cisto ósseo simples
+Osteocondroma sinovial
+0,9801
+0,9531
+0,7590
+0,9936
+0,9098
+0,9110
+0,9568
+0,9178
+1,0000
+0,9933
+0,8841
+0,8077
+0,9936
+0,8222
+0,9886
+0,9852
+0,8701
+1,0000
+0,9867
+0,9173
+0,7826
+0,9936
+0,8638
+0,9482
+0,9708
+0,8933
+1,0000
+0,9975
+0,9951
+0,9667
+0,9992
+0,9910
+0,9856
+0,9951
+0,9900
+1,0000
+com 0,9936 e especificidade próxima da perfeita, em 0,9992, o que reflete uma 
+identificação precisa.
+O tumor de células gigantes apresenta uma acurácia de classificação perfeita 
+de 0,9801, recall de 0,9933 e pontuação F1 de 0,9867, indicando boa 
+confiabilidade. Sua especificidade de 0,9975 demonstra sua capacidade de reduzir 
+erros de classificação. O osteocondroma representa um desafio, como 
+evidenciado pela baixa pontuação F1 (0,7826) em relação à precisão (0,7590) e ao 
+recall (0,8077). Uma especificidade de 0,9667 significa que, embora o modelo 
+classifique corretamente os casos que não são osteocondromas, há erros de 
+classificação, particularmente com osteocondromas múltiplos e osteossarcoma, 
+devido a características compartilhadas. O osteossarcoma é classificado 
+incorretamente com uma pontuação F1 de 0,8638, precisão de 0,9098 e recall de 
+0,8222, indicando erros de classificação com outros tumores do mesmo tipo. 
+Outras categorias de tumores, incluindo Outros Tumores Benignos (F1-score de 
+0,9482), Outros Tumores Malignos (F1-score de 0,9708) e Cisto Ósseo Simples (F1-
+score de 0,8933), mantêm resultados de classificação sólidos, com precisão e recall 
+consistentemente superiores a 0,87, reforçando a robustez do modelo em 
+diversos tipos de tumores.
+4.2. Re sNet50 e Convol ucional Block Atenti sobre Modelo de módulo (CBAM)
+O
+excelente
+com oi
+eficaz
+com m
+Outros malignos
+etiquetado com 100
+dessas classes
+Tumor celular
+ção 0,6
+maior, com 3,66% de classificação incorreta com Simp
+ResN
+um
+et50- CBUMM
+n ca
+model co nfusi sobre matrix emFigura 5Indica as classes 
+de tumores ósseos. O 
+modelo pode apresentar cura 
+na maioria dos casos, 
+incluindo tumores benignos.
+droma são precisos
+identifica todas as instâncias
+pontos positivos. Para a Giant
+baixíssima classificação incorreta-
+n Tumores e ligeiramente 
+um Cisto.
+t cl ssifi gado pabilidade a cruzs diferentes
+s para a maioria dos cl
+mais de 94% ac
+muito preciso
+ely classificar tu
+miscla animal
+favorito
+ou
+rabl
+tipos
+e rato
+com
+e
+hmonte
+ssification. Osteofibro ma, O
+Tum
+% ac
+ou, e S
+curadoria, i.
+sem falsos negativos
+ele é 2 ccura
+osarc Outros
+yno
+e., t
+v
+h
+Osteochon ial
+e modelo iden
+s ou falsosses com ativo 4.3. Análise comparativa
+ou
+1%
+, o
+com
+mod
+Oste
+95,1
+oma
+% a
+e
+te w
+er B
+com v
+nige Para avaliar o impacto das técnicas de pré-processamento implementadas, 
+comparamos o desempenho dos modelos propostos antes do processamento.le B
+9
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Tabela 2
+Relatório de classificação do modelo Resnet50 CBAM.
+falsos negativos. A fórmula do MCC a ser usada no cálculo é expressa como:
+Aula Precisão Lembrar Pontuação F1 Especificidade (T P×T N) − (F P×F N)
+(T P+F P)(T P+F N)(T N+F P)(T N+F N)
+MCC=√ (18)
+tumor de células gigantes
+Osteocondromas múltiplos 
+Osteocondroma
+Osteofibroma
+Osteossarcoma
+Outros tumores benignos
+Outros tumores malignos
+cisto ósseo simples
+Osteocondroma sinovial
+0,9873
+0,9844
+0,9722
+1,0000
+0,9925
+0,9138
+0,9936
+0,9392
+1,0000
+0,9512
+0,9474
+0,9459
+1,0000
+0,9635
+1,0000
+1,0000
+0,9586
+1,0000
+0,9689
+0,9655
+0,9589
+1,0000
+0,9778
+0,9550
+0,9968
+0,9488
+1,0000
+0,9983
+0,9984
+0,9967
+1,0000
+0,9992
+0,9875
+0,9992
+0,9926
+1,0000
+A comparação estatística destaca a maior eficácia do ResNet50-CBAM em 
+relação ao modelo CNNT em termos de concordância e confiabilidade da 
+classificação.Tabela 6O coeficiente Kappa de Cohen (0,9718 vs. 0,9203) e o MCC 
+(0,9719 vs. 0,9204) indicam que a ResNet50-CBAM oferece melhor confiabilidade 
+interavaliadores e estabilidade de classificação. Além disso, a ResNet50-CBAM 
+reduz substancialmente o tempo de treinamento (2993,63 s vs. 5692,64 s), 
+melhorando assim a eficiência computacional e mantendo os tempos de teste 
+iguais. Esses resultados comprovam a capacidade da ResNet50-CBAM de oferecer 
+desempenho de classificação eficiente e preciso.
+Vale ressaltar que a comparação realizada emTabela 7é conduzido em 
+um contexto de classificação binária, especificamente para diferenciar entre 
+tumores benignos e tumores malignos. Esse cenário está alinhado com os 
+modelos empregados por outros estudos de pesquisa existentes, como o 
+uso de arquiteturas CNN como ResNet50, Inception v3 e variantes do 
+EfficientNet [10], bem como YOLOv8s-cls [1] e modelos híbridos como CNN + 
+Desvio Padrão dos Intervalos NN (SDNN) [33] e DS-Net [12Nesse cenário 
+binário, nosso modelo CNNT proposto e o ResNet50 combinado com CBAM 
+(ResNet50+CBAM) superam claramente os demais. O modelo 
+ResNet50+CBAM alcança uma acurácia de 100,00%, uma revocação de 
+1,0000 e uma pontuação F1 de 0,9759, com precisão (0,9537) e 
+especificidade (0,9933) admiráveis, deixando assim os concorrentes 
+seguintes para trás. Da mesma forma, o modelo CNNT demonstrou uma 
+acurácia de 98,54%, o que indica a força e a estabilidade de nossos métodos 
+em comparação com métodos convencionais como CNN (ResNet50), CNN 
+EfficientNet versão B3 (EfficientNet-b3), YOLOv8s-cls [1], DS-Net [12], e 
+outros.
+Embora os resultados mostrados emTabela 7Embora nosso foco seja a 
+classificação binária como referência, observe que os modelos que construímos 
+foram aplicados e testados em um problema de classificação multiclasse mais 
+geral, que inclui nove tipos diferentes de tumores ósseos. Os resultados gerais e 
+as métricas de avaliação relevantes para o contexto multiclasse são apresentados 
+em outras seções do manuscrito, na forma de tabelas e figuras específicas.
+e após a aplicação de redução de ruído nos dados, balanceamento de classes e 
+aumento de dados, conforme mostrado emTabela 3Os resultados demonstram 
+uma melhoria substancial na precisão e acurácia do modelo após essas etapas, 
+ressaltando assim o papel crucial do pré-processamento no aprimoramento do 
+treinamento do modelo e no desempenho preditivo geral.
+A combinação do Módulo de Atenção de Bloco Convolucional (CBAM) com a 
+ResNet50 melhorou significativamente o poder de discriminação do modelo, elevando a 
+acurácia geral de 83,44% para 97,41%. Métricas de desempenho do modelo base 
+ResNet50 emTabela 4Os tumores apresentam variações notáveis   entre os diferentes 
+tipos. O CBAM foi capaz de destacar características espaciais e específicas de canal 
+dominantes, resultando em melhorias significativas na precisão, na revocação e na 
+pontuação F1 para todos os tipos de tumores. Categorias que anteriormente 
+apresentavam desempenho moderado, como osteocondroma e osteossarcoma, exibiram 
+melhorias consideráveis   na revocação e na pontuação F1. Esses resultados validam o 
+uso de mecanismos de atenção, como o CBAM, para aprimorar drasticamente a 
+localização de características e a separação entre classes, especialmente em problemas 
+complexos de classificação biomédica, justificando, assim, sua inclusão na estrutura 
+proposta.
+O modelo ResNet50-CBAM demonstra maior precisão de classificação em 
+todos os tipos de tumor em comparação com o modelo CNN Transformer.Figura 6
+Embora ambos os métodos sejam quase perfeitos para osteofibroma e 
+osteocondroma sinovial, o modelo ResNet50-CBAM é mais preciso em categorias 
+mais complexas, como tumor de células gigantes, osteocondroma e 
+osteocondromas múltiplos, reduzindo eficientemente as taxas de classificação 
+incorreta. A maior melhoria na precisão é observada em outros tumores benignos 
+e cisto ósseo simples, o que demonstra a alta capacidade de extração de 
+características e atenção do ResNet50-CBAM.
+Os valores de AUC-ROC indicam que o ResNet50-CBAM é consistentemente 
+melhor que o modelo CNNT para a maioria dos tipos de tumor, demonstrando 
+maior poder discriminatório emTabela 5Embora a CNNT apresente pontuação 
+superior para Tumor de Células Gigantes (0,995 vs. 0,975), a ResNet50-CBAM 
+demonstra melhor desempenho na classificação de Osteocondroma (0,971 vs. 
+0,887), Osteossarcoma (0,981 vs. 0,907) e Cisto Ósseo Simples (0,976 vs. 0,930), 
+indicando sua maior robustez na distinção de casos complexos. Ambos os 
+modelos apresentam classificação perfeita (AUC-ROC = 1,000) para Osteofibroma, 
+Outros Tumores Malignos e Osteocondroma Sinovial, comprovando sua alta 
+confiabilidade nessas classes.
+Estatística Kappa de Cohen ( ) foi introduzido por JA Cohen [30] em 
+psicologia para medir a concordância entre dois juízes. Tem sido 
+amplamente utilizado como medida de desempenho em questões de 
+classificação [31] ao longo dos anos. Kappa de Cohen ( O coeficiente Kappa 
+de Cohen estima a concordância entre os rótulos previstos e os reais, 
+corrigindo a concordância por acaso. Essa é uma medida mais significativa 
+do que as medidas de acurácia. A fórmula do Kappa de Cohen é
+4.4. Análise qualitativa utilizando o grad-CAM
+Para obter uma melhor compreensão do processo de tomada de decisão 
+selecionado pelos modelos de aprendizado profundo, incorporamos visualizações 
+de Mapeamento de Ativação de Classe Ponderado por Gradiente (Grad-CAM), 
+conforme ilustrado emFigura 7A Figura a mostra a amostra original de imagens 
+radiográficas para cada classe de tumor ósseo. A Figura b mostra os mapas de 
+calor Grad CAM correspondentes, produzidos pelo modelo CNNT. Em contraste, a 
+Figura c mostra os resultados do Grad CAM derivados do modelo ResNet50-CBAM. 
+O Grad CAM é uma técnica interpretativa eficaz que anota as localizações espaciais 
+da imagem de entrada com o impacto mais significativo nas previsões do modelo. 
+Ao calcular o gradiente da pontuação da classe alvo em relação à camada 
+convolucional final, o Grad CAM gera mapas de localização específicos da classe 
+que representam visualmente onde o modelo está focando ao fazer previsões. 
+Áreas mais quentes (por exemplo, vermelho e amarelo) nessas visualizações 
+indicam maior associação com a tarefa de classificação, e áreas mais frias (ou seja, 
+azul) indicam menor associação.
+O desempenho dessa visualização demonstra que a ResNet50 aprimorada por 
+CBAM sempre direciona a atenção de forma mais precisa e intensa para regiões 
+anatômicas de interesse em tumores do que o modelo CNNT.
+Po−Pe
+1 −Pe
+ = (17) que ocasionalmente direciona a atenção para coisas irrelevantes e estranhas
+estruturas de fundo. Essa atenção direcionada exibida pelo modelo aumentado se 
+deve aos seus mecanismos de atenção espacial e de canal, que ajustam 
+sistematicamente as respostas das características e aprimoram a 
+interpretabilidade [42Essa capacidade aumentada está de acordo com as 
+descobertas de pesquisas anteriores, onde arquiteturas com mecanismos de 
+atenção incorporados aprimoraram tanto o desempenho quanto a transparência 
+clínica em tarefas de imagem médica [43].
+ondePorepresenta a concordância observada ePedenota a concordância esperada 
+por acaso. Essa métrica tem sido amplamente utilizada para avaliar o 
+desempenho de classificadores em diversos estudos.
+O MCC [32O MCC é outra medida robusta para validar modelos de classificação, especialmente para 
+conjuntos de dados desbalanceados. Ao contrário da acurácia, o MCC considera verdadeiros positivos e 
+verdadeiros negativos, bem como falsos positivos e falsos negativos.
+10
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Tabela 3
+Comparação de desempenho dos modelos ResNet50-CBAM e CNNT antes e depois do pré-processamento.
+Aula ResNet50-CBAM (Antes)
+Prec. Rec. F1
+0,6812 0,6523 0,6623 0,8111 0,9873 0,9512 0,9689 0,9983 0,6328 0,6145 0,6212 0,7915 0,9801 0,9933 0,9867 0,9975
+ResNet50-CBAM (Após)
+Prec. Rec. F1
+CNNT (Antes)
+Prec. Rec.
+CNNT (Após)
+Prec. Rec.Especificação. Especificação. F1 Especificação. F1 Especificação.
+tumor de células gigantes
+Osteocondromas múltiplos 0,8216 0,7812 0,8018 0,8422 0,9844 0,9474 0,9655 0,9984 0,8025 0,7625 0,7831 0,8311 0,9531 0,8841 0,9173 0,9951 Osteocondroma
+Osteofibroma
+Osteossarcoma
+Outros tumores benignos
+Outros tumores malignos
+cisto ósseo simples
+Osteocondroma sinovial
+0,8311 0,8532 0,8411 0,7932 0,9722 0,9459 0,9589 0,9967 0,8045 0,8423 0,8265 0,7712 0,7590 0,8077 0,7826 0,9667 0,7212 0,7015 0,7134 0,8534 1,0000 
+1,0000 1,0000 1,0000 0,6825 0,6612 0,6727 0,8022 0,9936 0,9936 0,9936 0,9992 0,8015 0,8217 0,8116 0,8317 0,9925 0,9635 0,9778 0,9992 0,7618 0,7228 
+0,7427 0,8122 0,9098 0,8222 0,8638 0,9910 0,6525 0,6310 0,6422 0,8511 0,9138 1,0000 0,9550 0,9875 0,6012 0,6111 0,6012 0,7119 0,9110 0,9886 0,9482 
+0,9856 0,7013 0,6815 0,6916 0,8616 0,9936 1,0000 0,9968 0,9992 0,6517 0,6317 0,6418 0,8118 0,9568 0,9852 0,9708 0,9951 0,7617 0,7917 0,7718 0,8017 
+0,9392 0,9586 0,9488 0,9926 0,7214 0,7522 0,7312 0,7712 0,9178 0,8701 0,8933 0,9900
+0,8512 0,8215 0,8315 0,8515 1,0000 1,0000 1,0000 1,0000 0,7812 0,7614 0,7715 0,8015 1,0000 1,0000 1,0000 1,0000
+Tabela 4
+Comparação do desempenho de classificação entre a ResNet50 de base e a ResNet50 com CBAM em diferentes classes de tumores.
+Aula ResNet50 de referência
+Precisão Lembrar
+ResNet50 + CBAM
+Precisão LembrarPontuação F1 Especificidade Pontuação F1 Especificidade
+tumor de células gigantes
+Osteocondromas múltiplos 
+Osteocondroma
+Osteofibroma
+Osteossarcoma
+Outros tumores benignos
+Outros tumores malignos
+cisto ósseo simples
+Osteocondroma sinovial
+0,8155
+0,8000
+0,5745
+0,9321
+0,9505
+0,9115
+0,9635
+0,7021
+0,9870
+0,9257
+0,7582
+0,7826
+0,9742
+0,5749
+0,6478
+0,9429
+0,9362
+0,9806
+0,8671
+0,7785
+0,6626
+0,9527
+0,7164
+0,7574
+0,9531
+0,8024
+0,9838
+0,9743
+0,9759
+0,9343
+0,9908
+0,9958
+0,9916
+0,9959
+0,9539
+0,9983
+0,9873
+0,9844
+0,9722
+1,0000
+0,9925
+0,9138
+0,9936
+0,9392
+1,0000
+0,9512
+0,9474
+0,9459
+1,0000
+0,9635
+1,0000
+1,0000
+0,9586
+1,0000
+0,9689
+0,9655
+0,9589
+1,0000
+0,9778
+0,9550
+0,9968
+0,9488
+1,0000
+0,9983
+0,9984
+0,9967
+1,0000
+0,9992
+0,9875
+0,9992
+0,9926
+1,0000
+Tabela 5
+Pontuações AUC-ROC por classe em diferentes modelos.
+Nossos resultados experimentais reforçam ainda mais a importância da 
+heterogeneidade dos dados entre os centros. Em particular, tanto os modelos CNNT 
+quanto os ResNet50-CBAM demonstraram desempenho inferior quando treinados com 
+dados de um único centro e testados com dados de outros centros. Essa queda foi 
+especialmente drástica quando os modelos treinados com dados do Centro 1 foram 
+testados nos Centros 2 e 3. A diminuição observada no desempenho pode ser explicada 
+por mudanças na distribuição dos dados e pela fraca representação de certas classes de 
+tumores nos Centros 2 e 3. Por outro lado, os modelos treinados e testados no Centro 1 
+obtiveram acurácia e pontuação F1 relativamente melhores, provavelmente devido ao 
+maior tamanho da amostra e à melhor distribuição dos tipos de tumor nesse centro.
+Para aprimorar a generalização do modelo, poderíamos treiná-lo ainda mais com a 
+união dos dados dos três centros (Centros 1+2+3). Quando testado separadamente em 
+cada centro, isso levou a uma melhoria substancial nas principais métricas, como 
+acurácia, pontuação F1 e especificidade. O ResNet50-CBAM sempre apresentou melhor 
+desempenho que o CNNT em todos os testes entre centros, sendo mais estável em 
+relação às variações na distribuição dos dados e mais capaz de generalizar entre 
+diferentes fontes de dados clínicos do que os modelos com os quais experimentamos. 
+Esses resultados são consistentes com os resultados de pesquisas anteriores. Por 
+exemplo, [44], recomendou fortemente a avaliação de modelos de aprendizado profundo 
+em condições de heterogeneidade de dados em imagens médicas, especialmente se os 
+dados forem provenientes de múltiplas instituições. No entanto, [45] também 
+demonstraram como o uso de amostras de diversos domínios durante o treinamento 
+melhora significativamente a generalização e a estabilidade do modelo em situações de 
+mudança de domínio para tarefas de diagnóstico médico.
+Aula ResNet50-CBAM CNNT
+tumor de células gigantes
+Osteocondromas múltiplos 
+Osteocondroma
+Osteofibroma
+Osteossarcoma
+Outros tumores benignos
+Outros tumores malignos
+cisto ósseo simples
+Osteocondroma sinovial
+0,975
+0,973
+0,971
+1.000
+0,981
+0,994
+1.000
+0,976
+1.000
+0,995
+0,940
+0,887
+0,996
+0,907
+0,987
+0,990
+0,930
+1.000
+Tabela 6
+Comparação do coeficiente Kappa de Cohen e do MCC em diferentes modelos.
+Modelo Cohen's
+Pontuação Kappa
+MCC
+pontuação
+Treinamento
+tempo (s)
+Testando
+tempo (s)
+ResNet50-CBAM
+CNNT
+0,9718
+0,9203
+0,9719
+0,9204
+2993,63
+5692,64
+432,40
+355,58
+4.5. Análise de sensibilidade em relação às mudanças na distribuição do conjunto de dados
+Para determinar o efeito das variações na distribuição dos dados, realizamos análises 
+por centro, replicando a variação do mundo real entre diferentes centros de dados 
+(Centro 1, Centro 2 e Centro 3) na generalização do modelo. A perda de teste entre 
+centros indica a diversidade dos conjuntos de dados. O ResNet50-CBAM mostrou-se mais 
+generalizável e estável entre os centros devido aos seus mecanismos de atenção, que 
+acomodam efetivamente a variação entre centros, conforme demonstrado em 
+[referência].Tabela 8.
+5. Conclusão e trabalhos futuros
+Este artigo apresenta um modelo de aprendizado profundo aprofundado para 
+a classificação de nove subtipos significativos de tumores ósseos a partir de 
+imagens radiográficas. Baseado na aplicação de uma arquitetura híbrida de CNN e 
+Transformer (CNNT) e uma arquitetura ResNet50 aprimorada com um Módulo de 
+Atenção de Bloco Convolucional (CBAM), os modelos propostos demonstram 
+melhorias consideráveis   na representação de características, acompanhadas por 
+um aumento na precisão da classificação. A aplicação de métodos de redução de 
+ruído BM3D e o balanceamento de dados com o auxílio do SMOTE contribuem 
+ainda mais para a qualidade e resiliência do treinamento. Avaliações empíricas 
+indicam que nossos modelos superam os modelos de última geração existentes, 
+como YOLOv8s-cls, EfficientNet e DS-Net, em todos os principais aspectos.
+Essa comparação foi necessária devido à heterogeneidade intrínseca dos 
+dados entre os diferentes centros, sendo que o Centro 1 possui uma gama 
+consideravelmente mais ampla e distribuída de tumores do que os Centros 2 e 3. 
+Por exemplo, classificações de tumores raros, como osteofibroma e 
+osteocondroma sinovial, não estão representadas ou estão sub-representadas nos 
+Centros 2 e 3. Tal viés causa desequilíbrios na distribuição que impactariam 
+negativamente o desempenho do modelo, particularmente quando modelos 
+treinados com dados de um centro são aplicados aos dados de outro centro.
+11
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Tabela 7
+Comparação de desempenho com modelos existentes.
+Método Precisão Precisão Recordação/Sensibilidade Pontuação F1 Especificidade
+Modelo CNNT (Proposto)
+Modelo ResNet50 + CBAM (Proposto) 
+CNN (ResNet50) [10] CNN (Inception v3) [
+10] CNN (EfficientNet-b1) [10] CNN 
+(EfficientNet-b2) [10] CNN (EfficientNet-
+b3) [10] YOLOv8s-cls [1CNN [34]
+Rede UNet multisegmentada [
+11] VGG-16 [7]
+DNN [35]
+EfficientNet [11
+CNN [36]
+CNN + SDNN [33] 
+CLSTM [37]
+CNN [38]
+DS-Net [12]
+CNN [39]
+CNN [12]
+ANN [40]
+EfficientNetB7 [41] 
+InceptionResNetV2 [41] 
+NasNetLarge [41] CNN 
+(ResNet50) [41]
+98,54%
+100,00%
+81,0%±4.6
+82,1%±2.9
+83,5%±5.4
+85,3%±5.0
+84,2%±4.0
+∼93,2%
+∼73,4%
+∼97,8%
+∼0,82–0,83
+∼81,0%
+∼76,0%
+97,38%
+∼95,0%
+∼81,0%
+92,20%
+95,10%
+92,40%
+91,20%
+80,00%
+62,77%
+93,29%
+90,91%
+89,83%
+0,9339
+0,9537
+0,76–0,80
+0,77–0,81
+0,79–0,83
+0,82–0,85
+0,81–0,84
+∼0,80–0,83
+∼0,68–0,72
+∼0,93–0,95
+∼0,77–0,80
+∼0,75–0,78
+∼0,70–0,73
+0,969
+∼0,91–0,94
+∼0,76–0,79
+∼0,88–0,90
+0,929
+0,970
+∼0,89–0,91
+∼0,70–0,73
+0,2554
+0,8658
+0,8182
+0,7991
+0,9869
+1,0000
+0,74–0,78
+0,76–0,79
+0,77–0,81
+0,80–0,84
+0,78–0,81
+∼0,85–0,88
+∼0,70–0,74
+∼0,96–0,98
+0,8688
+∼0,77–0,80
+0,79
+0,974
+0,9317
+∼0,74–0,78
+∼0,91–0,93
+0,920
+0,940
+∼0,87–0,90
+0,75
+0,2554
+0,8658
+0,8182
+0,7992
+0,9595
+0,9759
+0,75–0,80
+0,76–0,78
+0,78–0,80
+0,81–0,83
+0,79–0,81
+∼0,82–0,85
+∼0,70–0,73
+∼0,94–0,96
+0,908
+∼0,76–0,79
+∼0,73–0,75
+0,970
+∼0,92–0,93
+∼0,75–0,78
+0,923
+0,922
+0,950
+∼0,88–0,90
+∼0,72–0,74
+∼0,25–0,28
+∼0,86–0,87
+∼0,81–0,82
+∼0,79–0,80
+0,9595
+0,9933
+0,86–0,89
+0,87–0,89
+0,88–0,90
+0,89–0,92
+0,88–0,90
+∼0,89–0,91
+∼0,80–0,83
+∼0,98–0,99
+∼0,79–0,82
+∼0,84–0,87
+0,75
+0,968
+0,961
+∼0,85–0,88
+∼0,91–0,93
+0,961
+∼0,91–0,93
+∼0,90–0,92
+∼0,82–0,85
+∼0,55–0,60
+∼0,88–0,90
+∼0,87–0,89
+∼0,85–0,88
+Tabela 8
+Análise de sensibilidade sob divisões do conjunto de dados por centro, mostrando o desempenho do modelo e a eficiência da inferência.
+Modelo Centro ferroviário Centro de testes Precisão (%) Pontuação F1 Precisão Lembrar Especificidade
+Resnet50 CBAM
+Resnet50 CBAM
+Resnet50 CBAM
+Resnet50 CBAM
+CNNT
+CNNT
+CNNT
+CNNT
+Centralizar tudo
+Centro 1
+Centro 1
+Centro 1
+Centro Tudo
+Centro 1
+Centro 1
+Centro 1
+Centralizar tudo
+Centro 1
+Centro 2
+Centro 3
+Centro Tudo
+Centro 1
+Centro 2
+Centro 3
+97,41
+94,80
+84,60
+89,75
+92,56
+89,15
+76,80
+84,30
+0,9857
+0,9480
+0,8234
+0,8720
+0,9285
+0,8923
+0,7345
+0,8134
+0,9760
+0,9501
+0,8120
+0,8652
+0,9313
+0,8872
+0,7120
+0,8021
+0,9741
+0,9472
+0,8155
+0,8611
+0,9249
+0,8851
+0,7060
+0,8012
+0,9969
+0,9893
+0,8741
+0,9185
+0,9911
+0,9764
+0,8105
+0,8592
+Figura 6.Precisão do modelo em diferentes classes sim.
+12
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+Figura 7. Figura aImagens radiográficas originais;Figura bApresenta os mapas de calor Grad CAM gerados pelo modelo CNNT;Figura cExibe as saídas do Grad CAM do modelo 
+ResNet50 CBAM. Os mapas de calor destacam as regiões espaciais discriminativas de classe nas quais os modelos se concentram durante a inferência ou classificação. As regiões 
+vermelhas e amarelas indicam áreas de maior importância na previsão do modelo.
+Os indicadores de desempenho alcançaram até 100% de precisão na classificação 
+em configurações binárias e um valor de F1-score de 0,9759   na configuração 
+multiclasse. Os resultados comprovam a aplicabilidade clínica da abordagem 
+proposta para auxiliar radiologistas no diagnóstico preciso e oportuno de tumores 
+musculoesqueléticos.
+Notavelmente, o design do sistema otimiza a generalização, a eficiência e a 
+interpretabilidade, sendo, portanto, altamente aplicável em fluxos de trabalho 
+clínicos do mundo real. Com uma ferramenta de apoio à decisão baseada em IA, 
+este esforço possui um imenso potencial para reduzir a carga diagnóstica e 
+melhorar os resultados para pacientes em ambientes de atendimento oncológico. 
+Em atividades futuras, a incorporação de aprendizado federado provavelmente 
+permitirá o treinamento de modelos com preservação da privacidade em diversos 
+centros de saúde e, assim, resolverá o problema de segurança de dados que 
+comumente dificulta a adoção da IA   médica. Além disso, pretendemos pesquisar 
+computação neuromórfica usando Redes Neurais de Disparo (SNNs) para acelerar 
+o consumo de energia e a latência de modelos de classificação em tempo real e 
+permitir a integração em aplicações de diagnóstico em dispositivos móveis e na 
+borda da rede. Esses avanços devem impulsionar a implementação de soluções de 
+IA em larga escala na saúde geral e pediátrica, permitindo intervenções mais 
+precoces com melhor planejamento.
+Referências
+[1] Shunhan Yao, Liang Pan, Qiang Lin, Xiang Liu, Zhexuan Wu, Dongqing Zhang, Um 
+conjunto de dados radiográficos para a classificação, localização e segmentação 
+de tumores ósseos primários, Sci. Data 12 (2025) 181,https://
+pubmed.ncbi.nlm.nih.gov/39820508/.
+[2] Claudio E. von Schacky, Bernhard O. Sabel, Benjamin Schaefgen, Sven Lennartz, Nico 
+Sollmann, Sebastian Ruschke, Jan S. Kirschke, Thomas Baum, Marco 
+Notohamiprodjo, Aprendizado profundo multitarefa para segmentação e 
+classificação de tumores ósseos primários em radiografias, Radiology 300 (2) 
+(2021) 418–427, https://doi.org/10.1148/radiol.2021204531.
+[3] Mateja Napravnik, Mojca Rihtar, Katja Steblovnik, Matic Grošelj, Ivan Štajduhar, Janez 
+Demšar, Building RadiologyNET: Uma abordagem não supervisionada para anotar um 
+banco de dados médico multimodal em grande escala, BioData Min. 17 (2024) 4,https://
+doi.org/10.1186/s13040-024-00373-1.
+[4]GS Lodwick, AJ Wilson, C. Farrell, P. Virtama, FM Smeltzer, F. Dittrich, Estimativa da 
+taxa de crescimento em lesões ósseas: desempenho e erro do observador, 
+Radiology 134 (3) (1980) 585–590.
+[5]WR Reinus, AJ Wilson, B. Kalman, S. Kwasny, Diagnóstico de lesões ósseas focais 
+usando redes neurais, Invest. Radiol. 29 (6) (1994) 606–611.
+[6]BH Do, C. Langlotz, CF Beaulieu, Diagnóstico de tumor ósseo usando um modelo Bayesiano 
+ingênuo de características demográficas e radiográficas, J. Digit. Imaging 30 (2017) 640–
+647.
+[7]L. Huang, W. Xia, B. Zhang, B. Qiu, X. Gao, MSFCN— redes convolucionais totalmente 
+supervisionadas múltiplas para a segmentação de osteossarcoma de imagens de TC, 
+Comput. Methods Programs Biomed. 143 (2017) 67–74.
+[8]Y. He, J. Guo, X. Ding, PMA van Ooijen, Y. Zhang, A. Chen, M. Oudkerk, X. Xie, Rede neural 
+convolucional para prever a recorrência local de tumor de células gigantes ósseas após 
+curetagem com base em imagens de ressonância magnética pré-cirúrgicas, Eur. Radiol. 29 
+(2019) 5441–5451.
+[9]Q. Li, J. Li, Y. Liu, X. Wang, C. Ma, Y. Wang, Rede neural convolucional para prever a 
+recorrência local de tumor de células gigantes ósseas após curetagem com base em 
+imagens de ressonância magnética pré-cirúrgicas, Comput. Methods Programs Biomed. 
+229 (2023) 107390.
+[10]C.-W. Park, et al., Classificação de tumores ósseos no fêmur proximal em radiografias simples 
+baseada em inteligência artificial: desenvolvimento e validação do sistema, PLoS One 17 
+(2022) e0264140.
+[11] N.-T. Do, S.-T. Jung, H.-J. Yang, S.-H. Kim, Modelo seg-unet multinível com imagens de raios X 
+globais e baseadas em patches para detecção de tumor ósseo no joelho, Diagnostics 11 
+(2021) 691,https://doi.org/10.3390/diagnostics11040691.
+[12]HB Arunachalam, et al., Avaliação de tumores viáveis   e necróticos a partir de imagens de lâminas inteiras de 
+osteossarcoma usando modelos de aprendizado de máquina e aprendizado profundo, PLoS
+Um 14 (2019) e0210706.
+[13] Autor(es), Título do conjunto de dados ou resultado da pesquisa, Figshare, 2025,http://
+dx.doi.org/10.6084/m9.figshare.27865398.v1.
+[14] Antonio Torralba, Bryan C. Russell, Jenny Yuen, Labelme: Anotação de imagem 
+online e aplicações, Proc. IEEE 98 (8) (2010) 1467–1484,http://dx.doi.org/ 10.1109/
+JPROC.2010.2050290.
+[15]J. Zhang, Y. Li, M. Wang, Segmentação de lesões em tempo real usando arquiteturas 
+baseadas em YOLO em imagens médicas multicêntricas, IEEE Trans. Med. Imaging 42 (5) 
+(2023) 1234–1246.
+[16]S. Kumar, A. Chen, L. Nguyen, Estruturas unificadas de detecção e segmentação para 
+diagnóstico médico: um estudo sobre YOLOv8s-seg, Med. Image Anal. 88 (2024) 
+102743.
+[17]K. Dabov, A. Foi, V. Katkovnik, K. Egiazarian, Remoção de ruído de imagem por filtragem 
+colaborativa esparsa no domínio da transformação 3D, IEEE Trans. Image Process. 16 (8) 
+(2007) 2080–2095.
+[18]H. Zhang, J. Sun, X. Wang, Redução de ruído em TC de baixa dose via BM3D e estrutura 
+híbrida de aprendizado profundo, IEEE Trans. Med. Imaging 42 (1) (2024) 145–157.
+Declaração de contribuição de autoria CRediT
+Syed Mohsin Bokhari:Redação do rascunho original, Visualização, 
+Software, Curadoria de dados, Metodologia, Análise formal, Investigação, 
+Conceitualização.Muhammad Shafi:Redação, revisão e edição, Validação, 
+Supervisão, Recursos, Administração de projetos, Investigação, Análise 
+formal.
+Declaração sobre IA generativa e tecnologias assistidas por IA no 
+processo de escrita
+Durante a preparação deste trabalho, os autores utilizaram o chatgpt para 
+aprimorar a linguagem. Após a utilização dessa ferramenta, os autores revisaram 
+e editaram o conteúdo conforme necessário e assumem total responsabilidade 
+pelo conteúdo da publicação.
+Declaração de conflito de interesses
+Os autores declaram não possuir quaisquer interesses financeiros 
+ou relações pessoais que possam ter influenciado o trabalho 
+apresentado neste artigo.
+Disponibilidade de dados
+Os dados serão disponibilizados mediante solicitação.
+13
+SM Bokhari e M. Shafi Processamento e Controle de Sinais Biomédicos 113 (2026) 108888
+[19]Y. Liu, Z. Chen, P. Li, Aprendizado profundo assistido por BM3D para aprimoramento de 
+imagem histopatológica, IEEE J. Biomed. Heal. Inform. 28 (2) (2024) 312–324.
+[20]X. Wang, L. Zhao, M. Feng, Aprimoramento de imagem de fundo de retina usando BM3D 
+para detecção aprimorada de doenças, IEEE Trans. Biomed. Eng. 71 (4) (2023) 896–908.
+[21]T. Chen, Y. Guo, R. Han, Classificação de ressonância magnética cerebral resistente a ruído usando pré-
+processamento baseado em BM3D e recursos de CNN, IEEE Trans. Neural Netw. Learn. Syst. 35 (3) 
+(2024) 456–470.
+[22]NV Chawla, KW Bowyer, LO Hall, WP Kegelmeyer, SMOTE: Técnica sintética de 
+sobreamostragem de minorias, J. Artificial Intelligence Res. 16 (2002) 321–357.
+[23]Y. Zhao, J. Wang, X. Liu, Aumento de dados baseado em SMOTE para classificação de 
+imagens dermatológicas desbalanceadas, IEEE Trans. Med. Imaging 42 (1) (2024) 
+112–123.
+[24]H. Lee, M. Kim, S. Park, Aprendizado profundo para anomalias craniofaciais pediátricas: uma 
+abordagem de conjunto de dados balanceado usando SMOTE, IEEE J. Biomed. Heal. Inform. 27 (3) 
+(2023) 456–468.
+[25]A. Gupta, RK Sharma, P. Singh, Abordando o desequilíbrio de classes na classificação de doenças raras 
+usando SMOTE e aprendizado profundo, IEEE Trans. Comput. Biol. Bioinform.
+20 (5) (2023) 789–799.
+[26]T. Nguyen, D. Tran, B. Hoang, Geração de dados sintéticos para detecção de anomalias 
+congênitas: uma abordagem híbrida SMOTE-GAN, IEEE Trans. Neural Netw. Learn. Syst.
+35 (2) (2024) 245–258.
+[27]S. Wang, X. Liu, Y. Zhang, H. Li, Aprendizado profundo com SMOTE para classificação de 
+doenças raras, IEEE Trans. Med. Imaging 40 (9) (2021) 2282–2294.
+[28]M. Fernández-Delgado, JC Riquelme, J. Pardo, Benchmarking de variantes SMOTE para 
+aprendizado profundo em imagens médicas, Pattern Recognit. 122 (2022) 108294.
+[29]G. Douzas, F. Bacao, F. Last, Melhorando o aprendizado desbalanceado por meio de um método 
+heurístico de sobreamostragem baseado em K-means e SMOTE, Inform. Sci. 465 (2018) 1–20.
+[30]J. Cohen, Um coeficiente de concordância para escalas nominais, Educ. Psychol. 
+Meas. 20 (1) (1960) 37–46.
+[31]B. Wikeckowska, KB Kubiak, P. Jóźwiak, W. Moryson, B. Stawińśka-Witoszyńska, 
+Coeficiente Kappa de Cohen como medida para avaliar a melhoria da classificação 
+após a adição de um novo marcador a um modelo de regressão,
+Internacional J. Meio Ambiente. Res. Cura Pública. 19 (16) (2022) 10213, MDPI.
+[32]D. Chicco, MJ Warrens, G. Jurman, O coeficiente de correlação de Matthews (MCC) é mais 
+informativo do que o Kappa de Cohen e a pontuação de Brier na avaliação de classificação 
+binária, IEEE Access 9 (2021) 78368–78381.
+[33]Y. Pi, Z. Zhao, Y. Xiang, Y. Li, H. Cai, Z. Yi, Diagnóstico automatizado de metástase óssea 
+baseado em varreduras ósseas multiview usando redes neurais profundas aumentadas 
+por atenção, Med. Image Anal. 65 (2020) 101784.
+[34]L.-W. Shang, et al., Imagem de fluorescência e espectroscopia Raman aplicadas ao diagnóstico preciso 
+do câncer de mama com algoritmos de aprendizado profundo, Biomed.
+Opt. Express 11 (2020) 3673–3683.
+[35]P. Yin, et al., Modelos radiômicos baseados em aprendizado de máquina e aprendizado profundo para 
+predição pré-operatória de tumores sacrais benignos e malignos, Front. Oncol. 10 (2020) 564725.
+[36]N. Papandrianos, E. Papageorgiou, A. Anagnostis, K. Papageorgiou, Classificação de 
+metástase óssea usando imagens de corpo inteiro de pacientes com câncer de próstata 
+com base na aplicação de redes neurais convolucionais, PLoS One 15 (2020) e0237213.
+[37]N. Lang, et al., Diferenciação de metástases espinhais originadas de câncer de pulmão e 
+outros usando radiômica e aprendizado profundo baseado em DCE-MRI, Magn. Reson. 
+Imaging 64 (2019) 4.
+[38]S. Masoudi, et al., Estadiamento de lesões ósseas baseado em aprendizado profundo a partir de 
+tomografias computadorizadas, IEEE Access 9 (2021) 87531–87542.
+[39]J. Schmidhuber, Aprendizado profundo em redes neurais: Uma visão geral, Neural Netw. 61 
+(2015) 85–117.
+[40]CE von Schacky, NJ Wilhelm, VS Schäfer, Y. Leonhardt, M. Jung, PM Jungmann, MF 
+Russe, SC Foreman, FG Gassert, FT Gassert, et al., Desenvolvimento e avaliação de 
+modelos de aprendizado de máquina baseados em radiômica de raios X para a 
+classificação e diferenciação de tumores ósseos malignos e benignos, Eur. Radiol. 
+32 (9) (2022) 6247–6257.
+[41] RF Meem, KT Hasan, Detecção de tumores de osteossarcoma usando modelos de aprendizado por 
+transferência, 2023, preprint do arXivarXiv:2305.09660.
+[42]Z. Gu, J. Cheng, H. Fu, K. Zhou, H. Hao, Y. Zhao, T. Zhang, S. Gao, J. Liu, CE-net: Rede de 
+codificação de contexto para segmentação de imagens médicas 2D, IEEE Trans. Med. 
+Imaging 38 (10) (2020) 2281–2292.
+[43]T. Zhou, M. Ruan, M. Canu, H. Zhang, UNet++ com CBAM para segmentação precisa 
+de fígado e tumor em imagens de TC, Comput. Biol. Med. 130 (2021) 104200.
+[44]A. Qayyum, MA Khan, SA Raza, MS Anwar, MA Khan, S. Lee, Fusão de imagens 
+médicas multimodais usando redes neurais convolucionais: Uma revisão, IEEE 
+Access 9 (2021) 91041–91073.
+[45]Y. Yang, J. Lin, J. Wu, Y. Yu, L. Zhang, Generalizando modelos profundos para mudança de domínio via 
+aprendizado de características invariantes por classe em imagens médicas, IEEE Trans.
+Med. Imaging 41 (4) (2022) 888–901.
+14

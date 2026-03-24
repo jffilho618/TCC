@@ -1,0 +1,1017 @@
+ONCOLOGY 
+ @BoneJointRes 
+Development and evaluation of deep 
+learning models for detecting and classifying 
+various bone tumours in full-field limb 
+radiographs using automated object 
+detection models 
+From Kyushu University, 
+Fukuoka, Japan 
+Cite this article: 
+Bone J
+oint Res 2025;14(9): 
+760–769. 
+DOI: 10.1302/2046-3758. 
+149.BJR-2024-0505.R1 
+Correspondence should be 
+sent t
+o Makoto Endo endo.m. 
+a40@m.kyushu-u
+.ac.jp 
+M. Yamana,1,2 R. Bise,2 M. Endo,1 T. Matsunobu,3 N. Setsu,4 N. Yokoyama,1 Y. Nakashima,1 S. 
+Uchida2 
+1Department of Orthopaedic Surgery, Graduate School of Medical Sciences, Kyushu 
+University, Fukuoka, Japan 
+2Department of Advanced Information Technology, Kyushu University, Fukuoka, Japan 
+3Department of Orthopaedic Surgery, Kyushu Rosai Hospital, Kitakyushu, Japan 
+4Department of Orthopaedic Surgery, National Hospital Organization Kyushu Cancer Center, 
+Fukuoka, Japan 
+Aims 
+We aim to develop a fully automated deep-learning model to detect and classify benign/ 
+malignan
+t bone tumours in full-field limb radiographs using an object detection model. 
+The secondary aim is to identify differences in classification characteristics between the 
+developed automated model, three orthopaedic oncologists, and three general orthopaedic 
+surgeons. 
+Methods 
+This retrospective analysis included 642 limb bone tumours with 40 diagnoses confirmed 
+pathologically fr
+om three institutions (378 benign, 264 malignant including intermedi
+ate types). We employed end-to-end object Detection with transformers with Improved 
+deNoising anchOr boxes (DINO) and You Only Look Once (YOLO) models. We performed 
+five-fold cross validation on the collected radiographs, using the training data to train the 
+models, validation data to optimize the models’ parameters, and independent test data 
+for final performance evaluation. Firstly, we confirmed DINO achieves a higher detection 
+rate than YOLO. Secondly, we compared the classification performance of DINO with those 
+of doctors, using various metrics such as accuracy, sensitivity, specificity, precision, and 
+F-measure. 
+-
+Results 
+The DINO model achieved a higher mean tumour detection rate (85.7% (95% CI 81.5 to 
+89.8)) than the YOL
+O model (80.1% (95% CI 77.2 to 82.9)). For the evaluation of classification 
+performance, we used 113 cases that DINO detected out of 128 randomly selected cases as 
+the evaluation test set. The accuracy and sensitivity of the DINO model, as a superior model, 
+were significantly higher than those of general orthopaedic surgeons. The DINO model 
+correctly classified 78.6% (22 out of 28 cases) of the challenging cases that two or more 
+doctors misclassified. However, DINO’s diagnostic errors primarily occurred with tumours 
+that were diagnostically challenging for orthopaedic oncologists or present in unusual sites. 
+760 
+Conclusion 
+The DINO model automatically detects bone tumours better than the YOLO model, and may assist doctors in detecting tumours 
+and classifying malignant/benign bone tumours in clinical practice. 
+Article focus 
+• Developing a deep learning model to detect and classify 
+bone tumours in limb radiographs automatically. 
+• Comparing transformer-based and convolutional neural 
+network (CNN)-based object detection models in bone 
+tumour detection. 
+• Evaluating the model’s diagnostic accuracy through 
+comparison with three orthopaedic oncologists and three 
+general orthopaedic surgeons. 
+Key messages 
+• The transformer-based Detection with transformers with 
+Improved deNoising anchOr boxes (DINO) model demon
+strated superior performance over the CNN-based You Only 
+Look Once (YOLO) model in bone tumour detection on 
+limb radiographs. 
+• The model achieved diagnostic accuracy exceeding all 
+general orthopaedic surgeons and some orthopaedic 
+oncologists in tumour classification. 
+• This AI system has demonstrated potential as a clinical 
+decision support tool to reduce misdiagnosis of bone 
+malignancies. 
+-
+Strengths and limitations 
+• The study demonstrated the superiority of the transformer
+based DINO model in bone tumour detection and classifi
+cation. 
+• This study validated the results using state-of-the-art 
+object detection models on the same bone tumour dataset. 
+Furthermore, the proposed method demonstrated a 
+statistically significant superiority compared to the other 
+approach. 
+• The study was limited by its relatively small sample size of 
+642 cases and the exclusion of non-tumour conditions such 
+as degenerative diseases. 
+-
+-
+Introduction 
+Early and pr
+ecise identification of bone tumours markedly 
+impacts the prognostic outcome. Osteosarcoma, the most 
+common primary malignant bone tumour, has a five-year 
+survival rate of 60% to 80% in patients without pulmonary 
+metastasis at initial diagnosis.
+1–3 Although osteosarcoma and 
+Ewing’s sarcoma are treated with chemotherapy, 4  surgical 
+resection is essential for the curative treatment of malignant 
+bone tumours.
+5 The prognosis of patients who are difficult to 
+resect is inferior.6 
+Orthopaedic surgeons must not overlook a malignant 
+tumour in a radiograph. Radiography is initially performed 
+as a simple screening test, and can provide information on 
+the presence or absence of tumours and the classification 
+of benign or malignant.
+7,8 However, it is difficult for general 
+orthopaedic surgeons to classify bone tumours because there 
+are many types,
+9 and primary malignant bone tumours are 
+rare, accounting for only 0.2% of all tumours. 10–12 In addition, 
+the rarity and diversity of these make it difficult for general 
+orthopaedic surgeons to gain sufficient experience. 
+Automated bone tumour diagnostic models using 
+AI have been developed to classify benign and malignant 
+bone tumours using radiographs.
+13–16 In particular, several 
+papers have reported that their methods outperformed the 
+accuracy of radiologists, general orthopaedic surgeons, and 
+orthopaedic oncologists.
+13,14 However, in many studies on 
+deep learning models for bone tumours, the images used 
+were limited to specific radiographs (e.g. only knee or hip) 
+or manually cropped images of the tumours.
+13,14,16,17 To solve 
+these limitations, AI-based object detection models, such as 
+Detectron2 and You Only Look Once (YOLO) models, were 
+used for automatically detecting and classifying bone tumours 
+on full-field radiographs of various body parts.
+18,19 The YOLO 
+model was promising because of its higher detection accuracy 
+than other models such as Detectron2. However, even the 
+YOLO model did not perform well in classifying malignant 
+tumours. This performance limitation arises from its model 
+architecture; specifically, YOLO is based on a convolutional 
+neural network (CNN), which is a popular AI model for image 
+classification and is also widely used for medical images.
+20–26 
+CNN extracts local features and aggregates them to make 
+its classification or detection without evaluating the relation
+ship among distant local parts.
+27 In contrast, the bone tumour 
+detection and classification task requires more contextual (i.e. 
+non-local) information, which is available by observing and 
+evaluating the relationship among distant parts in full-field 
+radiograph images. 
+-
+To overcome these limitations, we propose a new 
+automatic bone tumour det
+ection and classification model. 
+The model is based on end-to-end object Detection with 
+transformers with Improved deNoising anchOr boxes (DINO),
+28 
+which is a state-of-the-art object detection model. DINO 
+employs a Transformer architecture. Unlike CNN, the Trans
+former has an attention mechanism that evaluates the 
+relationship among distant image parts,
+27,29 and may be able 
+to learn whole bone shapes, such as those in limb radiographs. 
+Since tumour locations and types are often dependent on 
+bone types and their whole shapes, the Transformer architec
+ture is expected to be useful in detecting a bone tumour and 
+classifying whether the bone tumour is malignant or benign. 
+-
+-
+In this paper, using radiographs of patients with various 
+bone tumours from three institutions with bone tumour 
+departments, we first show that our DINO-based model can 
+detect bone tumours more accurately than YOLO. We then 
+show that our model can classify bone tumours with accu
+racy that is comparable to or even higher than orthopaedic 
+oncologists or general orthopaedic surgeons. These positive 
+results prove that both tumour detection and classification 
+tasks need wider views to capture non-local relationships in 
+each full-field radiograph image. 
+-
+Development and evaluation of deep learning models for detecting and classifying various bone tumours 
+M. Yamana, R. Bise, M. Endo, et al 
+761 
+  
+Methods 
+Dataset 
+The Institutional Review Board of Kyushu University Hospital 
+(No.22316-00, No.22089-00) approved this study. Cases with 
+a radiograph of the limb with a visible bone tumour at the 
+initial visit and with a definitive pathological diagnosis were 
+included in our dataset (cases with multiple bone tumours 
+were excluded). The cases were collected from three tertiary 
+referral centres that have departments specializing in bone 
+tumour treatment because these cases included a wide range 
+of bone tumours, including both common and rare types. The 
+patient population encompasses various age groups, tumour 
+locations, and disease severities, ensuring the representative-
+ness of the general population of bone tumour patients 
+requiring treatment in Japan. Table I shows the details of 
+the dataset. We divided this dataset into five subsets for 
+five-fold cross-validation in the later experiment. This table 
+also details the evaluation test set; we compare the classifica
+tion performance of an object detection model with those of 
+orthopaedic oncologists and general orthopaedic surgeons. 
+-
+This retrospective study included 642 cases that 
+underw
+ent biopsy or surgical resec
+tion from three hospi
+tals
+, comprising 40 bone tumour types (19 benign, four 
+intermediate, and 17 malignant) based on pathological 
+diagnoses: Kyushu University Hospital (Fukuoka, Japan), 
+Kyushu Rosai Hospital (Kitakyushu, Japan), and the National 
+Hospital Organization Kyushu Cancer Center (Fukuoka, 
+Japan). The pathological diagnosis was established by 
+experienced musculoskeletal pathologists (see Acknowledge
+ments) following WHO classification criteria.
+9 Only cases with 
+conclusive pathological diagnoses were included in the study. 
+Kyushu University Hospital provided 432 cases (252 benign, 38 
+intermediate, and 142 malignant) between February 2006 and 
+December 2022. The National Hospital Organization Kyushu 
+Cancer Center provided 64 cases (22 benign, 20 intermediate, 
+and 22 malignant) from January 2006 to November 2021. 
+Kyushu Rosai Hospital provided 146 cases (104 benign, four 
+intermediate, 38 malignant) between April 2016 and Decem
+ber 2022. The cases were categorized into 378 benign and 
+264 malignant. The intermediate types were included in the 
+malignant types because a biopsy is clinically required. We 
+obtained 1,129 radiographs from these cases. The radiographs 
+included the referring hospital’s radiographs, radiographs at 
+the initial visit, and preoperative radiographs. 
+-
+-
+-
+In this study, to detect the tumour’s location and 
+accur
+ately classify the tumour, it was necessary t
+o correctly 
+annotate each identified lesion by labelling a bounding 
+box (a rectangular frame surrounding the entire tumour) 
+and assigning the appropriate benign or malignant classifica
+tion. First, one orthopaedic surgeon (MY, 10 years of experi
+ence) labelled the bounding boxes on the radiographs using 
+LabelMe (an open-source image-labelling programme based 
+on Python).
+30 Second, two experienced orthopaedic oncolo
+gists (TH (see Acknowledgements) and ME; 13 and 23 years 
+of experience, respectively) checked and revised the bounding 
+boxes. These annotators were independent of the orthopae
+dic oncologists (AN and SI (see Acknowledgements), NY) 
+and general orthopaedic surgeons (ET, RH, KM (see Acknowl
+edgements for all)) who later participated in the perform
+ance comparison study between DINO and doctors. Third, for 
+each identified tumour, the binary ground truth (benign or 
+-
+-
+-
+-
+-
+-
+malignant) was assigned based on pathological diagnoses of 
+specimens obtained through sur
+gical resection or biopsy. 
+Object detec
+tion models and training procedure 
+Figure 1 illustrates this method’s overview. As preprocessing, 
+the input images were resized to 512 by 512 pixels, and the 
+left-side images were flipped to the right, except for the hip 
+images. The images were then fed into the object detec
+tion models. The models automatically detected tumours 
+as bounding boxes and classified them as benign or malig
+nant. The DINO model
+28 and the YOLO-v8x model 31  were 
+used to detect and classify tumours because the models are 
+object detection models with excellent performance. Both 
+DINO and YOLO models are open-source frameworks that 
+are freely available for implementation via GitHub. These 
+models were selected to address two clinical challenges: the 
+difficulty orthopaedic surgeons face in detecting subtle bone 
+tumours on radiographs, and the limited experience many 
+general orthopaedic surgeons have in differentiating between 
+benign and malignant tumours. The DINO model is based 
+on the so-called Transformer,
+29 which employs the atten
+tion mechanism. Roughly speaking, the attention mechanism 
+can calculate (adaptively weighted) spatial correlation over 
+the whole input image and thus captures its global image 
+features.
+32 Consequently, the DINO model has a potential of 
+recognizing age-related bone structure variations and tumour 
+predilection sites by analyzing relationships between local 
+tumour features and distant anatomical landmarks. In contrast, 
+the YOLO model is based on a CNN, which employs layered 
+convolution operations to aggregate local information and 
+therefore is suitable for extracting local features.
+27 “v8x” is the 
+recent version of YOLO models used in related studies and 
+other medical field studies.
+19,33–35 By training these models on 
+full-field radiographs, we developed systems that align with 
+clinical practice to assist doctors in making faster and more 
+accurate diagnostic decisions. For training and evaluating 
+these object detection models, we implemented a five-fold 
+cross-validation. The 642 cases in the dataset were randomly 
+divided into five subsets (Fold0-Fold4), ensuring no overlap 
+across the different subsets. Next, each subset was used as 
+a test dataset, and the cases in the other four subsets were 
+randomly divided into validation (20%) and training (80%) 
+sets. Each test dataset included only radiographs obtained at 
+the initial visit. For each fold of five-fold cross-validation, we 
+trained the models using training data, optimized the models’ 
+hyper-parameters (especially, training epochs, that is, the 
+timing to stop training) using validation data, and performed 
+the final evaluation using test data. Through this cross-vali
+dation process, performance results were obtained from five 
+different model evaluations. The details of the number of 
+cases and images used are shown in Supplementary Figure 
+a. We used data augmentation (cropping and rotation) during 
+training to compensate for the limited data and variations 
+in bone positioning and angular differences during radiolog
+ical imaging. Examples of image rotation and cropping for 
+data augmentation are shown in Supplementary Figure b. For 
+technical details on object detection models, see Supplemen
+tary Methods.
+30,31,36–38 
+-
+-
+-
+-
+-
+-
+Bone & Joint Research Volume 14, No. 9 September 2025 762 
+Table I. Patients’ characteristics. (Continued) 
+Characteristic All cases E valuation test set 
+Benign 378 62 
+Mean age, yrs (SD) 28 (19) 
+Sex (female), n (%) 168 (44) 
+Tumour t
+ypes, n (%) 
+Enchondroma 98 (25.9) 16 
+Osteochondroma 60 (15.9) 7 
+Simple bone cyst 47 (12.4) 10 
+Osteoid osteoma 40 (10.6) 6 
+Fibrous dysplasia 31 (8.2) 9 
+Non-ossifying fibroma 22 (5.8) 4 
+Chondroblastoma 19 (5.0) 5 
+Intraosseous ganglion 9 (2.4) 1 
+Bizarre parosteal osteochon-
+dromatous proliferation 8 (2.1) 
+Osteofibrous dysplasia 7 (1.9) 2 
+Langerhans cell histiocytosis 7 (1.9) 2 
+Lipoma of bone 6 (1.6) 
+Periosteal chondroma 6 (1.6) 
+Subungual exostosis 5 (1.3) 
+Aneurysmal bone cyst 5 (1.3) 
+Chondromyxoid fibroma 3 (0.8) 
+Haemangioma of bone 2 (0.5) 
+Epidermoid cyst 2 (0.5) 
+Glomus tumour 1 (0.3) 
+Intermediate 62 15 
+Mean age, yrs (SD) 38 (19) 
+Sex (female), n (%) 34 (55) 
+Tumour types, n (%) 
+Giant cell tumour of bone 56 (90.3) 12 
+Osteoblastoma 3 (4.8) 1 
+Desmoplastic fibroma 2 (3.2) 1 
+Fibrocartilaginous mesenchy
+moma 
+-
+1 (1.6) 1 
+Malignant 202 36 
+Mean age, yrs (SD) 45 (24) 
+Sex (female), n (%) 87 (42) 
+T
+umour types, n (%) 
+Osteosarcoma 70 (34.7) 13 
+Metastatic bone tumour 60 (29.7) 12 
+Chondrosarcoma 20 (9.9) 5 
+Malignant lymphoma 11 (5.4) 1 
+Malignant giant cell tumour 
+of bone 7 (3.5) 1 
+(Continued) 
+Char
+acteristic All cases Evaluation test set 
+Leiomyosarcoma of bone 5 (2.5) 1 
+Ewing's sar
+coma 5 (2.5) 2 
+Dedifferen
+tiated chondrosar
+coma 
+-
+5 (2.5) 1 
+Plasmac
+ytoma of bone 5 (2.5) 
+Mesenchymal chondrosar
+coma 
+-
+3 (1.5) 
+Per
+iosteal chondrosarcoma 3 (1.5) 
+Adamantinoma 2 (1.0) 
+Undifferentiat
+ed pleomorphic 
+sarcoma 2 (1.0) 
+Malignant myoepithelioma 1 (0.5) 
+Epithelioid hemangioendo
+thelioma 
+-
+1 (0.5) 
+Clear cell chondrosarc
+oma 1 (0.5) 
+Undifferentiated small round 
+cell sarcoma 1 (0.5) 
+Evaluation methods of differences in performance between 
+DINO and YOLO 
+The detection performance of the DINO model was com
+pared with that of the YOLO-v8x to confirm its superiority 
+to the YOLO-v8x. We used several metrics to evaluate the 
+tumour detection performance: overall detection rate, those 
+for benign and malignant tumours, and mean Intersection 
+over Union (IoU). For each input image, the models output 
+candidate bounding boxes, their classes (benign or malig
+nant), and their corresponding confidence scores. We selected 
+the bounding box with the highest confidence score as the 
+final estimation result of the models. The detection rate was 
+then calculated as the percentage of cases that were success
+fully detected in the test dataset. We considered the detec
+tion successful if the IoU exceeded a threshold of 0.1. This 
+threshold was used because a 10% overlap with the actual 
+region is sufficient for orthopaedic surgeons to localize the 
+proper area. 
+-
+-
+-
+-
+Evaluation methods of differences in performance bet
+ween 
+DINO and doctors 
+To quantify the clinical efficacy of the DINO model, we 
+compared its tumour classification performance with those of 
+three experienced orthopaedic oncologists (Dr. SA, Dr. SB, and 
+Dr. SC; 17, 12, and 18 years of experience, respectively) and 
+three general orthopaedic surgeons (Dr. GA, Dr.GB, and Dr. GC; 
+10 years of experience). 
+We used several metrics to evaluate tumour classifica
+tion performance: accuracy, sensitivity, specificity, precision, 
+and F-measure, which were calculated using scikit-learn.
+39 
+Note that these metrics were assessed using the evaluation 
+test set, which included the successful detection cases of the 
+superior model’s Fold1-test set. This set was used because the 
+superior model achieved a slightly better tumour detection 
+-
+Development and evaluation of deep learning models for detecting and classifying various bone tumours 
+M. Yamana, R. Bise, M. Endo, et al 
+763 
+  
+rate among the five subsets. Accuracy is calculated as the 
+number of correct classifications divided by the number of 
+evaluated cases. Sensitivity is the rate of tumours predicted to 
+be malignant out of the total number of malignant tumours. 
+Specificity is the rate of tumours predicted to be benign out 
+of the total number of benign tumours. Precision is the rate 
+of tumours that are actually malignant out of the tumours 
+predicted to be malignant. F-measure is the harmonic mean 
+between precision and sensitivity. 
+Fig. 1 
+Overview of object detection models. 
+Fig. 2 
+Correct predictions by the Detection with transformers with Improved deNoising anchOr boxes (DINO) model. The blue bounding box is a ground-
+truth bounding box, and the red bounding box is a predicted bounding box. a) Periosteal chondroma case (79-year-old female), b) non-ossifying 
+fibroma case (12-year-old male), c) giant cell tumour of bone case (53-year-old male), and d) Ewing’s sarcoma case (17-year-old male). All radiographs 
+were anteroposterior views obtained at the initial visit. 
+Statistical analysis 
+T
+he statistical tests of the evaluation metric scores were 
+performed using the JMP ver.17 (SAS Institute, USA). A 
+Mann-Whitney U test or paired t-test were used to analyze 
+the difference in continuous variables of tumour sizes and 
+the models’ detection rates. The McNemar test was used to 
+compare the classification performance. The level of signifi
+cance was set at p < 0.05. 
+-
+Bone & Joint Research Volume 14, No. 9 September 2025 764 
+Fig. 3 
+Incorrect predictions by the DINO model. The blue bounding box is a ground-truth bounding box, and the red bounding box is a predicted bounding 
+box. a) Osteoid osteoma case (32-year-old female), b) subungual exostosis case (13-year-old male). All radiographs were anteroposterior views 
+obtained at the initial visit. 
+Results 
+Detection performance evaluations of DINO versus YOLO 
+Table II shows the tumour detection rates achieved by the 
+object detection models. The DINO model showed better 
+detection performance than the YOLO model (85.7% (95% 
+CI 81.5 to 89.8) vs 80.1% (95% CI 77.2 to 82.9); p = 0.014, 
+paired t-test). In particular, the DINO model outperformed the 
+YOLO model in the detection rate of malignant tumours in all 
+folds. Figure 2 shows the results of the successfully detected 
+and classified tumours by the DINO model. Figure 3  illustrates 
+examples of the unsuccessfully detected results predicted by 
+the DINO model. 
+The object detection models had a mean detection 
+rate for benign tumours that was inferior to that f
+or malig
+nant tumours. The bounding box area% of benign tumours 
+was significantly smaller than that of malignant tumours (p < 
+0.001, Mann-Whitney U test). The term “bounding box area %” 
+is the area ratio of the ground-truth bounding box of a tumour 
+over the whole image. 
+-
+Classification performance evaluations 
+Table III
+ shows classification results for the DINO model, as 
+a superior model, three orthopaedic oncologists, and three 
+general orthopaedic surgeons. The classification performance 
+of the DINO model was higher than those of general ortho
+paedic surgeons and comparable to those of oncologists. The 
+DINO model showed significantly higher accuracy than Dr. 
+GA and Dr. GC of general orthopaedic surgeons (77.0% vs 
+65.5% and 63.7%; p = 0.016 and 0.031). The sensitivity of the 
+DINO model was significantly higher than that of Dr. SA of the 
+orthopaedic oncologists and Dr. GA, Dr. GB, and Dr. GC of the 
+general orthopaedic surgeons (84.3% vs 58.8%, 49.0%, 64.7%, 
+and 62.7%; p = 0.003, < 0.001, 0.012, and 0.018, McNemar test). 
+There were no statistically significant  differences between the 
+specificity of the DINO model and that of Dr. SA-C and Dr. 
+GA-C (71.0% vs 83.9%, 82.3%, 74.2%, 79.0%, 74.2%, and 64.5%; 
+-
+p = 0.059, 0.109, > 0.999, 0.467, 0.827, and 0.414, McNemar 
+test). T
+he DINO scored the second highest in F-measure (76.8% 
+for the DINO model and 79.3% f
+or Dr. SC, an orthopaedic 
+oncologist), surpassing all general orthopaedic surgeons. 
+In some challenging malignant tumours that were 
+incorrectly classified by two or more doctors, the DINO model 
+correctly classified such problematic cases, achieving a correct 
+classification rate of 78.6% (22 out of 28 tumours) (Supplemen
+tary Table i). The DINO model also correctly classified 62.5% (5 
+out of 8) of the malignant tumours misclassified by all general 
+orthopaedic surgeons. Furthermore, the DINO model correctly 
+classified 75.0% (18 out of 24) of malignant tumours that 
+were misclassified by one or more orthopaedic oncologists. 
+In contrast, the DINO model was incorrect in only one of the 
+cases, even though all the doctors made the correct malignant 
+classification. 
+-
+Discussion 
+In this study
+, we first developed deep learning models 
+for bone tumour det
+ection and classification of benign 
+and malignant tumours using the Transformer-based object 
+detection models. This is the first study to establish 
+the Transformer-based model to detect and classify malig
+nant/benign bone tumours and to compare the accuracy of 
+different architecture-based object detection models. Due to 
+the Transformer’s ability to extract features by considering 
+the relationships across the entire image, the DINO model 
+had significantly higher detection rates than the YOLO-v8x 
+model (85.7% vs 80.1%; p = 0.014). The DINO model obvi
+ously showed higher detection rates, especially for malignant 
+tumours (89.0% vs 81.1%). 
+-
+-
+Notably, the DINO model’s classification accuracy 
+score surpassed those of all general orthopaedic surgeons. 
+Misdiagnosis of malignant tumours is disadvantageous to 
+patients, but the DINO model showed a significantly higher 
+sensitivity than that of one orthopaedic oncologist and three 
+Development and evaluation of deep learning models for detecting and classifying various bone tumours 
+M. Yamana, R. Bise, M. Endo, et al 
+765 
+  
+general orthopaedic surgeons. Additionally, the F-measure 
+score of the DINO was the second highest among the model 
+and all six doctors. Interestingly, the DINO model correctly 
+classified some challenging cases that two or more doctors 
+misclassified. Furthermore, only two cases were misclassified 
+by the DINO, with all doctors getting them right. Thus, the 
+DINO model may assist doctors in diagnosing tumours and 
+reduce the risk of misclassification by them. 
+Table II.  DINO and YOLO models' detection rates for all test sets. 
+Tumour 
+type 
+DINO model YOLO model 
+Fold 0 Fold 1 Fold 2 Fold 3 Fold 4 Mean Fold 0 Fold 1 Fold 2 Fold 3 Fold 4 Mean 
+All 
+87.6% 
+(113/129) 
+88.3% 
+(113/128) 
+88.3% 
+(113/128) 
+81.3% 
+(104/128) 
+82.9% 
+(107/129) 
+85.7% 
+(550/642) 
+81.4% 
+(105/129) 
+78.9% 
+(101/128) 
+76.6% 
+(98/128) 
+82.0% 
+(105/128) 
+81.4% 
+(105/129) 
+80.1% 
+(514/642) 
+Benign 
+84.4% 
+(65/77) 
+83.8% 
+(62/74) 
+85.5% 
+(65/76) 
+81.3% 
+(61/75) 
+81.6% 
+(62/76) 
+83.3% 
+(315/378) 
+84.4% 
+(65/77) 
+74.3% 
+(55/74) 
+76.3% 
+(58/76) 
+78.7% 
+(59/75) 
+82.9% 
+(63/76) 
+79.4% 
+(300/378) 
+Malignant 
+92.3% 
+(48/52) 
+94.4% 
+(51/54) 
+92.3% 
+(48/52) 
+81.1% 
+(43/53) 
+85.0% 
+(45/53) 
+89.0% 
+(235/264) 
+76.9% 
+(40/52) 
+85.2% 
+(46/54) 
+76.9% 
+(40/52) 
+86.8% 
+(46/53) 
+79.2% 
+(42/53) 
+81.1% 
+(214/264) 
+Mean IoU 0.56 0.55 0.57 0.55 0.52 0.55 0.58 0.53 0.52 0.57 0.57 0.55 
+DINO, Detection with transformers with Improved deNoising anchOr boxes; IoU, Intersection over Union; YOLO, You Only Look Once. 
+Table III. Classification performance of the DINO model, three orthopaedic onc
+ologists, and three general orthopaedic surgeons in the evaluation test 
+set. 
+Evaluation 
+metric DINO Dr. SA Dr. SB Dr. SC Dr. GA Dr
+. GB Dr. GC 
+Accuracy 77.0% (87/113) 72.6% (82/113) 77.0% (87/113) 79.6% (90/113) 65.5% (74/113) 69.9% (79/113) 63.7% (72/113) 
+Sensitivity 84.3% (43/51) 58.8% (30/51) 70.6% (36/51) 86.3% (44/51) 49.0% (25/51) 64.7% (33/51) 62.7% (32/51) 
+Specificity 71.0% (44/62) 83.9% (52/62) 82.3% (51/62) 74.2% (46/62) 79.0% (49/62) 74.2% (46/62) 64.5% (40/62) 
+Precision 70.5% (43/61) 75.0% (30/40) 76.6% (36/47) 73.3% (44/60) 65.8% (25/38) 67.3% (33/49) 59.3% (32/54) 
+F-measure 76.8% 65.9% 73.5% 79.3% 56.2% 66.0% 61.0% 
+SA, SB, SC: orthopaedic oncology specialists; GA, GB, GC: general orthopaedic surgeons. 
+DINO, Detection with transformers with Improved deNoising anchOr boxes. 
+Although DINO demonstrat
+ed superior performance, 
+we also investigated its limitations. The model’s misclassi
+fications primarily occurred in cases involving challenging 
+tumours that were diagnostically difficult for orthopaedic 
+oncologists or located in unusual sites. Of the seven malignant 
+tumours misclassified by both DINO and at least one doctor, 
+three were misdiagnosed by all three orthopaedic oncologists. 
+Additionally, three tumours were located in atypical sites: giant 
+cell tumours in the fibula and calcaneus and Ewing’s sarcoma 
+in the radius. These findings indicate the need for further 
+research focusing on cases that are difficult to diagnose on 
+radiographs and tumours occurring in atypical sites. 
+-
+Few related studies have reported on deep-learning 
+models for the fully automated detection and classification 
+of benign and malignant bone tumours using full-field bone 
+radiographs of various body parts.
+18,19 Although the data 
+used were different, we compared the accuracies reported 
+in their studies with those obtained in our study and dis
+cussed the differences between their datasets and ours in 
+the following section. A previous report on tumour detection 
+-
+and classification using the Detectron2 showed a tumour 
+detection rate of 82.0% (91 of 111, IoU > 0.0), classification 
+accuracy of 80.2% (89 out of 111 tumours), and classification 
+sensitivity of 62.9% (22 out of 35 tumours).
+18 Another report 
+on tumour detection and classification using the YOLO-v5 
+model showed a high tumour detection rate and classifica
+tion sensitivity of 74.6% (47/63 cases) when intermediate-type 
+tumours were classified as malignant tumours.
+19  However, 
+the tumour types included in the reports were limited to 
+16 and 29. Regarding the latter report, approximately 43.9% 
+(65/148 cases) of the benign tumours of test data were 
+osteochondroma, which may have increased detection rates 
+and classification accuracy. Although this study included 40 
+types of bone tumours, the mean detection rate was rela
+tively high (85.7%). Furthermore, the sensitivity of the DINO 
+model was 84.3%, indicating its high capability for classify
+ing malignant tumours. Although bone tumours are rare, our 
+sample size was comparable to those in related studies and is 
+sufficient for conducting a meaningful analysis. 
+-
+-
+-
+The DINO model is based on a Transformer and 
+understands a whole image’
+s local and global featur
+es. In 
+addition, it has been shown that the prediction error of the 
+Transformer is more consistent with that of humans than that 
+of CNN.
+27,40,41 Therefore, the DINO model may classify tumours 
+more accurately than CNN-based models such as YOLO. 
+This study has some limitations. First, although this 
+was unavoidable considering the rarity of bone tumours, 
+642 cases, the number of cases studied, needed to be 
+Bone & Joint Research Volume 14, No. 9 September 2025 766 
+sufficiently large compared to studies on common cancers. 
+Second, the input image size was limited to 512 × 512 
+pixels due to Graphics Processing Unit (GPU) memory capacity 
+constraints. Future studies will require increased GPU memory 
+capacity to process higher-resolution images. Third, the cases 
+studied were limited to instances of limbs and did not include 
+vertebrae, pelvis, or ribs. Evaluating these trunk bones is 
+expected to be difficult using radiography alone, so additional 
+studies using other imaging methods are needed. Fourth, 
+the current model cannot detect and classify targets other 
+than bone tumours. The models were not trained on images 
+without tumour lesions or with fractures or degenerative 
+diseases. Future studies should include those images to make 
+clinical applications more feasible. Furthermore, it could be 
+a future option to take into account clinical findings such as 
+pain, sex, age and blood test results, in addition to imaging to 
+classify malignant/benign bone tumours more precisely. 
+In summary, the Transformer-based DINO model 
+automatically detects bone tumours in full-field limb 
+radiographs more accurately than the CNN-based YOLO 
+model. This model could serve as a valuable support tool in 
+daily clinical practice, particularly assisting general orthopae
+dic surgeons who may be less familiar with bone tumours. 
+While radiological review by doctors remains essential, 
+especially for complex cases, the model’s high-accuracy 
+diagnostic capabilities could help reduce doctor workload 
+through automated tumour detection and classification, 
+particularly in avoiding misdiagnosing malignant tumours as 
+benign ones. Future studies are warranted to make clinical 
+applications more feasible. 
+-
+Supplementary material 
+Text describing the deep learning object detection models, dataset, 
+image preprocessing, and model's training used in the study. Table 
+showing malignant tumours misclassified by one or more doctors 
+in the evaluation test set. Figures showing overview of five-fold 
+cross-validation and distribution of cases and images, and examples 
+of image rotation and cropping for preprocessing. 
+References 
+1. Iwamoto Y, Tanaka K, Isu K, et al. Multiinstitutional phase II study of 
+neoadjuvant chemotherapy for osteosarcoma (NECO study) in Japan: 
+NECO-93J and NECO-95J. J Orthop Sci. 2009;14(4):397–404. 
+2. Mthethwa PG, Marais LC, Aldous CM. Prognostic factors for overall 
+survival of conventional osteosarcoma of the appendicular skeleton. 
+Bone Jt Open. 2024;5(3):210–217. 
+3. Khal AA, Aiba H, Righi A, et al. Diagnostic challenges in low-grade 
+central osteosarcoma. Bone Joint J. 2024;106-B(1):99–106. 
+4. Casali PG, Bielack S, Abecassis N, et al. Bone sarcomas: ESMO-
+PaedCan-EURACAN clinical practice guidelines for diagnosis, treatment 
+and follow-up. 
+Ann Oncol. 2018;29(Suppl 4):iv79–iv95. 
+5. Lee SH, Kim W, Lee JS. What are the resection accuracy and guide-
+fitting errors associated with 3D-printed, patient-specific resection 
+guides for bone tumour resections? Bone Joint J. 2023;105-B(2):190–197. 
+6. Malik AT, Alexander JH, Mayerson JL, Khan SN, Scharschmidt TJ. Is 
+surgical resection of the primary site associated with an improved 
+overall survival for patients with primary malignant bone tumors who 
+have metastatic disease at presentation? Clin Orthop Relat Res. 2020; 
+478(10):2284–2295. 
+7. Lodwick GS. The bone and joints. In: Hodes PJ, ed. Atlas of tumor 
+radiology. Chicago, Illinois: Year Book Medical Publishers, 1971: 1–82. 
+8. Pic
+ci P, Manfrini M, Fabbri N, Gambarotti M, Vanel D. General 
+Principles of Imaging. In: Atlas of Musculoskeletal T
+umors and Tumorlike 
+Lesions: The Rizzoli Case Archive. First ed. Cham: Springer, 2014: 9–12. 
+9. WHO Classification of Tumours Editorial Board. Soft tissue and bone 
+tumours: WHO classification of tumours. Fifth ed. Lyon: International 
+Agency for Research on Cancer (IARC), 2020. 
+10. Siegel RL, Miller KD, Fuchs HE, Jemal A. Cancer statistics, 2022. CA 
+Cancer J Clin. 2022;72(1):7–33. 
+11. Ferguson JL, Turner SP. Bone cancer: diagnosis and treatment 
+principles. Am Fam Physician. 2018;98(4):205–213. 
+12. Kurisunkal V, Morris G, Kaneuchi Y, et al. Accuracy of MRI scans in 
+predicting intra-articular joint involvement in high-grade sarcomas 
+around the knee. Bone Joint J. 2023;105-B(6):696–701. 
+13. He Y, Pan I, Bao B, et al. Deep learning-based classification of primary 
+bone tumors on radiographs: a preliminary study. EBioMedicine. 2020; 
+62:103121. 
+14. Park C-W, Oh S-J, Kim K-S, et al. Artificial intelligence-based classifica
+tion of bone tumors in the proximal femur on plain radiographs: system 
+development and validation. PLoS One. 2022;17(2):e0264140. 
+‐
+15. Sharma A, Yadav DP, Garg H, K
+umar M, Sharma B, Koundal D. Bone 
+cancer detection using feature extraction based machine learning 
+model. Comput Math Methods Med. 2021;2021:7433186. 
+16. Breden S, Hinterwimmer F, Consalvo S, et al. Deep learning-based 
+detection of bone tumors around the knee in X-rays of children. J Clin 
+Med. 2023;12(18):5960. 
+17. Do N-T, Jung S-T, Yang H-J, Kim S-H. Multi-level Seg-Unet model with 
+global and patch-based X-ray images for knee bone tumor detection. 
+Diagnostics (Basel). 2021;11(4):691. 
+18. von Schacky CE, Wilhelm NJ, Schäfer VS, et al. Multitask deep 
+learning for segmentation and classification of primary bone tumors on 
+radiographs. Radiology. 2021;301(2):398–406. 
+19. Li J, Li S, Li X, et al. Primary bone tumor detection and classification in 
+full-field bone radiographs via YOLO deep learning model. Eur Radiol. 
+2023;33(6):4237–4248. 
+20. Cabitza F, Locoro A, Banfi G. Machine learning in orthopedics: a 
+literature review. Front Bioeng Biotechnol. 2018;6:75. 
+21. Lisacek-Kiosoglous AB, Powling AS, Fontalis A, Gabr A, Mazomenos 
+E, Haddad FS. Artificial intelligence in orthopaedic surgery. Bone Joint 
+Res. 2023;12(7):447–454. 
+22. Joo MW, Ko T, Kim MS, et al. 
+ Development and validation of a 
+convolutional neural network model to predict a pathologic fracture in 
+the proximal femur using abdomen and pelvis CT images of patients 
+with advanced cancer. Clin Orthop Relat Res. 2023;481(11):2247–2256. 
+23. Shah RF, Bini SA, Martinez AM, Pedoia V, Vail TP. Incremental inputs 
+improve the automated detection of implant loosening using machine-
+learning algorithms. Bone Joint J. 2020;102-B(6_Supple_A):101–106. 
+24. Zhang S-C, Sun J, Liu C-B, F
+ ang J-H, Xie H-T, Ning B. Clinical 
+application of artificial intelligence-assisted diagnosis using anteropos
+terior pelvic radiographs in children with developmental dysplasia of the 
+hip. Bone Joint J. 2020;102-B(11):1574–1581. 
+‐
+25. Castagno S, Gompels B, Str
+ angmark E, et al. Understanding the role 
+of machine learning in predicting progression of osteoarthritis. Bone 
+Joint J. 2024;106-B(11):1216–1222. 
+26. Fontalis A, Zhao B, Putzeys P, et al. Is it feasible to develop a 
+supervised learning algorithm incorporating spinopelvic mobility to 
+pr
+edict impingement in patients undergoing total hip arthroplasty? 
+Bone Jt Open. 2024;5(8):671–680. 
+27. Shamshad F, Khan S, Zamir SW, et al. Transformers in medical 
+imaging: a survey. 
+Med Image Anal. 2023;88:102802. 
+28. Zhang H, Li F, Liu S, et al. DINO: DETR with improved DeNoising anchor 
+boxes for end-to-end object detection (arXiv:2203.03605v4). arxiv.org . 
+2022. https://arxiv.org/abs/2203.03605 (date last accessed 1 August 
+2025). 
+29. Vaswani A, Shaz
+eer N, Parmar N, et al. Attention Is All You Need 
+(arXiv:1706.03762v7). arXiv.org. 2017. https://arxiv.org/pdf/1706.03762 
+(date last accessed 13 August 2025). 
+30. Wada K. Labelme: Image Polygonal Annotation with Python [Computer 
+software]. 2023. https://github.com/labelmeai/labelme  (date last 
+accessed 21 August 2025). 
+31. Jocher G, Qiu J, Chaurasia A. Ultralytics YOLO (Version 8.0.0) [Computer 
+software]. 2023. https://github.com/ultralytics/ultralytics (date last 
+accessed 21 August 2025). 
+Development and evaluation of deep learning models for detecting and classifying various bone tumours 
+M. Yamana, R. Bise
+, M. Endo, et al 
+767 
+  
+32. Al-Hammuri K, Gebali F, Kanan A, Chelvan IT. Vision transformer 
+architecture and applications in digital health: a tutorial and survey. Vis 
+Comput Ind Biomed Art. 2023;6(1):14. 
+33. Chen J-L, Cheng L-H, Wang J, et al. A YOLO-based AI system for 
+classifying calcifications on spot magnification mammograms. Biomed 
+Eng Online. 2023;22(1):54. 
+34. Haq I, Mazhar T, Asif RN, et al. YOLO and residual network for 
+colorectal cancer cell detection and counting. Heliyon. 2024;‐
+10(2):e24403. 
+35. Davri A, Birbas E, Kanavos T, et al. Deep learning for lung cancer 
+diagnosis, prognosis and prediction using histological and cytological 
+images: a systematic review. Cancers (Basel). 2023;15(15):3981. 
+36. Zhang H, Li F, Liu S, et al. DINO: DETR with improved DeNoising anchor 
+boxes for end-to-end object detection. 2023. https://github.com/IDEA-
+Research/DINO (date last accessed 21 August 2025). 
+37. Ying X . 
+An overview of overfitting and its solutions. J Phys: Conf Ser. 
+2019;1168:022022. 
+38. Kingma DP, Ba J. Adam: a method for stochastic optimization 
+(arXiv:14126980v9). arXiv.org . 2017. https://arxiv.org/abs/1412.6980 
+(date last accessed 1 August 2025). 
+39. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine 
+Learning in Python. J Mach Learn Res. 2011;12:2825–2830. 
+40. Naseer M, R
+ anasinghe K, Khan S, Hayat M, Khan FS, Yang MH. 
+Intriguing proper
+ties of vision transformers (arXiv:2105.10497v3). 
+arxiv.org. 2021. https://arxiv.org/abs/2105.10497 (date last accessed 1 
+August 2025). 
+41. Geirhos R, Narayanappa K, Mitzkus B, et al. Partial success in closing 
+the gap between human and machine vision. arxiv.org . 2021. https:// 
+arxiv.org/abs/2106.07411 (date last accessed 1 August 2025). 
+Author information 
+M. Yamana, MD, Orthopaedic Surgeon, Department of 
+Orthopaedic Surgery, Graduate School of Medical Sciences, 
+Kyushu University, Fukuoka, Japan; 
+Department of Advanced Information Technology, Kyushu 
+University, Fukuoka, Japan. 
+R. Bise, PhD, Professor 
+S. Uchida, PhD, Professor 
+Department of Advanced Information Technology, Kyushu 
+University, Fukuoka, Japan. 
+M. Endo, MD, PhD, Senior Lecturer, Orthopaedic Oncologist 
+N. Yokoyama, MD, PhD, Assistant Professor, Orthopaedic 
+Oncologist 
+Y . Nakashima, MD, PhD, Professor, Orthopaedic Surgeon 
+Department of Orthopaedic Surgery, Graduate School of Medical 
+Sciences, Kyushu University, Fukuoka, Japan. 
+T. Matsunobu, MD, PhD, Orthopaedic Oncologist, Department of 
+Orthopaedic Surgery, Kyushu Rosai Hospital, Kitakyushu, Japan. 
+N. Setsu, MD, PhD, Orthopaedic Oncologist, Department of 
+Orthopaedic Surgery, National Hospital Organization Kyushu 
+Cancer Center, Fukuoka, Japan. 
+Author contributions 
+M. Yamana: Conceptualization, Data curation, Formal analysis, 
+Investigation, Methodology, Software, Validation, Visualization, 
+Writing – original draft, Writing – review & editing. 
+R. Bise: Conceptualization, Formal analysis, Funding acquisition, 
+Investigation, Methodology, Project administration, Supervision, 
+Validation, Writing – review & editing. 
+M. Endo: Conceptualization, Data curation, Funding acquisition, 
+Investigation, Methodology, Project administration, Resources, 
+Supervision, Validation, Writing – review & editing. 
+T. Matsunobu: Conceptualization, Resources, Writing – review & 
+editing. 
+N. Setsu: Conceptualization, Resources, Writing – review & editing. 
+N. Yokoyama: Conceptualization, Resources, Validation, Writing – 
+review & editing. 
+Y. Nakashima: Conceptualization, Resources, Supervision, 
+Validation, Writing – review & editing. 
+S. Uchida: Conceptualization, Formal analysis, Investigation, 
+Methodology, Project administration, Supervision, Validation, 
+Writing – review & editing. 
+Funding statement 
+The author(s) disclose receipt of the following financial or 
+material support for the research, authorship, and/or publication 
+of this article: this work was supported in part by JSPS KAKENHI 
+(grant numbers JP 23K18509 and JP 23K08700; reported by R. 
+Bise and M. Endo, respectively) and research funds from the 
+Graduate School of Medical Sciences, Kyushu University (reported 
+by M. Endo). 
+ICMJE COI statement 
+R. Bise and M. Endo report funding from JSPS KAKENHI (grant 
+numbers JP 23K18509 and JP 23K08700, respectively), and M. 
+Endo reports funding from research funds from the Graduate 
+School of Medical Sciences, Kyushu University, all related to this 
+study. No patient or public involvement was carried out in this 
+research's design, conduct, reporting, or dissemination. 
+Data sharing 
+The data that support the findings for this study are available 
+to other researchers from the corresponding author upon 
+reasonable request. 
+Acknowledgements 
+The authors thank Akira Maekawa and Masato Yoshimoto 
+for sharing their datasets. The authors thank Shin Ishihara, 
+Takeshi Hirose, Akira Nabeshima, Eiji Tashiro, Ryota Hirose, 
+and Kazuki Miyama for helping validate the bone tumour 
+classification. We also thank Junji Kishimoto for his invaluable 
+advice on the statistical analyses. We are grateful to Yoshinao 
+Oda, Kosuke Makihara, Kenichi Taguchi and members of the 
+pathology department for their contributions to pathological 
+diagnosis. Additionally, we thank all members of Kyushu United 
+for Exploration of Sarcoma Treatment (KUEST). This multi-
+institutional collaboration study was conducted as the KUEST-4 
+study. Finally, we want to thank Editage for the English language 
+review. 
+Ethical review statement 
+The study was approved by the Institutional Review Board of 
+Kyushu University Hospital (No.22316-00, No.22089-00). Informed 
+consent was obtained in the form of an opt-out on the website, 
+and those who rejected it were excluded. 
+Open access funding 
+The authors report that they received open access funding 
+for their manuscript from JSPS KAKENHI (Grant Number JP 
+23K08700). 
+© 2025 Yamana et al. This is an open-access article distributed 
+under the terms of the Creative Commons Attribution Non-
+Commercial No Derivatives (CC BY-NC-ND 4.0) licence, which 
+permits the copying and redistribution of the work only, and 
+provided the original author and source are credited. See https:// 
+creativecommons.org/licenses/by-nc-nd/4.0/ 
+Bone & Joint Research Volume 14, No. 9 S
+ eptember 2025 768 

@@ -1,0 +1,621 @@
+0450
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+Pré-processamento e pós-processamento para detecção 
+robusta de tumores ósseos: um pipeline de aumento 
+ponderado guiado por Siamese
+Ali Tamizifar
+Departamento de Engenharia Elétrica e 
+Computação, Universidade de Tecnologia de 
+Isfahan Isfahan 84156-83111, Irã 
+a.tamizi@ec.iut.ac.ir
+Shakiba Berenjkoub
+Departamento de Engenharia Elétrica e 
+Computação, Universidade de Tecnologia de 
+Isfahan Isfahan 84156-83111, Irã 
+s.berenjkoub@ec.iut.ac.ir
+Zahra SobhaniNia 
+Faculdade de Ciências, 
+Universidade de 
+Copenhague, Copenhague, 
+Dinamarca 
+zahra.s@di.ku.dk
+Nader Karimi
+Departamento de Engenharia Elétrica e 
+Computação, Universidade de Tecnologia de 
+Isfahan Isfahan 84156-83111, Irã 
+nader.karimi@iut.ac.ir
+Pejman Khadivi 
+Departamento de Ciência da 
+Computação
+Universidade de Seattle 
+Seattle, EUA 
+khadivip@seattleu.edu
+Shadrokh Samavi
+Departamento de Ciência da 
+Computação, Universidade de Seattle,
+Seattle, WA 98122, EUA 
+samavishadro@seattleu.edu
+Resumo — A detecção de tumores ósseos em imagens médicas 
+representa um desafio significativo devido à variabilidade na 
+aparência dos tumores e à necessidade de análises precisas e 
+eficientes. A detecção precisa é crucial para o diagnóstico e 
+tratamento oportunos; no entanto, os métodos tradicionais 
+geralmente dependem de vários modelos para diferentes tarefas, 
+resultando em maior complexidade e sobrecarga computacional. 
+Neste artigo, propomos uma nova abordagem que aborda essas 
+questões, integrando pré-processamento, uma estrutura multitarefa e 
+pós-processamento orientado por Siamese em uma estrutura coesa 
+para classificação, segmentação e localização. Nosso método utiliza o 
+YOLOv11n para focar em regiões relevantes da imagem e o 
+YOLOv11-seg para classificação, localização e segmentação 
+simultâneas. Em seguida, usamos uma rede Siamese para refinar os 
+resultados da segmentação. Esse design unificado reduz o número de 
+parâmetros e melhora o desempenho, oferecendo uma solução 
+promissora para a detecção eficiente e precisa de tumores ósseos.
+Palavras-chave — Análise de imagens médicas, Aprendizagem 
+multitarefa, Aumento do tempo de teste (TTA), Tumor ósseo, BTXRD, 
+Pós-processamento
+I. INTRODUÇÃO
+Os ossos fornecem suporte estrutural e permitem o movimento, 
+trabalhando em conjunto com os ligamentos e a medula óssea para 
+manter as funções corporais. O câncer ósseo surge quando células 
+saudáveis proliferam descontroladamente, formando tumores que 
+enfraquecem o tecido ósseo e podem metastatizar. O diagnóstico do 
+câncer ósseo requer conhecimento especializado, sendo a radiografia 
+uma ferramenta fundamental para detectar anormalidades estruturais. 
+No entanto, as diversas aparências de tumores como o osteossarcoma 
+e o condrossarcoma complicam o diagnóstico preciso [1]. A 
+radiografia auxilia na avaliação do crescimento e da agressividade do 
+tumor, orientando o diagnóstico. Tumores avançados podem destruir 
+os ossos, causando dor, fraturas e redução da mobilidade. A detecção 
+precoce e a classificação precisa são cruciais para um tratamento 
+eficaz, especialmente em casos agressivos que requerem intervenção 
+urgente. Embora o diagnóstico manual dos radiologistas continue 
+sendo o padrão, os avanços em imagens e análises automatizadas 
+estão aumentando a precisão e a eficiência da identificação de 
+tumores ósseos [2].
+Nos últimos anos, os algoritmos de aprendizado profundo 
+transformaram a análise de imagens médicas [3]. As redes neurais 
+convolucionais (CNNs) têm apresentado um desempenho 
+excepcional em tarefas como classificação de imagens, detecção de 
+objetos e segmentação. Esses métodos extraem automaticamente 
+características de grandes conjuntos de dados, contornando a 
+engenharia manual de características. Sua capacidade de aprender 
+características hierárquicas os torna adequados para desafios 
+complexos de imagens médicas, nos quais as abordagens tradicionais 
+enfrentam dificuldades com a variabilidade e padrões sutis. Como 
+resultado, o aprendizado profundo surgiu como uma ferramenta 
+poderosa para analisar e segmentar tumores ósseos.
+As CNNs são agora indispensáveis na análise de imagens 
+médicas, destacando-se em tarefas de classificação, segmentação e 
+localização de tumores. Ao processar imagens hierarquicamente, elas 
+identificam padrões e características vitais para um diagnóstico 
+preciso. Modelos amplamente utilizados na análise de tumores ósseos 
+incluem U-Net, YOLO e ResNet. A arquitetura codificador-
+decodificador da U-Net se destaca na segmentação, delineando com 
+precisão os limites do tumor [4]. O YOLO, otimizado para detecção de 
+objetos em tempo real, facilita a localização precisa de tumores em 
+exames médicos [5]. O ResNet, aproveitando o aprendizado residual 
+profundo, aprimora a classificação ao resolver as dificuldades de 
+treinamento em redes profundas [6].
+Apesar de seu potencial, os modelos baseados em CNN 
+enfrentam limitações. Modelos de segmentação, como o U-Net, 
+podem ter dificuldade com a localização precisa, enquanto modelos 
+de detecção, como o YOLO, muitas vezes carecem de recursos 
+detalhados de segmentação. Modelos de classificação, como o 
+ResNet, normalmente exigem conjuntos de dados rotulados extensos 
+e podem ignorar detalhes espaciais. Desafios adicionais surgem no 
+pré-processamento [7] (por exemplo, redução de ruído) e no pós-
+processamento [8] (por exemplo, redução de falsos positivos ou 
+refinamento de limites). Uma abordagem multitarefa [9] — 
+integrando classificação, segmentação e localização em um único 
+modelo — pode mitigar essas questões compartilhando recursos entre 
+as tarefas, aumentando assim a eficiência e a precisão [10]. Essa 
+estratégia de aprendizagem conjunta otimiza o pipeline e permite que 
+o modelo aprenda representações mais generalizáveis, especialmente 
+em domínios com escassez de dados.   Em   imagens médicas   ,   
+por exemplo   ,   multitarefa
+2025 IEEE World AI IoT Congress (AIIoT) | 979-8-3315-2508-8/25/$31,00 ©2025 IEEE | DOI: 10.1109/AIIoT65859.2025.11105226
+Assine o DeepL Pro para traduzir arquivos maiores.
+Mais informações em www.DeepL.com/pro.
+0451
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+têm demonstrado um sucesso significativo no aumento da precisão do 
+diagnóstico, reduzindo a dependência de anotações extensas, 
+tornando-as altamente práticas para a implantação clínica no mundo 
+real [11, 12].
+Neste artigo, propomos uma estrutura inovadora para a detecção 
+de tumores ósseos que unifica classificação, segmentação e 
+localização em um único modelo eficiente. Nossa abordagem começa 
+com um pipeline de pré-processamento robusto que remove regiões 
+de imagem irrelevantes e melhora a qualidade normalizando 
+variações de intensidade, garantindo que o foco permaneça nas 
+regiões críticas do tumor. Utilizamos o YOLOv11-seg como base, 
+aproveitando sua capacidade de realizar as três tarefas 
+simultaneamente com alta precisão. Para elevar ainda mais o 
+desempenho, introduzimos uma estratégia de pós-processamento 
+baseada em Siamese que refina os resultados da segmentação, 
+reduzindo falsos positivos e tornando os limites do tumor mais 
+nítidos. Esse método integrado não apenas simplifica o processo de 
+detecção, mas também alcança uma precisão diagnóstica superior, 
+oferecendo uma solução confiável para aplicações clínicas.
+O restante deste artigo está estruturado da seguinte forma: a 
+Seção II revisa trabalhos relacionados, explorando os avanços 
+recentes no aprendizado profundo para análise de imagens médicas, 
+com ênfase na detecção de tumores ósseos. A Seção III descreve o 
+método proposto, detalhando o pipeline de pré-processamento, a 
+arquitetura multitarefa baseada em YOLOv11 e as estratégias de pós-
+processamento. A Seção IV apresenta os resultados experimentais, 
+incluindo conjuntos de dados, parâmetros de treinamento e uma 
+avaliação abrangente do desempenho. A Seção V conclui o artigo e 
+descreve as direções futuras da pesquisa.
+II. TRABALHOS RELACIONADOS
+Os recentes avanços no aprendizado profundo melhoraram 
+significativamente a detecção e classificação de tumores ósseos 
+primários em imagens radiográficas. Um estudo notável de von 
+Schacky et al [13] desenvolveu um modelo de aprendizado profundo 
+multitarefa baseado na arquitetura Mask R-CNN com um backbone 
+ResNeXt-101, pré-treinado no conjunto de dados Microsoft Common 
+Objects in Context (COCO) [14]. Esse modelo foi projetado para 
+realizar simultaneamente o posicionamento de caixas delimitadoras, a 
+segmentação e a classificação de tumores ósseos primários em 
+radiografias. A arquitetura inclui três cabeças distintas: uma função 
+de perda de regressão para o posicionamento preciso de caixas 
+delimitadoras, funções de perda sigmoidal e binária por pixel para a 
+segmentação precisa de tumores e perda de entropia cruzada 
+categórica para classificar tumores como benignos ou malignos.
+Li et al [15] desenvolveram um modelo de aprendizado profundo 
+baseado em YOLO para a detecção e classificação automatizadas de 
+lesões ósseas em radiografias de campo total. O modelo foi treinado 
+em um conjunto de dados composto por 1085 radiografias de tumores 
+ósseos e 345 radiografias normais coletadas em dois centros médicos. 
+Ele foi projetado primeiro para localizar lesões ósseas e, 
+posteriormente, classificá-las em quatro categorias: normal, benigna, 
+intermediária ou maligna. O desempenho da detecção foi avaliado 
+usando a interseção sobre a união (IoU), enquanto a precisão da 
+classificação foi avaliada por meio de matrizes de confusão e 
+pontuações kappa de Cohen. Uma análise comparativa com dois 
+radiologistas em um conjunto de validação externo demonstrou a 
+eficácia do modelo na caracterização de lesões e na consistência do 
+diagnóstico.
+Kim et al. [16] introduzem uma abordagem inovadora para o 
+aumento do tempo de teste, selecionando dinamicamente 
+transformações.
+adaptado a cada instância de entrada. Ao contrário dos métodos 
+tradicionais que aplicam transformações uniformes durante os testes, 
+esta técnica emprega uma rede auxiliar para prever a perda potencial 
+associada a várias transformações de uma determinada entrada. Ao 
+aplicar essas transformações previstas para produzir perdas menores 
+e calcular a média das previsões dessas entradas aumentadas, o 
+modelo demonstra maior robustez contra diversas corrupções de 
+imagem, conforme evidenciado pelo desempenho aprimorado em 
+vários benchmarks de classificação de imagens.
+Em outro trabalho, Tomar et al. [17] apresentam o TeSLA, um 
+novo método de adaptação em tempo de teste que supera as 
+limitações das abordagens existentes, como o foco exclusivo em 
+tarefas de classificação, a dependência de arquiteturas de rede 
+especializadas e os desafios com a calibração do modelo. O TeSLA 
+adapta um modelo de origem pré-treinado a dados de teste de 
+streaming não rotulados, empregando uma nova função de perda em 
+tempo de teste que aproveita a informação mútua e a destilação de 
+conhecimento online. Além disso, incorpora um módulo de aumento 
+adversário aprendível para aprimorar a destilação de conhecimento, 
+gerando imagens aumentadas de alta entropia.
+Alwzwazy et al [18] apresentam o FracNet, uma estrutura de 
+aprendizado profundo de ponta a ponta projetada para a detecção 
+precisa de fraturas ósseas. O FracNet integra mecanismos de atenção 
+para aprimorar a extração de características, melhorando assim a 
+interpretabilidade do modelo. A arquitetura emprega estratégias de 
+fusão e seleção de características para reforçar a aprendizagem de 
+representação e a robustez, garantindo uma generalização eficaz em 
+diversos padrões de fraturas. Além disso, o FracNet incorpora 
+módulos de explicabilidade que fornecem previsões claras e 
+interpretáveis, auxiliando na tomada de decisões clínicas. Projetada 
+para ser adaptável, a estrutura requer um retreinamento mínimo para 
+acomodar novos conjuntos de dados, mantendo um alto desempenho. 
+Sua arquitetura escalável permite a extensão para várias aplicações de 
+imagens médicas, posicionando o FracNet como uma ferramenta 
+versátil para a automação do diagnóstico.
+III. MÉTODO PROPOSTO
+Nesta seção, apresentamos nosso método proposto para a 
+detecção de tumores ósseos, uma abordagem abrangente que integra 
+perfeitamente classificação, segmentação e localização em uma 
+estrutura multitarefa unificada. A arquitetura do nosso método é 
+mostrada na Fig. 1. Nosso método aumenta a precisão e a eficiência 
+do diagnóstico por meio de um pipeline cuidadosamente projetado que 
+começa com o pré-processamento para refinar as imagens de entrada, 
+seguido por uma estrutura multitarefa robusta que executa todas as 
+três tarefas simultaneamente e conclui com uma estratégia inovadora 
+de pós-processamento que otimiza os resultados da segmentação para 
+uma inferência e interpretação superiores durante o teste. Ao 
+combinar a extração de características compartilhadas entre as tarefas 
+com um processo de refinamento orientado pela qualidade, nossa 
+abordagem supera as limitações dos modelos autônomos, oferecendo 
+desempenho confiável em imagens radiológicas, como raios-X de 
+tumores ósseos e fraturas. Essa etapa de pós-processamento melhora 
+as máscaras de segmentação e fornece insights mais profundos sobre 
+os resultados do modelo, facilitando melhores conclusões sobre sua 
+eficácia e confiabilidade durante a avaliação.
+A. Pré-processamento
+O pré-processamento é fundamental na preparação de imagens de 
+raios X para análise, concentrando o modelo em regiões clinicamente 
+relevantes e minimizando a complexidade computacional. Para isso,
+0452
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+Fig. 1. Visão geral da arquitetura do sistema: (a) Pré-processamento, remove partes extras das imagens de entrada e realiza o aumento e a normalização da imagem.
+(b) Backbone multitarefa (YOLOv11-seg) para localização, classificação e segmentação. (c) O modelo siamês estima a pontuação de Dice entre máscaras previstas e 
+verdades fundamentais não vistas usando imagens originais e máscaras previstas. (d) O pós-processamento aplica aumentos inversos às máscaras previstas e as combina 
+por meio de uma média ponderada com base nas saídas do modelo siamês.
+Empregamos o modelo YOLOv11n, uma estrutura leve e eficiente de 
+detecção de objetos, para localizar regiões que contêm tecido ósseo e 
+adiposo com base nos valores de intensidade da imagem, removendo 
+subsequentemente áreas estranhas, como fundo ou tecidos não 
+essenciais (Fig. 2). Para essa tarefa, rotulamos 20% do conjunto de 
+dados BTXRD [19] — composto por raios-X de tumores ósseos — 
+como nosso conjunto de treinamento, usando essas anotações para 
+treinar o YOLOv11n a detectar regiões anatômicas críticas. Em 
+seguida, avaliamos seu desempenho nos 5% restantes do BTXRD, 
+garantindo o recorte preciso de partes irrelevantes. Para avaliar a 
+generalização, aplicamos esse modelo YOLOv11n pré-treinado a 
+dois conjuntos de dados adicionais, Fracatlas [20] e Wrist Fracture 
+[21], ambos focados em fraturas ósseas, sem retreinamento adicional. 
+Nos três conjuntos de dados, essa etapa de pré-processamento 
+removeu consistentemente aproximadamente 30% dos pixels da 
+imagem, aumentando a eficiência computacional e preservando 
+detalhes estruturais essenciais.
+Para garantir a robustez, projetamos o pré-processamento para 
+levar em conta a variabilidade nos resultados da detecção. Se o 
+YOLOv11n identificar várias caixas delimitadoras dentro de uma 
+imagem, indicando regiões de interesse potencialmente desconexas, 
+calculamos sua união para formar uma única região coesa, evitando a 
+exclusão de quaisquer áreas relevantes. Por outro lado, se nenhuma 
+caixa delimitadora for detectada, mantemos a imagem inteira para 
+exame posterior, garantindo que nenhuma
+informações críticas são perdidas. Após o recorte, normalizamos as 
+intensidades dos pixels das regiões retidas para um intervalo de [0, 
+1]. Essa etapa padroniza a escala de entrada em diversas imagens de 
+raios X, melhorando a estabilidade e a convergência do modelo 
+durante o treinamento. Ao contrário das técnicas convencionais de 
+pré-processamento que priorizam a redução de ruído, nosso método 
+se baseia apenas no recorte e na normalização, confiando na resiliência 
+do modelo downstream para lidar com artefatos de imagem. A 
+generalização demonstrada em BTXRD, Fracatlas e fratura de punho 
+ressalta a adaptabilidade dessa abordagem a vários contextos 
+radiológicos, tornando-a uma base versátil para análises 
+subsequentes.
+Além das etapas de pré-processamento, aplicamos um pipeline de 
+aumento para melhorar a robustez do modelo. Isso incluiu rotações 
+aleatórias, inversões horizontais e verticais e ajustes de brilho e 
+contraste.
+B. Backbone multitarefa
+O YOLOv11-seg é um modelo multitarefa de ponta projetado para 
+desempenho em tempo real em classificação, localização e 
+segmentação, que está no centro do nosso método. Essa estrutura 
+processa as imagens pré-processadas em uma única passagem direta, 
+extraindo características hierárquicas compartilhadas entre três cabeças 
+específicas para cada tarefa. A cabeça de classificação determina a 
+presença e a categoria dos tumores ósseos (por exemplo, benignos ou 
+malignos), gerando probabilidades de classe. O cabeçalho de 
+localização gera caixas delimitadoras para identificar as posições dos 
+tumores, enquanto o cabeçalho de segmentação produz máscaras em 
+nível de pixel que delineiam os limites dos tumores com granularidade 
+fina. Essas tarefas são otimizadas em conjunto usando uma função de 
+perda composta que equilibra a entropia cruzada para classificação, a 
+perda de interseção sobre união (IoU) para localização e a perda de 
+Dice para segmentação, garantindo um desempenho harmonioso em 
+todas as saídas (Fig. 1.b).
+C. Modelo siamês
+1𝑀𝐴𝐸 =
+N
+Σ|𝐷  (i) −𝐷  (i) | (1)
+𝑁
+i=1
+previsão verdade fundamental
+Fig. 2. Pipeline de pré-processamento: o YOLOv11n é usado para recortar 
+regiões irrelevantes das imagens de raios X, seguido pela normalização e 
+aumento de dados.
+Uma inovação fundamental em nossa abordagem é a integração 
+de uma rede siamesa treinada juntamente com o YOLOv11-seg para 
+aprimorar os recursos da espinha dorsal. A Fig. 1(c) mostra um modelo 
+siamês auxiliar que prevê a qualidade das máscaras de segmentação, 
+que
+
+0453
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+pode ser incorporado em qualquer estágio do treinamento, no início 
+para orientar o aprendizado de recursos ou mais tarde para refinar 
+resultados maduros. Durante o treinamento, a rede siamesa recebe 
+como entradas a imagem pré-processada original e uma máscara 
+prevista do YOLOv11-seg, produzindo um valor escalar que 
+representa a pontuação Dice prevista. A pontuação Dice real, 
+calculada usando máscaras de verdade fundamental, serve como alvo, 
+e o modelo Siamese é otimizado usando o erro absoluto médio 
+(MAE) entre esses valores, conforme mostrado na Equação (1). Para 
+evitar viés em direção a previsões triviais (por exemplo, zero para 
+máscaras vazias), excluímos pares com a verdade fundamental ou 
+máscara prevista sem conteúdo tumoral. Esse treinamento conjunto 
+influencia dinamicamente o YOLOv11-seg, pois as melhorias na 
+qualidade da segmentação são retroalimentadas nas previsões 
+siamesas, promovendo uma relação simbiótica que eleva a precisão 
+da espinha dorsal. Ao incorporar essa avaliação de qualidade ao 
+processo de treinamento, permitimos que o modelo refine suas saídas 
+de forma adaptativa, aprimorando sua capacidade de lidar com a 
+complexa variabilidade das aparências dos tumores ósseos.
+𝐷previstorepresenta a pontuação Dice prevista pela rede siamesa, 
+enquanto𝐷verdade fundamental é a pontuação Dice real calculada 
+usando a máscara da verdade fundamental.
+D. Pós-processamento
+Embora a estrutura multitarefa ofereça resultados iniciais sólidos, 
+nossa estratégia de pós-processamento aproveita a rede Siamese para 
+obter um refinamento excepcional durante os testes, sem afetar a fase 
+de treinamento. Essa abordagem transcende as limitações de 
+depender exclusivamente de resultados brutos do modelo ou 
+conjuntos básicos de aumento, oferecendo um mecanismo sofisticado 
+para otimizar máscaras de segmentação e tirar conclusões informadas 
+sobre o desempenho do modelo. A rede siamesa, pré-treinada junto 
+com o YOLOv11-seg, desempenha um papel central nessa melhoria no 
+tempo de teste, fornecendo previsões de qualidade que orientam a 
+integração de várias saídas de segmentação.
+Durante a inferência, empregamos o aumento no tempo de teste 
+(TTA) para gerar um conjunto de máscaras de segmentação para cada 
+imagem de entrada, aplicando transformações como rotações, 
+inversões e dimensionamento. A rede siamesa avalia cada máscara 
+aumentada emparelhada com sua imagem original, que prevê uma 
+pontuação Dice variando de 0 a 1. Essas pontuações servem como 
+pesos em um cálculo de média ponderada, em que máscaras com 
+pontuações acima de um limite mínimo (por exemplo, 0,1) 
+contribuem proporcionalmente para o resultado final (Fig. 1.d). 
+Máscaras com pontuações excessivamente baixas são excluídas, 
+garantindo que apenas previsões de alta qualidade moldem o resultado. 
+Esse processo aprimora os limites do tumor, reduz falsos positivos e 
+aumenta a robustez geral, priorizando resultados confiáveis em vez de 
+outliers.
+Além do TTA, nossa estrutura de pós-processamento oferece 
+uma vantagem adicional: a seleção de modelos. Em cenários em que 
+vários modelos de segmentação estão disponíveis, cada um 
+produzindo máscaras distintas para a mesma imagem, a rede siamesa 
+atua como um avaliador auxiliar. Ao colocar esse modelo de previsão 
+de qualidade ao lado de todos os modelos de segmentação, avaliamos 
+seus resultados individualmente, prevendo pontuações Dice para cada 
+um. Isso nos permite identificar qual modelo tem o melhor 
+desempenho para uma determinada imagem, fornecendo uma base 
+orientada por dados para selecionar o resultado de segmentação ideal. 
+Esse pós-processamento de dupla finalidade não apenas refina os 
+resultados individuais do modelo, mas também possibilita a análise 
+comparativa, tornando-o
+uma ferramenta versátil para melhorar a inferência e apoiar a tomada 
+de decisões diagnósticas.
+Nosso método é um pipeline integrado que harmoniza o pré-
+processamento, a análise multitarefa e o pós-processamento avançado. 
+As imagens de raios X passam por um pré-processamento, no qual o 
+YOLOv11n recorta regiões irrelevantes e os valores dos pixels são 
+normalizados para [0, 1]. Essas entradas refinadas são então 
+processadas pelo YOLOv11-seg, que gera pontuações de 
+classificação, caixas delimitadoras e máscaras de segmentação em 
+uma única passagem, com a rede Siamese aprimorando o treinamento 
+por meio de feedback de qualidade. No momento do teste, as máscaras 
+de segmentação são refinadas por meio de TTA e média ponderada 
+Siamese, enquanto o modelo Siamese também facilita a seleção do 
+modelo quando várias opções de segmentação estão disponíveis. Os 
+resultados finais — probabilidades de classificação, caixas 
+delimitadoras localizadas e máscaras otimizadas — são preservados 
+para avaliação independente. Esse pipeline aproveita a eficiência do 
+aprendizado multitarefa, a precisão do pós-processamento orientado 
+pela qualidade e a adaptabilidade de uma etapa de pré-processamento 
+generalizável, oferecendo uma solução abrangente para a detecção de 
+tumores ósseos.
+IV. RESULTADOS EXPERIMENTAIS
+Esta seção avalia nosso método proposto para detecção de 
+tumores ósseos, com foco na eficiência do pré-processamento e no 
+desempenho da estrutura multitarefa com pós-processamento 
+orientado por Siamese. Descrevemos os conjuntos de dados, 
+detalhamos a implementação e relatamos os resultados das tarefas de 
+pré-processamento e multitarefa.
+A. Conjuntos de dados
+Utilizamos três conjuntos de dados radiológicos — BTXRD, 
+Fracatlas e Wrist Fracture — para avaliar nosso modelo de pré-
+processamento (YOLOv11n). No entanto, como este artigo se 
+concentra na detecção de tumores ósseos, a estrutura YOLOv11-seg e 
+a avaliação final foram realizadas exclusivamente no BTXRD. O 
+conjunto de dados BTXRD compreende 3.746 imagens de raios-X: 
+2.995 para treinamento e 751 para teste, com 1.879 imagens de 
+indivíduos saudáveis, 1.525 imagens de tumores benignos e 342 
+imagens de tumores malignos. Para o pré-processamento, 
+selecionamos aleatoriamente 20% do BTXRD (700 imagens) para 
+treinar o YOLOv11n e 5% (175 imagens) para avaliação. Para o 
+treinamento do YOLOv11-seg, usamos 80% do BTXRD (2.995 
+imagens) como conjunto de treinamento e 20% (751 imagens) para 
+teste. Fracatlas é uma coleção de radiografias musculoesqueléticas 
+anotadas projetadas para detecção de fraturas, e Wrist-Fracture é um 
+conjunto de dados sobre fraturas de punho em imagens de raios-X. 
+Usamos esses dois conjuntos de dados para avaliar a generalização 
+do modelo de pré-processamento e não desempenharam nenhum 
+outro papel neste estudo.
+B. Detalhes da implementação
+Os experimentos foram conduzidos em uma GPU NVIDIA RTX 
+4080 Super com 16 GB de memória usando PyTorch 2.6.0.
+1) YOLOv11-seg Backbone: O modelo multitarefa foi 
+inicializado com as configurações padrão do YOLOv11-seg e 
+treinado no conjunto de treinamento BTXRD, produzindo resultados 
+de classificação, localização e segmentação.
+2) Rede Siamese: A rede Siamese apresentava dois ramos, 
+cada um com quatro camadas convolucionais: 32, 64, 128 e 256 
+filtros, cada um com kernels 3×3. Cada camada é seguida por
+um max-pooling (2 × 2), reduzindo as dimensões de entrada de
+256×256 para 16×16. O pooling médio global e o achatamento são
+0454
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+seguidos por um bloco Multilayer Perceptron (256*2 para 128, 128 
+para 64, 64 para 1) com ativações ReLU, dropout (0,5) e uma saída 
+sigmoidal para prever a pontuação Dice.
+3) Pós-processamento: O aumento no tempo de teste (TTA) 
+incluiu quatro transformações, incluindo inversão horizontal, rotação 
+de 90°, inversão vertical e alteração aleatória de contraste. Essas 
+imagens transformadas geraram cinco máscaras por imagem. A rede 
+siamesa ponderou essas máscaras e combinamos as saídas do 
+YOLOv11-seg e do U-Net usando pontuações siamesas para uma 
+soma ponderada final.
+C. Resultados
+Avaliamos o desempenho do pré-processamento separadamente, 
+seguido pelos resultados do modelo multitarefa com impacto do pós-
+processamento Siamese, usando dados de teste BTXRD para o 
+último.
+1) Desempenho do pré-processamento: O YOLOv11n reduziu 
+efetivamente a sobrecarga de imagens em todos os conjuntos de 
+dados, conforme mostrado na Tabela 1. Para fraturas de punho, ele 
+preservou todas as regiões de fratura, removendo 33,7% dos pixels 
+em média. Para o Fracatlas, 0,5% das imagens foram rotuladas 
+incorretamente, resultando na remoção de 40,1% dos pixels. Para o 
+BTXRD, 23% dos pixels foram removidos e todas as imagens foram 
+rotuladas com precisão, sem perda das regiões tumorais. Essa 
+redução simplificou a detecção de padrões tumorais/fraturas, 
+alinhando áreas críticas e melhorando a retenção de detalhes durante 
+o redimensionamento para um tamanho de entrada fixo (por exemplo, 
+256×256) para modelos a jusante
+.
+2) Multitarefa e resultados siameses: nossa abordagem utiliza 
+um único modelo YOLOv11-seg para realizar classificação, 
+localização e segmentação simultaneamente, reduzindo 
+significativamente a contagem de parâmetros e o número de modelos 
+em comparação com os métodos tradicionais, que geralmente 
+implantam modelos separados por tarefa (por exemplo, um para 
+classificação, um para detecção, um para segmentação). Esse design 
+unificado minimiza a complexidade computacional, mantendo um 
+desempenho competitivo em todas as tarefas. A rede siamesa, 
+treinada juntamente com o YOLOv11-seg, refina os resultados da 
+segmentação, e o pós-processamento aprimora ainda mais os 
+resultados, integrando os resultados do TTA e do U-Net, otimizando 
+a precisão dos limites e reduzindo os falsos positivos.
+A Tabela 2 compara nosso método com as linhas de base no 
+BTXRD. Para classificação, avaliamos precisão, recall e exatidão
+TABELA 1. RESULTADOS DO PRÉ-PROCESSAMENTO COM YOLOV11N
+Conjunto de dados Redução de pixels Precisão da rotulagem
+Fratura do punho [21] 33,7 100
+Fracatlas [20] 40,1 99,5 %
+BTXRD [19] 23,0 100
+em comparação com YOLOv8-cls, ResNet18 e ResNet50, 
+demonstrando a eficiência do nosso modelo com menos parâmetros. 
+Para a localização, comparamos a precisão, a recuperação e a taxa de 
+cobertura (mAP@0.5) com o YOLOv8-s, testando com e sem pré-
+processamento para destacar seu impacto. Para a segmentação, 
+avaliamos as pontuações Dice em relação ao U-Net e ao YOLOv8s-
+seg em quatro condições: YOLOv11-seg sozinho, com pré-
+processamento, com pré-processamento e pós-processamento TTA e 
+com pré-processamento e TTA. Essas comparações ilustram o papel 
+do pré-processamento no aprimoramento da localização e 
+segmentação e do pós-processamento na melhoria adicional da 
+qualidade da segmentação.
+Nossa abordagem de modelo único reduz a complexidade (por 
+exemplo, 8,5 milhões de parâmetros contra 25,6 milhões para 
+ResNet50), enquanto o pré-processamento e o pós-processamento 
+melhoram o desempenho em todas as tarefas, especialmente na 
+segmentação.
+V. CONCLUSÃO
+Neste artigo, apresentamos um método inovador para a detecção 
+de tumores ósseos que integra pré-processamento, uma estrutura 
+multitarefa e pós-processamento baseado em Siamese para obter um 
+desempenho superior na análise de imagens médicas. Nossa 
+abordagem utiliza o YOLOv11n para um pré-processamento 
+eficiente, reduzindo a sobrecarga da imagem e preservando regiões 
+críticas, e emprega o YOLOv11-seg como um modelo unificado para 
+classificação, localização e segmentação, reduzindo 
+significativamente a contagem de parâmetros em comparação com as 
+configurações tradicionais de múltiplos modelos. A rede Siamese 
+melhora a qualidade da segmentação durante o treinamento e permite 
+um pós-processamento sofisticado por meio do aumento do tempo de 
+teste e da integração do modelo. Os resultados experimentais no 
+conjunto de dados BTXRD demonstram que nosso método não 
+apenas otimiza as demandas computacionais, mas também melhora a 
+precisão em todas as tarefas, particularmente na segmentação. 
+Trabalhos futuros explorarão a extensão dessa estrutura para outras 
+imagens médicas.
+TABELA 2. COMPARAÇÃO DE MODELOS NO CONJUNTO DE TESTES BTXRD
+Classificação Localização SegmentaçãoMétodo
+Precisão Recuperaç
+ão
+Precisão Precisão Recall mAP@0.5 Precisão Recall Dice
+Parâmetros (M)
+YOLOv8 (pequeno) [19] 0,84 0,87 0,92 0,76 0,64 0,70 0,77 0,63 0,42
+11,2 M
+6,4 milhões (cls)
+11,8 M (seg)
+ResNet18 [6] 0,79 0,82 0,86 - - - - - - 11,6 M
+ResNet50 [6] 0,81 0,83 0,87 - - - - - - 25,5 M
+U-Net [4] - - - - - - 0,62 0,37 0,39 23 M
+YOLOv11-seg (nosso) 0,85 0,85 0,92 0,78 0,65 0,71 0,74 0,68 0,52 22,4 M
+Nosso (pré-processamento) 0,86 0,88 0,93 0,69 0,70 0,72 0,71 0,70 0,54 22,4 M
+Nosso (Pré-processamento + 
+TTA)
+0,90 0,88 0,94 0,80 0,71 0,74 0,75 0,74 0,58 22,4 + 0,5 M
+0455
+Uso autorizado e licenciado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:14:43 UTC do IEEE Xplore. Aplicam-se restrições.
+domínios, como detecção de fraturas, e refinando o modelo siamês 
+para obter ainda mais precisão.
+REFERÊNCIAS
+[1]J.S.Wu, M.G. Hochman, Tumores ósseos: um guia prático para imagens, 
+Springer Science & Business Media, 2012.
+[2]K. Sampath, S. Rajagopal, A. Chintanpalli, “Uma análise comparativa de 
+arquiteturas de aprendizado profundo baseadas em CNN para o diagnóstico 
+precoce do câncer ósseo usando imagens de TC”, Scientific Reports, vol. 14, 
+n. Nature Publishing Group UK London, p. 2144-2024.
+[3]G. Litjens, et.al. “Uma pesquisa sobre aprendizado profundo na análise de 
+imagens médicas”, Medical image analysis, vol. 42, n.º Elsevier, pp. 60--88, 
+2017.
+[4]O. Ronneberger, P. Fischer e T. Brox, “U-net: redes convolucionais para 
+segmentação de imagens biomédicas”, na 18ª Conferência Internacional 
+sobre Computação de Imagens Médicas e Intervenção Assistida por 
+Computador (MICCAI), Munique, Alemanha, 5 a 9 de outubro de 2015, pp. 
+234-241.
+[5]R. Khanam, M. Hussain, “Yolov11: Uma visão geral das principais 
+melhorias arquitetônicas”, pré-impressão arXiv arXiv:2410.17725, 2024.
+[6]K. He, et al., “Aprendizado residual profundo para reconhecimento de 
+imagens”, em Anais da conferência IEEE sobre visão computacional e 
+reconhecimento de padrões, 2016, pp. 770-778.
+[7]A. Tamizifar et al. “Segmentação aprimorada de núcleos em imagens 
+histopatológicas usando um novo pipeline de pré-processamento e 
+aprendizado profundo”, em 2024 IEEE World AI IoT Congress (AIIoT), 
+IEEE, 2024, pp. 259-264.
+[8]P. Liu, et al. “Aprendizado profundo para segmentar ossos pélvicos: 
+conjuntos de dados de TC em grande escala e modelos de linha de base”, 
+International Journal of Computer Assisted Radiology and Surgery, vol. 16, 
+n.º Springer, pp. 749-756, 2021.
+[9]Y. Zhao, et al. “Aprendizado profundo multitarefa para computação e 
+análise de imagens médicas: uma revisão”, Computadores em Biologia e 
+Medicina, vol. 153, n.º Elsevier, p. 106496, 2023.
+[10]J. Kamiri, G.M. Wambugu, A.M. Oirere, Aprendizado profundo multitarefa 
+no processamento de imagens médicas: uma revisão sistemática, Revista 
+Internacional de Pesquisa em Ciências da Computação, 2025.
+[11]Y. Zhao, et al. “Aprendizado profundo multitarefa para computação e 
+análise de imagens médicas: uma revisão”, Computers in Biology and 
+Medicine, vol. 153, n.º Elsevier, p. 106496, 2023.
+[12]Z. Sobhaninia, et al. “Segmentação de tumores cerebrais por estrutura de 
+aprendizado multitarefa multiescala em cascata baseada na agregação de 
+características”, Processamento e Controle de Sinais Biomédicos, vol. 85, p. 
+104834, 2023.
+[13]C.E. von Schacky, et al. “Aprendizado profundo multitarefa para 
+segmentação e classificação de tumores ósseos primários em radiografias”, 
+Radiology, vol. 301, pp. 398-406, 2021.
+[14]T.Y. Lin, et al. “Microsoft coco: objetos comuns em contexto”, em Visão 
+computacional-ECCV: 13ª conferência europeia, Zurique, Suíça, 6 a 12 de 
+setembro de 2014, atas, parte V 13, Springer,
+2014, pp. 740-755.
+[15]J. Li, et al. “Detecção e classificação de tumores ósseos primários em 
+radiografias ósseas de campo total por meio do modelo de aprendizado 
+profundo YOLO”, European Radiology, vol. 33, pp. 4237-4248, 2023.
+[16]I. Kim, et al. “Perda de aprendizagem para aumento no tempo de teste”, 
+Advances in neural information processing systems, vol. 33, pp. 4163-4174, 
+2020.
+[17]D. Tomar, et al. “Tesla: autoaprendizagem em tempo de teste com aumento 
+adversário automático”, em Anais da conferência IEEE/CVF sobre visão 
+computacional e reconhecimento de padrões, 2023, pp. 20341-20350.
+[18]H.A. Alwzwazy, L. Alzubaidi, Z. Zhao, Y. Gu, “FracNet: uma estrutura de 
+aprendizado profundo de ponta a ponta para detecção de fraturas ósseas”, 
+Pattern Recognition Letters, 2025.
+[19]S. Yao, et al. “Um conjunto de dados radiográficos para a classificação, 
+localização e segmentação de tumores ósseos primários”, Scientific Data, 
+vol. 12, n.º Nature Publishing Group UK London, p. 12, 2025.
+[20]I. Abedeen, et al. “Fracatlas: um conjunto de dados para classificação, 
+localização e segmentação de fraturas em radiografias musculoesqueléticas”, 
+Scientific data, vol. 10, p. 521, 2023.
+[21]H. Malik, J. Jabbar e H. Mehmood, “Fratura do punho — raios X”, 
+Mendeley Data, 2020.

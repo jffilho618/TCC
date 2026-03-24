@@ -1,0 +1,436 @@
+Melhorando a detecção radiográfica de tumores com
+Conjuntos da CNN
+Advait Kankati Tiasa Jana Shashi Bhushan
+ESCOPO
+Instituto de Tecnologia de Vellore
+Vellore, Índia
+advaitk1023@gmail.com
+ESCOPO
+Instituto de Tecnologia de Vellore
+Vellore, Índia
+tiasajana4567@gmail.com
+Departamento de Ciência da Computação e Informação
+Universidade de Tecnologia Petronas
+Seri Iskandar, Malásia 
+shashi.bhushan@utp.edu.my
+Resumo— Os tumores ósseos representam um problema importante que 
+deve ser identificado precocemente e com precisão para um tratamento 
+adequado na medicina ortopédica. As abordagens convencionais dependem 
+da identificação manual de tumores ósseos em imagens radiológicas por 
+radiologistas. Essa abordagem é propensa a erros e depende da 
+disponibilidade de recursos no centro de saúde e da experiência do 
+radiologista. Para classificar as imagens de raios X como saudáveis   ou 
+tumorais, nossa pesquisa apresenta uma abordagem única baseada em 
+ensemble. Nosso método utiliza capacidades complementares de extração 
+de características, criando uma arquitetura de ensemble com três redes 
+neurais diferentes: uma CNN simples, uma CNN de complexidade média e 
+um modelo de aprendizado por transferência baseado em MobileNetV2. 
+Demonstramos um bom desempenho de categorização com nossa 
+arquitetura, atingindo uma acurácia de 76,36%. O modelo apresenta bom 
+desempenho em diferentes métricas, com precisão de 78,16%, recall de 
+73,51% e pontuação F1 de 75,77%. Este trabalho fornece uma rede de 
+classificação eficiente que pode melhorar o fluxo de trabalho clínico e 
+otimizar os protocolos de tratamento por meio do diagnóstico precoce.
+Termos de indexação— Classificação de Tumores Ósseos, Aprendizado 
+Profundo em Conjunto, Análise de Raios-X, Classificação de Imagens Médicas, 
+Detecção Automatizada de Doenças
+Nos últimos anos, um algoritmo amplamente utilizado tem sido as Redes 
+Neurais Convolucionais (CNNs). Essas CNNs têm se mostrado 
+consistentemente mais eficientes do que os métodos tradicionais, além de 
+promissoras na automatização da detecção de tumores ósseos e na 
+classificação de imagens de raios X como saudáveis   ou anormais [5,10]. No 
+entanto, a diversidade de anormalidades ósseas, suas localizações, 
+juntamente com o ruído e a variabilidade na qualidade das imagens 
+radiográficas, têm representado diversos desafios para os algoritmos de 
+aprendizado profundo [11,13]. Para a classificação de imagens médicas, os 
+métodos de aprendizado profundo devem ser capazes de capturar 
+características localizadas e informações contextuais gerais para identificar 
+entre tumores normais e malignos [8]. Estudos recentes demonstraram que, 
+ao adicionar um mecanismo de atenção à arquitetura, podemos reduzir o 
+ruído e melhorar a relevância das características, o que aumenta a precisão 
+da classificação binária. No caso da classificação de ossos normais e 
+anormais, a extração precisa de características e o contexto auxiliam na 
+diferenciação entre pequenas características, para as quais essas melhorias 
+na arquitetura são especialmente úteis [9,11]. Apesar de todos os avanços 
+recentes, os modelos atuais ainda apresentam dificuldades em generalizar 
+para diferentes dados demográficos de pacientes, localizações esqueléticas 
+e condições de imagem. A diferença entre a variação óssea normal e 
+anormal nos estágios iniciais pode ser extremamente pequena, dificultando 
+a detecção. Às vezes, modelos enviesados   que priorizam certas métricas 
+em detrimento de outras também podem ser produzidos devido ao 
+desequilíbrio de classes nos conjuntos de dados [6,13]. Esta pesquisa 
+apresenta o BoneNet, uma abordagem de aprendizado profundo otimizada 
+para a classificação binária de radiografias ósseas como saudáveis   ou 
+anormais. Nossa arquitetura utiliza uma arquitetura híbrida de CNN e 
+Transformer.
+Eu. EuINTRODUÇÃO
+O tumor ósseo é uma condição de saúde grave. O tratamento de um 
+paciente com tumor ósseo pode ser significativamente afetado pela 
+detecção precoce e oportuna do tumor. Os tumores ósseos são 
+geralmente classificados em duas categorias com base em seu 
+comportamento clínico: benignos e malignos. Os tumores benignos 
+não são cancerígenos e, em geral, não são prejudiciais. Normalmente, 
+permanecem localizados e não têm a capacidade de se espalhar pelo 
+corpo, ao contrário dos tumores malignos. Os tumores malignos são 
+cancerígenos e capazes de se disseminar por todo o corpo. Portanto, a 
+identificação precisa e precoce dos tumores ósseos é essencial para o 
+tratamento médico adequado [3,5]. Os métodos tradicionais para 
+determinar se uma radiografia apresenta um tumor ósseo envolvem a 
+inspeção manual das radiografias e dependem da experiência do 
+radiologista na interpretação da imagem. No entanto, esse método é 
+pouco confiável, sujeito a erros humanos, diagnósticos incorretos e 
+atrasos no diagnóstico. Diversos desafios surgem durante a 
+interpretação de anormalidades ósseas em imagens radiológicas. Estes 
+incluem pequenas diferenças na aparência de ossos saudáveis   e 
+tumorais, além da sobreposição de estruturas ósseas [2,6]. A 
+automação pode aprimorar significativamente essa etapa inicial de 
+triagem. A visão computacional e a inteligência artificial têm 
+demonstrado grande potencial para a análise de imagens médicas.
+II. LITERARIDADE
+Para a detecção de tumores ósseos em imagens de ressonância magnética, 
+Mistry e Talati desenvolveram um método integrado que combinava pré-
+processamento, técnicas de extração de características e segmentação. Eles 
+alcançaram uma precisão de 95% utilizando características de textura e técnicas 
+de detecção de bordas em seus métodos [1]. Watanabe et al. introduziram um 
+algoritmo de detecção de anomalias baseado em AnoGAN que identificou 
+imagens de metástases ósseas em imagens de tomografia computadorizada. Eles 
+conseguiram diferenciar com sucesso entre estruturas ósseas normais e anormais 
+sem a necessidade de dados tumorais rotulados [2]. Características extraídas de 
+imagens de raios X foram utilizadas por Xia et al. para criar um modelo baseado 
+em SVM. Constatou-se que
+Uso licenciado autorizado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:10:36 UTC do IEEE Xplore. Restrições se aplicam.
+5ª Conferência Internacional sobre Internet das Coisas: Inovação Inteligente e Usos (IoT-SIU) 2025 | 979-8-3315-9099-4/25/$31.00 ©2025 IEEE |   DOI: 10.1109/IOT-SIU65919.2025.11402689
+Traduzido do Inglês para o Português - www.onlinedoctranslator.com
+Classificadores SVM podem diferenciar tecidos ósseos saudáveis   e tumorais 
+com mais precisão, quando combinados com características baseadas em 
+textura [3]. Aprimoramento de contraste e outros métodos de 
+processamento de imagem, como segmentação por watershed, foram 
+usados   por Sujatha et al. Estes apresentaram uma abordagem de triagem 
+para câncer ósseo. Eles conseguiram localizar os tumores com sucesso, 
+reduzindo os falsos positivos [4]. Chen et al. melhoraram o desempenho da 
+classificação usando uma estratégia híbrida na qual combinaram extração 
+de características locais e contexto global. Eles propuseram uma 
+combinação de Vision Transformers e arquitetura VGG-16 [5]. Shrivastava et 
+al. focaram em várias modalidades de imagem, como ressonâncias 
+magnéticas. Eles avaliaram a detecção de tumores ósseos usando diferentes 
+modelos de aprendizado de máquina, destacando a importância da seleção 
+de características e da redução de dimensionalidade [6]. Ye et al. 
+desenvolveram um modelo de aprendizado profundo multitarefa em 
+conjunto para identificação, segmentação e classificação de cânceres ósseos 
+primários, que usou ressonâncias magnéticas multiparamétricas. Este 
+modelo mostrou alto desempenho diagnóstico em vários grupos de 
+pacientes e técnicas de imagem [8]. [9] Song et al. [10] Yildiz Potter et al. 
+utilizaram imagens multimodais incompletas de raios X, tomografia 
+computadorizada e ressonância magnética para propor um modelo que 
+aprimorou a classificação de tumores ósseos primários. Essa abordagem 
+manteve alta precisão de classificação, mesmo lidando com modalidades de 
+imagem ausentes. [10] Yildiz Potter et al. utilizaram imagens de tomografia 
+computadorizada para criar um pipeline automatizado para segmentação de 
+tumores ósseos e classificação binária como benignos ou malignos. Seu 
+sistema alcançou uma precisão de 87%. Para classificar tumores ósseos, 
+Mohsen et al. utilizaram redes neurais profundas. Eles demonstraram 
+técnicas que poderiam ser usadas para análise de tumores ósseos [11]. [12] 
+Para detectar e classificar fraturas ósseas em imagens radiográficas, Yadav e 
+Rathor utilizaram uma arquitetura de aprendizado profundo baseada em 
+CNN. [13] Moreau et al. alcançaram alta precisão de segmentação para 
+segmentação de lesões ósseas em imagens de PET/CT com 18FDG em 
+câncer de mama metastático. Seus métodos poderiam ser adaptados para a 
+identificação de tumores ósseos.
+respectivamente. A distribuição das classes foi mantida em todas as divisões, 
+separando independentemente as imagens do tumor e as imagens saudáveis   
+e, em seguida, recombinando-as para garantir o equilíbrio.
+Figura 1. Arquitetura de conjunto
+B. Arquitetura e projeto de modelos
+Nossa metodologia utiliza uma arquitetura de conjunto que 
+consiste em três arquiteturas de rede diferentes. Isso garante 
+melhor extração de características e classificação:
+1)Modelo de Transferência de Aprendizagem baseado em MobileNetV2:
+• Utiliza uma arquitetura pré-treinada MobileNetV2. Os pesos do 
+ImageNet são usados   para aprimorar a extração de características.
+• Função de classificação personalizada com Global Average 
+Pooling, seguida por camadas densas (512→128→
+1).
+• A regularização Dropout (0,5 e 0,3) é aplicada entre as 
+camadas densas para evitar o sobreajuste.
+• Utiliza uma estratégia de treinamento em duas fases: treinamento inicial 
+da estrutura principal congelada, seguido posteriormente pelo ajuste fino 
+das últimas 50 camadas.
+III. METODOLOGIA 2)Modelo CNN simples:
+Nossa abordagem consiste em um pipeline de múltiplas etapas que combina 
+pré-processamento de imagens, extração de características e classificação usando 
+um modelo de aprendizado profundo em conjunto.
+• Consiste em três blocos convolucionais com 
+complexidade de filtro crescente (32→64→128).
+• Cada bloco contém camadas Conv2D, MaxPooling 
+e BatchNormalization.
+• O cabeçalho de classificação final consiste em 256 neurônios 
+com uma taxa de dropout de 0,5.
+A. Preparação e pré-processamento do conjunto de dados
+Imagens de raios X de estruturas ósseas, incluindo imagens de 
+osso saudável e tumoral, foram coletadas do conjunto de dados 
+BTXRD.
+3)Modelo CNN de tamanho médio:
+• Apresenta uma arquitetura mais complexa com camadas 
+convolucionais emparelhadas (64→64, 128→128, 256→
+256).
+• Incorpora MaxPooling e BatchNormalization 
+entre cada bloco convolucional.
+• A cabeça de classificação é mais profunda, com 
+camadas densas. (512→128→1),e aplica o abandono 
+gradual (0.5→0.3).
+1)Conversão para tons de cinza:Todas as imagens foram convertidas para tons de 
+cinza para focar exclusivamente nas características estruturais.
+2)Redimensionamento:Para manter a consistência, todas as imagens 
+foram padronizadas para uma resolução de512×512pixels.
+3)Aprimoramento de contraste:A equalização adaptativa de histograma 
+com limite de contraste (CLAHE) foi aplicada para melhorar o 
+contraste e a visibilidade de detalhes sutis da textura óssea. Um 
+limite de recorte de 2,0 e um tamanho de grade de mosaico de8×8 
+foram usados.
+4)Particionamento do conjunto de dados:O conjunto de dados foi dividido em 
+conjuntos de treinamento, teste e validação na proporção de 70:20:10.
+C. Integração de Conjunto
+Para uma determinada entradaxObtemos a previsão do conjunto 
+calculando a média das saídas de todos os três modelos:
+Uso licenciado autorizado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:10:36 UTC do IEEE Xplore. Restrições se aplicam.
+2)Ferramentas de visualização:
+1
+M
+∑M
+Pconjunto(x) = P(x), • UMMatriz de Confusãofoi utilizado para analisar padrões 
+de erros entre as classes.
+• Curvas ROCForam gerados dados para ilustrar como a 
+mudança no limiar de decisão afeta as previsões do 
+modelo.
+• Curvas de Precisão-Recallforam empregados para avaliar o 
+desempenho em cenários potencialmente desequilibrados.
+m (1)
+m=1
+ondePm(x)é a probabilidade prevista pelomomodelo e
+M=3é o número total de modelos no conjunto.
+A classificação final é determinada usando um limiar de 0,5:
+{
+1,seP
+0,ŷ=
+conjunto(x)≥0.5 (2) IV. RRESULTADOS EDDISCUSSÃO
+sePconjunto(x)<0.5
+A. Configuração Experimental
+Essa abordagem de calcular a média das probabilidades reduz a 
+variância das previsões e aproveita os pontos fortes de cada 
+modelo, mitigando suas fraquezas individuais.
+O modelo de classificação de tumores ósseos em conjunto foi treinado no 
+conjunto de dados BTXRD, que consiste em imagens de raios X de estruturas 
+ósseas, totalizando 3746 imagens, categorizadas em 1879 imagens 
+saudáveis   e 1867 imagens tumorais.
+Para realizar os experimentos, foi utilizado um ambiente Kaggle 
+equipado com uma GPU aceleradora NVIDIA Tesla P100. Um tamanho 
+de lote de 16 foi usado para treinar todos os modelos. O otimizador 
+Adam foi utilizado com uma taxa de aprendizado inicial de1×10−4
+para a fase de treinamento primário, seguida por uma taxa de 
+aprendizado reduzida de1×10−5para a fase de ajuste fino do modelo 
+MobileNetV2.
+D. Processo de Treinamento
+Cada modelo foi treinado independentemente utilizando o seguinte 
+procedimento:
+1)Geração de dados:
+• Foi implementado um gerador de dados personalizado para 
+carregar imagens em lotes, otimizando o uso da memória.
+• A normalização foi aplicada em tempo real.
+• A distribuição das turmas foi equilibrada dentro de cada lote 
+para evitar viés. B. Métricas de Avaliação
+2)Estratégia de otimização: Um conjunto de métricas de desempenho baseadas em elementos da 
+matriz de confusão foi usado para avaliar nosso modelo de conjunto. Estas 
+incluem:
+• A função de perda selecionada para avaliar o modelo foi a 
+perda de entropia cruzada binária.
+• Utilizamos o otimizador Adam com uma taxa de 
+aprendizado inicial de1×10−4.
+• A redução da taxa de aprendizagem no platô foi 
+empregada com uma paciência de 4 e um fator de 0,5.
+• Para evitar o sobreajuste, utilizamos a parada antecipada com uma 
+paciência de 8.
+• O checkpoint do modelo salvou os pesos 
+correspondentes à melhor precisão de validação.
+• Verdadeiros Positivos (VP):Número de imagens de raios X tumorais 
+classificadas corretamente.
+• Verdadeiros Negativos (VN):Número de imagens de raios X saudáveis   
+classificadas corretamente.
+• Falsos Positivos (FP):Número de radiografias saudáveis   classificadas 
+incorretamente como tumorais.
+• Falsos negativos (FN):Número de radiografias tumorais classificadas 
+incorretamente como saudáveis.
+3)Estratégia de treinamento:
+• Todos os modelos foram inicialmente treinados por até 30 
+épocas.
+• O MobileNetV2 foi ajustado descongelando as últimas 50 
+camadas, usando uma taxa de aprendizado reduzida de1×10−5.
+E. Avaliação de Desempenho
+Nossa abordagem de conjunto e modelos individuais foram 
+avaliados usando múltiplas métricas de desempenho:
+1)Métricas de classificação:
+• PrecisãoFoi utilizado para avaliação do desempenho 
+geral.
+• Precisão, Recuperação,ePontuação F1foram utilizadas para 
+avaliar o desempenho em ambas as turmas.
+• OÁrea sob a curva ROC (AUC)foi utilizado para 
+medir a capacidade do modelo em discriminar 
+entre imagens tumorais e saudáveis.
+• Precisão média (PM)As curvas de precisão-revocação foram 
+usadas para lidar com o potencial desequilíbrio de classes.
+Figura 2. Curva ROC
+Para nossa tarefa de classificação binária, as seguintes métricas foram 
+calculadas:
+Uso licenciado autorizado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:10:36 UTC do IEEE Xplore. Restrições se aplicam.
+1)Precisão:A proporção de casos tumorais ou saudáveis   previstos 
+corretamente em relação ao número total de previsões é 
+denominada acurácia.
+TABELA II
+CCOMPARATIVOPDESEMPENHOUMANÁLISE DEDDIFERENTEMODELOS
+Modelo Exatidão, precisão e recordação F1
+(%) (%) (%) Pontuação
+(%)TP+TN
+TP+TN+FP+FNPrecisão = (3) SVM
+ResUnet + Busca por Coruja 
+CNN + Atenção Focada 
+Modelo de Conjunto
+70,07
+68,89
+72,93
+76,36
+70,13
+64,81
+74,64
+78,16
+70,32
+80,39
+69,25
+73,51
+70,23
+71,76
+71,84
+75,772)Precisão:A precisão é uma medida da confiabilidade do modelo na 
+previsão de imagens de raios X de tumores. Ela é calculada da 
+seguinte forma: Nosso modelo de conjunto alcançou a melhor precisão geral em
+76,36%.Ela superou outras arquiteturas com precisão.TP
+TP+FPPrecisão = (4) de78,16%.Isso demonstra que o modelo identifica de forma eficiente.
+verdadeiros positivos, minimizando os falsos positivos.
+Nosso modelo de conjunto captura com eficácia características sutis e 
+diferenças nas estruturas ósseas em imagens de raios X devido à sua 
+arquitetura personalizada. Modelos individuais podem ter dificuldades para 
+detectar esses padrões. Isso demonstra que nosso modelo alcança um bom 
+equilíbrio entre precisão e recall, destacando-se a pontuação F1 de75,77%.O 
+modelo Ensemble alcança um melhor equilíbrio em comparação com os 
+modelos individuais.
+3)Lembrar:O teste de recall demonstra a capacidade do modelo de identificar 
+corretamente imagens de raios-X tumorais em todos os casos de tumor:
+TP
+TP+FN
+Recordar = (5)
+4)Pontuação F1:A pontuação F1 calcula a média harmônica da 
+precisão e da revocação, fornecendo-nos uma medida 
+equilibrada para avaliar o modelo: V. CCONCLUSÃO
+Nosso estudo demonstra com sucesso a eficácia do nosso en-
+Precisão·Lembrar
+Precisão + Recuperação
+Pontuação F1 =2· (6) modelo de aprendizagem profunda semble para classificação automatizada de
+tumores ósseos em imagens de raios-X. Nossa arquitetura proposta, que combina 
+os modelos MobileNetV2, CNN simples e CNN de complexidade média, alcança 
+desempenho superior. Ao calcular a média do desempenho dos modelos, a 
+arquitetura de conjunto destaca os pontos fortes de cada um, minimizando suas 
+fraquezas. Nosso sistema de classificação pode aprimorar os fluxos de trabalho 
+clínicos, fornecendo suporte confiável aos radiologistas. Isso, por sua vez, pode 
+permitir a detecção precoce e um melhor atendimento aos pacientes. Como o 
+tamanho do conjunto de dados é uma das maiores limitações, trabalhos futuros 
+devem incluir a investigação de outras modalidades de imagem, como 
+ressonâncias magnéticas e tomografias computadorizadas, além de aumentar a 
+diversidade do conjunto de dados.
+C. Desempenho do Modelo
+TABELA I
+PDESEMPENHOCCOMPARAÇÃO DEEUINDIVÍDUOMODELOS VS. ENSEMBLE
+Modelo Precisão
+(%)
+Precisão
+(%)
+Lembrar
+(%)
+F1
+Pontuação
+(%)
+AUC
+(%)
+MobileNetV2
+CNN simples
+Médio CNN
+Conjunto
+75,14
+74,59
+72,83
+76,36
+86,61
+73,88
+71,72
+78,16
+59,62
+76,09
+75,61
+73,51
+70,63
+74,97
+73,61
+75,77
+84,33
+79,98
+79,98
+84,35 RREFERÊNCIAS
+[1] KD Mistry e BJ Talati, “Abordagem integrada para detecção de tumor ósseo a partir 
+de imagens de ressonância magnética”,Conferência Internacional de 
+Processamento de Sinais e Informação de 2016 (IConSIP), Nanded, Índia, 2016, pp.
+[2] H. Watanabe, R. Togo, T. Ogawa e M. Haseyama, “Detecção de tumor 
+metastático ósseo baseada em AnoGAN usando imagens de TC”,1ª 
+Conferência Global IEEE sobre Ciências e Tecnologias da Vida (LifeTech) de 
+2019, Osaka, Japão, 2019, pp.
+[3] C. Xia et al., “Detecção de tumor ósseo baseada em SVM usando as 
+características de textura da imagem de raio-X”,Conferência Internacional de 
+2018 sobre Infraestrutura de Rede e Conteúdo Digital (IC-NIDC), Guiyang, 
+China, 2018, pp.
+[4] K. Sujatha et al., “Rastreamento e identificação de câncer/tumor ósseo usando 
+processamento de imagem”,Conferência Internacional de 2018 sobre Tendências 
+Atuais em Direção às Tecnologias Convergentes (ICCTCT), Coimbatore, Índia, 2018, 
+pp. 1–5.
+[5] W. Chen et al., “Uma fusão dos modelos VGG-16 e ViT para melhorar a 
+classificação de tumores ósseos em tomografia computadorizada”,Revista 
+de Oncologia Óssea, vol. 43, p. 100508, 2023.
+[6] D. Shrivastava, S. Sanyal, AK Maji, D. Kandar, “Detecção de câncer ósseo 
+usando técnicas de aprendizado de máquina”, emSaúde inteligente para 
+diagnóstico e prevenção de doenças, Academic Press, 2020, pp. 175–183.
+[7] P. Whig, BY Kasula, N. Yathiraju, A. Jain, S. Sharma, “Classificação e 
+detecção de câncer ósseo usando técnica de aprendizado de máquina”,
+emDiagnóstico de doenças musculoesqueléticas usando inteligência artificial e 
+aprendizado de máquina., Academic Press, 2025, pp. 65–80.Figura 3. Matriz de Confusão do Conjunto
+Uso licenciado autorizado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:10:36 UTC do IEEE Xplore. Restrições se aplicam.
+[8] Q. Ye, H. Yang, B. Lin, et al., “Detecção, segmentação e classificação automáticas de 
+tumores ósseos primários e infecções ósseas usando uma estrutura de 
+aprendizado profundo multitarefa em conjunto em ressonâncias magnéticas 
+multiparamétricas: um estudo multicêntrico”,Radiologia Europeia, vol. 34, pp. 
+4287– 4299, 2024.
+[9] L. Song, C. Li, L. Tan, et al., “Um modelo de aprendizado profundo para aprimorar a 
+classificação de tumores ósseos primários com base em imagens multimodais 
+incompletas em raios X, TC e RM”,Exames de imagem para câncer, vol. 24, p. 135, 2024.
+[10] IY Potter, D. Yeritsyan, S. Mahar, et al., “Segmentação e classificação 
+automatizadas de tumores ósseos como benignos ou malignos usando 
+imagens de tomografia computadorizada”,Revista de Imagem Digital, vol. 
+36, pp. 869–878, 2023.
+[11] H. Mohsen, EA El-Dahshan, EM El-Horbaty, ABM Salem, “Classificação 
+usando redes neurais de aprendizado profundo para tumores 
+cerebrais”, Revista Future Computing and Informatics, vol. 3, nº 1, pp. 
+68–71, 2018.
+[12] DP Yadav e S. Rathor, “Detecção e classificação de fraturas ósseas usando 
+abordagem de aprendizado profundo”,Conferência Internacional de 2020 
+sobre Eletrônica de Potência e Aplicações de IoT em Energias Renováveis   e 
+seu Controle (PARC)Mathura, Índia, 2020, pp. 282–285.
+[13] N. Moreau et al., “Abordagens de aprendizagem profunda para segmentação óssea e 
+de lesões ósseas em imagens PET/CT com 18FDG no contexto do câncer de mama 
+metastático”,2020 42ª Conferência Internacional Anual da Sociedade de 
+Engenharia em Medicina e Biologia (EMBC) do IEEE, Montreal, QC, Canadá, 2020, 
+pp. 1532–1535.
+Uso licenciado autorizado limitado a: UNIVERSIDADE FEDERAL DO PIAUI. Baixado em 26 de fevereiro de 2026 às 06:10:36 UTC do IEEE Xplore. Restrições se aplicam.
