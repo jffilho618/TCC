@@ -1,0 +1,10 @@
+ID_Exp,Familia,Modelo,Resolucao,Best_Epoch,Val_Loss_Final,Tempo_Total_min,Acuracia,F1_Score,Recall,AUC,Batch_Size
+Auto,CNN,tf_efficientnetv2_s,224x224,25,0.8203,18.29,0.8612,0.6609,0.7451,0.8997,32
+Auto,CNN,densenet201,224x224,8,0.3759,10.81,0.8648,0.6885,0.8235,0.9406,32
+Auto,ViT,vit_base_patch16_224,224x224,10,0.5415,11.57,0.694,0.5114,0.8824,0.8274,16
+Auto,ViT,deit_base_distilled_patch16_224,224x224,3,0.5287,8.47,0.8505,0.6441,0.7451,0.8984,32
+Auto,ViT,beit_base_patch16_224,224x224,12,0.5527,12.64,0.6726,0.4177,0.6471,0.7454,16
+Auto,Hybrid,swinv2_tiny_window16_256,256x256,5,0.4047,11.4,0.9004,0.7742,0.9412,0.961,32
+Auto,Hybrid,maxvit_rmlp_tiny_rw_256,256x256,10,0.4319,12.37,0.9075,0.7547,0.7843,0.9286,16
+Auto,Hybrid,coatnet_2_rw_224,224x224,24,0.4577,20.08,0.8114,0.6074,0.8039,0.8747,16
+Auto_YOLO_Bal,CNN (YOLO),yolov8n-cls.pt (Balanceado),224x224,Auto,N/A,N/A,0.9075,0.7347,0.7059,0.9256,32

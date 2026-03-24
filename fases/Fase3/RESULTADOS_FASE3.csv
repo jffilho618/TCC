@@ -1,0 +1,6 @@
+Modelo,Tipo,RadImageNet,Resolucao,Val_Loss,Acuracia,F1_Score,Recall,AUC,Tempo_min
+resnet50,CNN,Sim,384x384,0.3217,0.9181,0.7767,0.7843,0.9401,12.62
+densenet121,CNN,Sim,384x384,0.3011,0.9004,0.6957,0.6275,0.9355,12.38
+tf_efficientnetv2_l,CNN,Nao,384x384,0.2651,0.9395,0.8132,0.7255,0.9749,47.46
+beitv2_base_patch16_224.in1k_ft_in22k,VIT,Nao,224x224,0.3325,0.911,0.7573,0.7647,0.9419,62.73
+swinv2_base_window12to24_192to384_22kft1k,VIT,Nao,384x384,0.3188,0.9324,0.8,0.7451,0.934,453.14

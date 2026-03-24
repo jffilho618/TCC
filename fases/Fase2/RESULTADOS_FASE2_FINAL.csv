@@ -1,0 +1,4 @@
+Modelo,RadImageNet,Resolucao,Acuracia,F1_Score,Recall,AUC,Tempo_min
+resnet50,Sim,384x384,0.9324,0.8119,0.8039,0.9403,12.67
+tf_efficientnetv2_l,Nao,384x384,0.9395,0.8283,0.8039,0.936,33.01
+beit_base_patch16_224,Nao,224x224,0.7473,0.4409,0.549,0.7944,5.76
