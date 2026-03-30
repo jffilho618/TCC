@@ -1,0 +1,4 @@
+Rede,Acurácia,AUC,F1-Score,Precisão,Recall (Sensibilidade)
+efficientnet_b0,0.9004,0.8981,0.7255,0.7255,0.7255
+resnet34,0.8932,0.8907,0.6875,0.7333,0.6471
+mobilenetv3_large_100,0.9181,0.9211,0.7416,0.8684,0.6471
