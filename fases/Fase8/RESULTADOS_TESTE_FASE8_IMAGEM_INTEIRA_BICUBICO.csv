@@ -1,0 +1,4 @@
+Rede,Acuracia,AUC,F1-Score,Precisao,Recall (Sensibilidade),Recall Benigno,Recall Maligno,F1 Benigno,F1 Maligno
+tf_efficientnetv2_l,0.9537,0.9638,0.8632,0.9318,0.8039,0.987,0.8039,0.9722,0.8632
+resnet50,0.8256,0.839,0.5812,0.5152,0.6667,0.8609,0.6667,0.8899,0.5812
+densenet121,0.9324,0.8967,0.7912,0.9,0.7059,0.9826,0.7059,0.9597,0.7912

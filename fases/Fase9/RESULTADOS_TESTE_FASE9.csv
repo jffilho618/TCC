@@ -1,0 +1,4 @@
+Rede,Acuracia,AUC,F1-Score,Precisao,Recall (Sensibilidade)
+tf_efficientnetv2_l,0.9039,0.9421,0.7568,0.7,0.8235
+resnet50,0.9253,0.9618,0.8174,0.7344,0.9216
+densenet121,0.9395,0.9691,0.8283,0.8542,0.8039
